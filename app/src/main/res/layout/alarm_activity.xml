@@ -155,4 +155,13 @@
 
     </LinearLayout>
 
+    <!-- Challenges run inside the ring screen so the show-when-locked window flags, the
+         AlarmService binding and the alarm-done receiver all keep working. The ring
+         content above is hidden while this is visible. -->
+    <FrameLayout
+        android:id="@+id/challenge_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
 </FrameLayout>

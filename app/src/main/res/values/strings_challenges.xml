@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2026 The Android Open Source Project
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+<!-- Strings for the alarm dismiss challenges. Kept in their own file so the fork's
+     additions stay separate from the upstream string table. -->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <!-- Position of the current challenge within an alarm's list. -->
+    <string name="challenge_progress">Challenge <xliff:g id="position" example="2">%1$d</xliff:g> of <xliff:g id="total" example="3">%2$d</xliff:g></string>
+
+    <!-- Position of the current step within a single challenge. -->
+    <string name="challenge_step"><xliff:g id="position" example="2">%1$d</xliff:g> of <xliff:g id="total" example="3">%2$d</xliff:g></string>
+
+    <!-- Spoken back when an assistant is asked to dismiss an alarm that has challenges. -->
+    <string name="alarm_cant_be_dismissed_challenge">Complete the alarm\'s challenges to dismiss it</string>
+
+    <!-- Shown when a challenge cannot be completed and is being skipped. -->
+    <string name="challenge_skipped">Challenge skipped: <xliff:g id="reason" example="no camera access">%1$s</xliff:g></string>
+
+    <!-- Math challenge -->
+    <string name="challenge_math_prompt">Solve to dismiss</string>
+    <!-- An arithmetic problem, shown with its unknown result. -->
+    <string name="challenge_math_expression"><xliff:g id="expression" example="9 x 10">%1$s</xliff:g> = ?</string>
+    <string name="challenge_math_wrong">Not quite. Try again.</string>
+    <string name="challenge_math_answer_hint">Answer</string>
+    <string name="challenge_backspace_description">Delete</string>
+    <string name="challenge_submit_description">Submit answer</string>
+
+    <!-- Memory challenge -->
+    <string name="challenge_memory_prompt">Match every pair</string>
+    <string name="challenge_memory_preview">Memorise the board</string>
+    <string name="challenge_memory_card_description">Card <xliff:g id="position" example="4">%1$d</xliff:g></string>
+
+    <!-- Retype challenge -->
+    <string name="challenge_retype_prompt">Retype this exactly</string>
+    <string name="challenge_retype_wrong">That does not match. Try again.</string>
+
+    <!-- Sequence challenge -->
+    <string name="challenge_sequence_prompt">Repeat the sequence</string>
+    <string name="challenge_sequence_watch">Watch closely</string>
+    <string name="challenge_sequence_replay">Repeat the sequence</string>
+    <string name="challenge_sequence_wrong">Wrong order. Start again.</string>
+    <string name="challenge_sequence_shape_description">Shape <xliff:g id="position" example="3">%1$d</xliff:g></string>
+
+    <!-- Photo challenge -->
+    <string name="challenge_photo_prompt">Take a picture of</string>
+    <string name="challenge_photo_searching">Point the camera at it</string>
+    <string name="challenge_photo_found">Got it</string>
+    <string name="challenge_photo_no_camera_permission">no camera access</string>
+    <string name="challenge_photo_shutter_description">Capture</string>
+    <string name="challenge_photo_step"><xliff:g id="position" example="1">%1$d</xliff:g> of <xliff:g id="total" example="2">%2$d</xliff:g> photos</string>
+
+</resources>

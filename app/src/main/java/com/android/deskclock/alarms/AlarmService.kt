@@ -29,6 +29,7 @@ import android.telephony.TelephonyManager
 
 import com.android.deskclock.AlarmAlertWakeLock
 import com.android.deskclock.LogUtils
+import com.android.deskclock.challenges.ChallengeGate
 import com.android.deskclock.R
 import com.android.deskclock.events.Events
 import com.android.deskclock.provider.AlarmInstance
@@ -126,9 +127,18 @@ class AlarmService : Service() {
                     Events.sendAlarmEvent(R.string.action_snooze, R.string.label_intent)
                 }
                 ALARM_DISMISS_ACTION -> {
-                    // Set the alarm state to dismissed.
-                    AlarmStateManager.deleteInstanceAndUpdateParent(context, mCurrentAlarm!!)
-                    Events.sendAlarmEvent(R.string.action_dismiss, R.string.label_intent)
+                    if (ChallengeGate.requiresChallenge(mCurrentAlarm)) {
+                        // This broadcast is public, so without the gate any app could
+                        // dismiss a challenge alarm. Show the challenges instead. This
+                        // receiver only runs when AlarmActivity is not bound, so the ring
+                        // screen has to be brought up here.
+                        context.startActivity(
+                                ChallengeGate.createChallengeIntent(context, mCurrentAlarm!!))
+                    } else {
+                        // Set the alarm state to dismissed.
+                        AlarmStateManager.deleteInstanceAndUpdateParent(context, mCurrentAlarm!!)
+                        Events.sendAlarmEvent(R.string.action_dismiss, R.string.label_intent)
+                    }
                 }
             }
         }

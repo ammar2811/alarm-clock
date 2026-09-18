@@ -33,6 +33,7 @@ import androidx.core.content.ContextCompat
 
 import com.android.deskclock.AlarmClockFragment
 import com.android.deskclock.AlarmUtils
+import com.android.deskclock.challenges.ChallengeGate
 import com.android.deskclock.DeskClock
 import com.android.deskclock.LogUtils
 import com.android.deskclock.provider.Alarm
@@ -519,12 +520,22 @@ internal object AlarmNotifications {
         notification.addAction(R.drawable.ic_snooze_24dp,
                 resources.getString(R.string.alarm_alert_snooze_text), snoozePendingIntent)
 
-        // Setup Dismiss Action
-        val dismissIntent: Intent = AlarmStateManager.createStateChangeIntent(service,
-                AlarmStateManager.ALARM_DISMISS_TAG, instance, InstancesColumns.DISMISSED_STATE)
-        dismissIntent.putExtra(AlarmStateManager.FROM_NOTIFICATION_EXTRA, true)
-        val dismissPendingIntent: PendingIntent = PendingIntent.getService(service,
-                ALARM_FIRING_NOTIFICATION_ID, dismissIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        // Setup Dismiss Action. When the alarm has challenges this opens the ring screen
+        // into the challenge flow instead of dismissing, otherwise the notification would
+        // be a way straight past the gate. Alarms without challenges keep the original
+        // service intent exactly.
+        val dismissPendingIntent: PendingIntent = if (ChallengeGate.requiresChallenge(instance)) {
+            PendingIntent.getActivity(service, ALARM_FIRING_NOTIFICATION_ID,
+                    ChallengeGate.createChallengeIntent(service, instance),
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        } else {
+            val dismissIntent: Intent = AlarmStateManager.createStateChangeIntent(service,
+                    AlarmStateManager.ALARM_DISMISS_TAG, instance,
+                    InstancesColumns.DISMISSED_STATE)
+            dismissIntent.putExtra(AlarmStateManager.FROM_NOTIFICATION_EXTRA, true)
+            PendingIntent.getService(service, ALARM_FIRING_NOTIFICATION_ID, dismissIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT)
+        }
         notification.addAction(R.drawable.ic_alarm_off_24dp,
                 resources.getString(R.string.alarm_alert_dismiss_text),
                 dismissPendingIntent)

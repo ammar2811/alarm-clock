@@ -31,6 +31,7 @@ import android.text.format.DateUtils
 
 import com.android.deskclock.AlarmUtils.popAlarmSetToast
 import com.android.deskclock.alarms.AlarmStateManager
+import com.android.deskclock.challenges.ChallengeGate
 import com.android.deskclock.controller.Controller
 import com.android.deskclock.data.DataModel
 import com.android.deskclock.data.Timer
@@ -513,6 +514,16 @@ class HandleApiCalls : Activity() {
             val context = activity.applicationContext
             val alarmTime: Date = instance.alarmTime.time
             val time = DateFormat.getTimeFormat(context).format(alarmTime)
+
+            if (ChallengeGate.requiresChallenge(instance)) {
+                // An assistant must not be able to talk its way past the challenges, so
+                // show them instead and say so out loud.
+                context.startActivity(ChallengeGate.createChallengeIntent(context, instance))
+                val reason = context.getString(R.string.alarm_cant_be_dismissed_challenge)
+                Controller.getController().notifyVoiceFailure(activity, reason)
+                LOGGER.i("Alarm has challenges; showing them instead of dismissing")
+                return
+            }
 
             if (instance.mAlarmState == ClockContract.InstancesColumns.FIRED_STATE ||
                     instance.mAlarmState == ClockContract.InstancesColumns.SNOOZE_STATE) {

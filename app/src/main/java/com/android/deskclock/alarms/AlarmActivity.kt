@@ -49,13 +49,23 @@ import android.view.accessibility.AccessibilityManager
 import android.widget.ImageView
 import android.widget.TextClock
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.animation.PathInterpolatorCompat
+
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 
 import com.android.deskclock.AnimatorUtils
 import com.android.deskclock.BaseActivity
 import com.android.deskclock.LogUtils
 import com.android.deskclock.data.DataModel
+import com.android.deskclock.challenges.ChallengeGate
+import com.android.deskclock.challenges.ChallengeKind
+import com.android.deskclock.challenges.ui.ChallengeFragment
+import com.android.deskclock.challenges.ui.ChallengeHost
+import com.android.deskclock.challenges.ui.ChallengeRunnerViewModel
+import com.android.deskclock.challenges.ui.MathChallengeFragment
 import com.android.deskclock.data.DataModel.AlarmVolumeButtonBehavior
 import com.android.deskclock.events.Events
 import com.android.deskclock.provider.AlarmInstance
@@ -68,7 +78,8 @@ import com.android.deskclock.widget.CircleView
 import kotlin.math.max
 import kotlin.math.sqrt
 
-class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener {
+class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener,
+        ChallengeHost {
     private val mHandler: Handler = Handler(Looper.myLooper()!!)
 
     private val mReceiver: BroadcastReceiver = object : BroadcastReceiver() {
@@ -79,7 +90,7 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
             if (!mAlarmHandled) {
                 when (action) {
                     AlarmService.ALARM_SNOOZE_ACTION -> snooze()
-                    AlarmService.ALARM_DISMISS_ACTION -> dismiss()
+                    AlarmService.ALARM_DISMISS_ACTION -> requestDismiss()
                     AlarmService.ALARM_DONE_ACTION -> finish()
                     else -> LOGGER.i("Unknown broadcast: %s", action)
                 }
@@ -101,6 +112,15 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
 
     private var mAlarmInstance: AlarmInstance? = null
     private var mAlarmHandled = false
+
+    /**
+     * Set once every challenge has been completed for this showing of the alarm. Held in
+     * memory only and never persisted, so a process death cannot leave an alarm
+     * pre-authorised for dismissal.
+     */
+    private var mChallengesPassed = false
+
+    private lateinit var mChallengeContainer: ViewGroup
     private var mVolumeBehavior: AlarmVolumeButtonBehavior? = null
     private var mCurrentHourColor = 0
     private var mReceiverRegistered = false
@@ -180,6 +200,7 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
         mAlertTitleView = mAlertView.findViewById(R.id.alert_title) as TextView
         mAlertInfoView = mAlertView.findViewById(R.id.alert_info) as TextView
 
+        mChallengeContainer = findViewById(R.id.challenge_container) as ViewGroup
         mContentView = findViewById(R.id.content) as ViewGroup
         mAlarmButton = mContentView.findViewById(R.id.alarm) as ImageView
         mSnoozeButton = mContentView.findViewById(R.id.snooze) as ImageView
@@ -211,6 +232,22 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
         mPulseAnimator.setInterpolator(PULSE_INTERPOLATOR)
         mPulseAnimator.setRepeatCount(ValueAnimator.INFINITE)
         mPulseAnimator.start()
+
+        maybeStartChallengesFromIntent(getIntent())
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        // Arrives when a dismiss path re-launches this screen while it is already showing,
+        // for example the firing notification's Dismiss action.
+        setIntent(intent)
+        maybeStartChallengesFromIntent(intent)
+    }
+
+    private fun maybeStartChallengesFromIntent(intent: Intent) {
+        if (intent.getBooleanExtra(ChallengeGate.EXTRA_START_CHALLENGE, false)) {
+            requestDismiss()
+        }
     }
 
     override fun onResume() {
@@ -277,7 +314,7 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
                     }
                     AlarmVolumeButtonBehavior.DISMISS -> {
                         if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
-                            dismiss()
+                            requestDismiss()
                         }
                         return true
                     }
@@ -291,6 +328,12 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
     }
 
     override fun onBackPressed() {
+        // Backing out of a challenge returns to the ring screen; it never dismisses.
+        if (mChallengeContainer.visibility == View.VISIBLE) {
+            onChallengeAbandoned()
+            return
+        }
+
         // Don't allow back to dismiss.
     }
 
@@ -306,7 +349,7 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
             if (view == mSnoozeButton) {
                 snooze()
             } else if (view == mDismissButton) {
-                dismiss()
+                requestDismiss()
             }
             return
         }
@@ -380,7 +423,7 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
             if (snoozeFraction == 1.0f) {
                 snooze()
             } else if (dismissFraction == 1.0f) {
-                dismiss()
+                requestDismiss()
             } else {
                 if (snoozeFraction > 0.0f || dismissFraction > 0.0f) {
                     // Animate back to the initial state.
@@ -494,7 +537,21 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
     /**
      * Perform dismiss animation and send dismiss intent.
      */
-    private fun dismiss() {
+    /**
+     * Every user-facing dismiss path lands here. It either runs the alarm's challenges or,
+     * when there are none left to do, actually dismisses.
+     */
+    private fun requestDismiss() {
+        if (mAlarmHandled) return
+
+        if (!mChallengesPassed && ChallengeGate.requiresChallenge(mAlarmInstance)) {
+            showChallenges()
+            return
+        }
+        performDismiss()
+    }
+
+    private fun performDismiss() {
         mAlarmHandled = true
         LOGGER.v("Dismissed: %s", mAlarmInstance)
 
@@ -511,6 +568,98 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
         // Unbind here, otherwise alarm will keep ringing until activity finishes.
         unbindAlarmService()
     }
+
+    // ------------------------------------------------------------------ challenges
+
+    private val challengeRunner: ChallengeRunnerViewModel
+        get() = ViewModelProvider(this)[ChallengeRunnerViewModel::class.java]
+
+    /** Hides the ring controls and shows the first outstanding challenge. */
+    private fun showChallenges() {
+        val instance = mAlarmInstance ?: return
+        challengeRunner.startIfNeeded(instance.mChallenges)
+
+        mContentView.visibility = View.GONE
+        mChallengeContainer.visibility = View.VISIBLE
+        // The pulse is decorative and keeps a hardware layer alive behind a hidden view.
+        mPulseAnimator.pause()
+
+        showCurrentChallenge()
+    }
+
+    private fun showCurrentChallenge() {
+        val config = challengeRunner.current
+        if (config == null) {
+            onAllChallengesPassed()
+            return
+        }
+
+        val fragment: ChallengeFragment = when (config.kind) {
+            ChallengeKind.MATH -> MathChallengeFragment()
+            // The remaining kinds land here as they are implemented. Until then they must
+            // not block dismissal, since an alarm nobody can turn off is worse than one
+            // challenge going unenforced.
+            else -> {
+                LOGGER.w("No fragment yet for challenge kind: %s", config.kind)
+                onChallengeUnavailable(config.kind.name)
+                return
+            }
+        }
+
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.challenge_container, fragment as Fragment)
+                .commitNow()
+    }
+
+    private fun onAllChallengesPassed() {
+        mChallengesPassed = true
+        hideChallenges()
+        performDismiss()
+    }
+
+    private fun hideChallenges() {
+        val current = supportFragmentManager.findFragmentById(R.id.challenge_container)
+        if (current != null) {
+            supportFragmentManager.beginTransaction().remove(current).commitNow()
+        }
+        mChallengeContainer.visibility = View.GONE
+        mContentView.visibility = View.VISIBLE
+        mPulseAnimator.resume()
+    }
+
+    override fun onChallengePassed() {
+        if (challengeRunner.advance()) {
+            showCurrentChallenge()
+        } else {
+            onAllChallengesPassed()
+        }
+    }
+
+    override fun onChallengeAbandoned() {
+        // Back out to the ring screen rather than dismissing. The alarm keeps ringing and
+        // the challenges can be started again.
+        hideChallenges()
+    }
+
+    override fun onSnoozeRequested() {
+        // Snooze is never gated by challenges.
+        hideChallenges()
+        snooze()
+    }
+
+    override fun onChallengeUnavailable(reason: String) {
+        LOGGER.w("Skipping challenge that cannot be completed: %s", reason)
+        Toast.makeText(this, getString(R.string.challenge_skipped, reason),
+                Toast.LENGTH_LONG).show()
+        onChallengePassed()
+    }
+
+    override val progressText: String?
+        get() {
+            val total = challengeRunner.total
+            if (total <= 1) return null
+            return getString(R.string.challenge_progress, challengeRunner.position, total)
+        }
 
     /**
      * Bind AlarmService if not yet bound.
