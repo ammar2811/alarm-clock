@@ -115,6 +115,14 @@ class ClockProvider : ContentProvider() {
             sAlarmsWithInstancesProjection[INSTANCES_TABLE_NAME + "." +
                     AlarmSettingColumns.VIBRATE] =
                     INSTANCES_TABLE_NAME + "." + AlarmSettingColumns.VIBRATE
+            // This map is a whitelist: a column missing here is dropped from the joined
+            // query with no error. Both tables carry challenges, so both are listed.
+            sAlarmsWithInstancesProjection[ALARMS_TABLE_NAME + "." +
+                    AlarmSettingColumns.CHALLENGES] =
+                    ALARMS_TABLE_NAME + "." + AlarmSettingColumns.CHALLENGES
+            sAlarmsWithInstancesProjection[INSTANCES_TABLE_NAME + "." +
+                    AlarmSettingColumns.CHALLENGES] =
+                    INSTANCES_TABLE_NAME + "." + AlarmSettingColumns.CHALLENGES
 
             sURIMatcher.addURI(ClockContract.AUTHORITY, "alarms", ALARMS)
             sURIMatcher.addURI(ClockContract.AUTHORITY, "alarms/#", ALARMS_ID)

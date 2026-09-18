@@ -86,6 +86,15 @@ object ClockContract {
              */
             @JvmField
             val RINGTONE = "ringtone"
+
+            /**
+             * The ordered list of challenges that must be completed before this alarm can
+             * be dismissed, as JSON. See ChallengeCodec; "[]" means no challenges.
+             *
+             * Type: STRING
+             */
+            @JvmField
+            val CHALLENGES = "challenges"
         }
     }
 

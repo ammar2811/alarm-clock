@@ -115,6 +115,7 @@ class AlarmUpdateHandler(
                         newInstance.mVibrate = alarm.vibrate
                         newInstance.mRingtone = alarm.alert
                         newInstance.mLabel = alarm.label
+                        newInstance.mChallenges = alarm.challenges
                         // Since we copied the mId of the old instance and the mId is used
                         // as the primary key in the AlarmInstance table, this will replace
                         // the existing instance.

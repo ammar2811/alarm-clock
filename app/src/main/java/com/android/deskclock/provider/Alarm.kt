@@ -30,6 +30,8 @@ import android.provider.BaseColumns
 import androidx.loader.content.CursorLoader
 
 import com.android.deskclock.R
+import com.android.deskclock.challenges.ChallengeCodec
+import com.android.deskclock.challenges.ChallengeConfig
 import com.android.deskclock.data.DataModel
 import com.android.deskclock.data.Weekdays
 import com.android.deskclock.provider.ClockContract.AlarmSettingColumns
@@ -69,6 +71,10 @@ class Alarm : Parcelable, AlarmsColumns {
     @JvmField
     var deleteAfterUse: Boolean
 
+    /** Ordered challenges that must be completed before this alarm can be dismissed. */
+    @JvmField
+    var challenges: List<ChallengeConfig> = emptyList()
+
     @JvmField
     var instanceState = 0
 
@@ -85,6 +91,7 @@ class Alarm : Parcelable, AlarmsColumns {
         label = ""
         alert = DataModel.dataModel.defaultAlarmRingtoneUri
         deleteAfterUse = false
+        challenges = emptyList()
     }
 
     constructor(c: Cursor) {
@@ -96,6 +103,7 @@ class Alarm : Parcelable, AlarmsColumns {
         vibrate = c.getInt(VIBRATE_INDEX) == 1
         label = c.getString(LABEL_INDEX)
         deleteAfterUse = c.getInt(DELETE_AFTER_USE_INDEX) == 1
+        challenges = ChallengeCodec.decode(c.getString(CHALLENGES_INDEX))
 
         if (c.getColumnCount() == ALARM_JOIN_INSTANCE_COLUMN_COUNT) {
             instanceState = c.getInt(INSTANCE_STATE_INDEX)
@@ -121,6 +129,7 @@ class Alarm : Parcelable, AlarmsColumns {
         label = p.readString()
         alert = p.readParcelable(null)
         deleteAfterUse = p.readInt() == 1
+        challenges = ChallengeCodec.decode(p.readString())
     }
 
     /**
@@ -154,6 +163,7 @@ class Alarm : Parcelable, AlarmsColumns {
         p.writeString(label)
         p.writeParcelable(alert, flags)
         p.writeInt(if (deleteAfterUse) 1 else 0)
+        p.writeString(ChallengeCodec.encode(challenges))
     }
 
     override fun describeContents(): Int = 0
@@ -164,6 +174,7 @@ class Alarm : Parcelable, AlarmsColumns {
         result.mVibrate = vibrate
         result.mLabel = label
         result.mRingtone = alert
+        result.mChallenges = challenges
         return result
     }
 
@@ -266,7 +277,8 @@ class Alarm : Parcelable, AlarmsColumns {
                 AlarmSettingColumns.VIBRATE,
                 AlarmSettingColumns.LABEL,
                 AlarmSettingColumns.RINGTONE,
-                AlarmsColumns.DELETE_AFTER_USE
+                AlarmsColumns.DELETE_AFTER_USE,
+                AlarmSettingColumns.CHALLENGES
         )
 
         private val QUERY_ALARMS_WITH_INSTANCES_COLUMNS = arrayOf(
@@ -279,6 +291,7 @@ class Alarm : Parcelable, AlarmsColumns {
                 ClockDatabaseHelper.ALARMS_TABLE_NAME + "." + AlarmSettingColumns.LABEL,
                 ClockDatabaseHelper.ALARMS_TABLE_NAME + "." + AlarmSettingColumns.RINGTONE,
                 ClockDatabaseHelper.ALARMS_TABLE_NAME + "." + AlarmsColumns.DELETE_AFTER_USE,
+                ClockDatabaseHelper.ALARMS_TABLE_NAME + "." + AlarmSettingColumns.CHALLENGES,
                 ClockDatabaseHelper.INSTANCES_TABLE_NAME + "." + InstancesColumns.ALARM_STATE,
                 ClockDatabaseHelper.INSTANCES_TABLE_NAME + "." + BaseColumns._ID,
                 ClockDatabaseHelper.INSTANCES_TABLE_NAME + "." + InstancesColumns.YEAR,
@@ -287,7 +300,8 @@ class Alarm : Parcelable, AlarmsColumns {
                 ClockDatabaseHelper.INSTANCES_TABLE_NAME + "." + InstancesColumns.HOUR,
                 ClockDatabaseHelper.INSTANCES_TABLE_NAME + "." + InstancesColumns.MINUTES,
                 ClockDatabaseHelper.INSTANCES_TABLE_NAME + "." + AlarmSettingColumns.LABEL,
-                ClockDatabaseHelper.INSTANCES_TABLE_NAME + "." + AlarmSettingColumns.VIBRATE
+                ClockDatabaseHelper.INSTANCES_TABLE_NAME + "." + AlarmSettingColumns.VIBRATE,
+                ClockDatabaseHelper.INSTANCES_TABLE_NAME + "." + AlarmSettingColumns.CHALLENGES
         )
 
         /**
@@ -303,18 +317,20 @@ class Alarm : Parcelable, AlarmsColumns {
         private const val LABEL_INDEX = 6
         private const val RINGTONE_INDEX = 7
         private const val DELETE_AFTER_USE_INDEX = 8
-        private const val INSTANCE_STATE_INDEX = 9
-        const val INSTANCE_ID_INDEX = 10
-        const val INSTANCE_YEAR_INDEX = 11
-        const val INSTANCE_MONTH_INDEX = 12
-        const val INSTANCE_DAY_INDEX = 13
-        const val INSTANCE_HOUR_INDEX = 14
-        const val INSTANCE_MINUTE_INDEX = 15
-        const val INSTANCE_LABEL_INDEX = 16
-        const val INSTANCE_VIBRATE_INDEX = 17
+        private const val CHALLENGES_INDEX = 9
+        private const val INSTANCE_STATE_INDEX = 10
+        const val INSTANCE_ID_INDEX = 11
+        const val INSTANCE_YEAR_INDEX = 12
+        const val INSTANCE_MONTH_INDEX = 13
+        const val INSTANCE_DAY_INDEX = 14
+        const val INSTANCE_HOUR_INDEX = 15
+        const val INSTANCE_MINUTE_INDEX = 16
+        const val INSTANCE_LABEL_INDEX = 17
+        const val INSTANCE_VIBRATE_INDEX = 18
+        const val INSTANCE_CHALLENGES_INDEX = 19
 
-        private const val COLUMN_COUNT = DELETE_AFTER_USE_INDEX + 1
-        private const val ALARM_JOIN_INSTANCE_COLUMN_COUNT = INSTANCE_VIBRATE_INDEX + 1
+        private const val COLUMN_COUNT = CHALLENGES_INDEX + 1
+        private const val ALARM_JOIN_INSTANCE_COLUMN_COUNT = INSTANCE_CHALLENGES_INDEX + 1
 
         @JvmStatic
         fun createContentValues(alarm: Alarm): ContentValues {
@@ -330,6 +346,7 @@ class Alarm : Parcelable, AlarmsColumns {
             values.put(AlarmSettingColumns.VIBRATE, if (alarm.vibrate) 1 else 0)
             values.put(AlarmSettingColumns.LABEL, alarm.label)
             values.put(AlarmsColumns.DELETE_AFTER_USE, alarm.deleteAfterUse)
+            values.put(AlarmSettingColumns.CHALLENGES, ChallengeCodec.encode(alarm.challenges))
             if (alarm.alert == null) {
                 // We want to put null, so default alarm changes
                 values.putNull(AlarmSettingColumns.RINGTONE)

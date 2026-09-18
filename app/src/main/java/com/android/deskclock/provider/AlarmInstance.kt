@@ -29,6 +29,8 @@ import android.provider.BaseColumns._ID
 import com.android.deskclock.LogUtils
 import com.android.deskclock.R
 import com.android.deskclock.alarms.AlarmStateManager
+import com.android.deskclock.challenges.ChallengeCodec
+import com.android.deskclock.challenges.ChallengeConfig
 import com.android.deskclock.data.DataModel
 import com.android.deskclock.provider.ClockContract.AlarmSettingColumns
 import com.android.deskclock.provider.ClockContract.InstancesColumns
@@ -62,6 +64,14 @@ class AlarmInstance : InstancesColumns {
     @JvmField
     var mAlarmState: Int
 
+    /**
+     * Ordered challenges that must be completed before this instance can be dismissed.
+     * Snapshotted from the parent alarm when the instance is created, so editing the alarm
+     * afterwards does not change an instance that is already scheduled.
+     */
+    @JvmField
+    var mChallenges: List<ChallengeConfig> = emptyList()
+
     constructor(calendar: Calendar, alarmId: Long?) : this(calendar) {
         mAlarmId = alarmId
     }
@@ -73,6 +83,7 @@ class AlarmInstance : InstancesColumns {
         mVibrate = false
         mRingtone = null
         mAlarmState = InstancesColumns.SILENT_STATE
+        mChallenges = emptyList()
     }
 
     constructor(instance: AlarmInstance) {
@@ -87,6 +98,7 @@ class AlarmInstance : InstancesColumns {
         mRingtone = instance.mRingtone
         mAlarmId = instance.mAlarmId
         mAlarmState = instance.mAlarmState
+        mChallenges = instance.mChallenges
     }
 
     constructor(c: Cursor, joinedTable: Boolean) {
@@ -99,6 +111,7 @@ class AlarmInstance : InstancesColumns {
             mMinute = c.getInt(Alarm.INSTANCE_MINUTE_INDEX)
             mLabel = c.getString(Alarm.INSTANCE_LABEL_INDEX)
             mVibrate = c.getInt(Alarm.INSTANCE_VIBRATE_INDEX) == 1
+            mChallenges = ChallengeCodec.decode(c.getString(Alarm.INSTANCE_CHALLENGES_INDEX))
         } else {
             mId = c.getLong(ID_INDEX)
             mYear = c.getInt(YEAR_INDEX)
@@ -108,6 +121,7 @@ class AlarmInstance : InstancesColumns {
             mMinute = c.getInt(MINUTES_INDEX)
             mLabel = c.getString(LABEL_INDEX)
             mVibrate = c.getInt(VIBRATE_INDEX) == 1
+            mChallenges = ChallengeCodec.decode(c.getString(CHALLENGES_INDEX))
         }
         mRingtone = if (c.isNull(RINGTONE_INDEX)) {
             // Should we be saving this with the current ringtone or leave it null
@@ -270,7 +284,8 @@ class AlarmInstance : InstancesColumns {
                 AlarmSettingColumns.VIBRATE,
                 AlarmSettingColumns.RINGTONE,
                 InstancesColumns.ALARM_ID,
-                InstancesColumns.ALARM_STATE
+                InstancesColumns.ALARM_STATE,
+                AlarmSettingColumns.CHALLENGES
         )
 
         /**
@@ -288,8 +303,9 @@ class AlarmInstance : InstancesColumns {
         private const val RINGTONE_INDEX = 8
         private const val ALARM_ID_INDEX = 9
         private const val ALARM_STATE_INDEX = 10
+        private const val CHALLENGES_INDEX = 11
 
-        private const val COLUMN_COUNT = ALARM_STATE_INDEX + 1
+        private const val COLUMN_COUNT = CHALLENGES_INDEX + 1
 
         @JvmStatic
         fun createContentValues(instance: AlarmInstance): ContentValues {
@@ -314,6 +330,8 @@ class AlarmInstance : InstancesColumns {
             }
             values.put(InstancesColumns.ALARM_ID, instance.mAlarmId)
             values.put(InstancesColumns.ALARM_STATE, instance.mAlarmState)
+            values.put(AlarmSettingColumns.CHALLENGES,
+                    ChallengeCodec.encode(instance.mChallenges))
             return values
         }
 

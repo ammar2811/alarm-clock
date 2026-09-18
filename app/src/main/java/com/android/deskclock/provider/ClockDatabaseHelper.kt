@@ -27,6 +27,7 @@ import android.provider.BaseColumns
 import android.text.TextUtils
 
 import com.android.deskclock.LogUtils
+import com.android.deskclock.challenges.ChallengeCodec
 import com.android.deskclock.data.Weekdays
 import com.android.deskclock.provider.ClockContract.AlarmSettingColumns
 import com.android.deskclock.provider.ClockContract.AlarmsColumns
@@ -39,7 +40,7 @@ import java.util.Calendar
  * some common functionality.
  */
 class ClockDatabaseHelper(context: Context)
-    : SQLiteOpenHelper(context, DATABASE_NAME, null, VERSION_8) {
+    : SQLiteOpenHelper(context, DATABASE_NAME, null, VERSION_9) {
 
     override fun onCreate(db: SQLiteDatabase) {
         createAlarmsTable(db)
@@ -64,6 +65,14 @@ class ClockDatabaseHelper(context: Context)
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, currentVersion: Int) {
         LogUtils.v("Upgrading alarms database from version %d to %d",
                 oldVersion, currentVersion)
+
+        if (oldVersion == VERSION_7 || oldVersion == VERSION_8) {
+            // Only these versions have tables that exist and lack the column. Version 6 and
+            // earlier are handled by the branch below, which recreates both tables with the
+            // column already in place, so altering them here would fail as a duplicate.
+            addChallengesColumn(db, ALARMS_TABLE_NAME)
+            addChallengesColumn(db, INSTANCES_TABLE_NAME)
+        }
 
         if (oldVersion <= VERSION_7) {
             // This was not used in VERSION_7 or prior, so we can just drop it.
@@ -189,6 +198,11 @@ class ClockDatabaseHelper(context: Context)
          */
         private const val VERSION_8: Int = 8
 
+        /**
+         * Added the CHALLENGES column to the alarms and instances tables.
+         */
+        private const val VERSION_9: Int = 9
+
         // This creates a default alarm at 8:30 for every Mon,Tue,Wed,Thu,Fri
         private const val DEFAULT_ALARM_1: String = "(8, 30, 31, 0, 1, '', NULL, 0);"
 
@@ -212,7 +226,9 @@ class ClockDatabaseHelper(context: Context)
                     AlarmSettingColumns.VIBRATE + " INTEGER NOT NULL, " +
                     AlarmSettingColumns.LABEL + " TEXT NOT NULL, " +
                     AlarmSettingColumns.RINGTONE + " TEXT, " +
-                    AlarmsColumns.DELETE_AFTER_USE + " INTEGER NOT NULL DEFAULT 0);")
+                    AlarmsColumns.DELETE_AFTER_USE + " INTEGER NOT NULL DEFAULT 0, " +
+                    AlarmSettingColumns.CHALLENGES + " TEXT NOT NULL DEFAULT '" +
+                    ChallengeCodec.EMPTY + "');")
             LogUtils.i("Alarms Table created")
         }
 
@@ -228,11 +244,20 @@ class ClockDatabaseHelper(context: Context)
                     AlarmSettingColumns.LABEL + " TEXT NOT NULL, " +
                     AlarmSettingColumns.RINGTONE + " TEXT, " +
                     InstancesColumns.ALARM_STATE + " INTEGER NOT NULL, " +
+                    AlarmSettingColumns.CHALLENGES + " TEXT NOT NULL DEFAULT '" +
+                    ChallengeCodec.EMPTY + "', " +
                     InstancesColumns.ALARM_ID + " INTEGER REFERENCES " +
                     ALARMS_TABLE_NAME + "(" + BaseColumns._ID + ") " +
                     "ON UPDATE CASCADE ON DELETE CASCADE" +
                     ");")
             LogUtils.i("Instance table created")
+        }
+
+        private fun addChallengesColumn(db: SQLiteDatabase, table: String) {
+            db.execSQL("ALTER TABLE " + table + " ADD COLUMN " +
+                    AlarmSettingColumns.CHALLENGES + " TEXT NOT NULL DEFAULT '" +
+                    ChallengeCodec.EMPTY + "';")
+            LogUtils.i("Added challenges column to %s", table)
         }
     }
 }
