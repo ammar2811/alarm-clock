@@ -88,7 +88,7 @@ class ChallengePreviewActivity : BaseActivity(), ChallengeHost {
         handler.post { if (!isFinishing) finish() }
     }
 
-    /** There is no alarm to snooze in a preview, so this just closes the trial. */
+    /** Never offered in a preview; see canSnooze. Closes the trial if it somehow arrives. */
     override fun onSnoozeRequested() {
         handler.post { if (!isFinishing) finish() }
     }
@@ -101,6 +101,9 @@ class ChallengePreviewActivity : BaseActivity(), ChallengeHost {
             finish()
         }
     }
+
+    /** Nothing is ringing, so there is nothing to snooze. */
+    override val canSnooze: Boolean get() = false
 
     /** A preview runs one challenge, so there is no position to report. */
     override val progressText: String? get() = null

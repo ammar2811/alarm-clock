@@ -94,8 +94,11 @@ abstract class ChallengeFragment : Fragment() {
         promptView.text = promptText
         messageView = shell.findViewById(R.id.challenge_message)
 
-        shell.findViewById<Button>(R.id.challenge_snooze).setOnClickListener {
-            host.onSnoozeRequested()
+        val snooze = shell.findViewById<Button>(R.id.challenge_snooze)
+        if (host.canSnooze) {
+            snooze.setOnClickListener { host.onSnoozeRequested() }
+        } else {
+            snooze.visibility = View.GONE
         }
 
         val content = shell.findViewById<FrameLayout>(R.id.challenge_content)

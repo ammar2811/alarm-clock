@@ -45,4 +45,10 @@ interface ChallengeHost {
 
     /** Text for the progress line, for example "Challenge 2 of 3". Null hides it. */
     val progressText: String?
+
+    /**
+     * Whether a snooze control makes sense. True while a real alarm is ringing, false in a
+     * preview, where there is nothing to snooze.
+     */
+    val canSnooze: Boolean
 }

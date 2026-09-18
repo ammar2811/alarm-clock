@@ -666,6 +666,9 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
         onChallengePassed()
     }
 
+    /** A real alarm is ringing, and snoozing it is never gated by challenges. */
+    override val canSnooze: Boolean get() = true
+
     override val progressText: String?
         get() {
             val total = challengeRunner.total
