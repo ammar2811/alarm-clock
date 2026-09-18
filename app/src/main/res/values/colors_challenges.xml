@@ -16,9 +16,8 @@
   -->
 
 <resources>
-    <!-- Vertical padding on a digit pad key, which sets the key's touch target height. -->
-    <dimen name="challenge_key_padding">14dp</dimen>
-    <!-- Edge length of a memory card and a sequence shape. -->
-    <dimen name="challenge_tile_size">76dp</dimen>
-    <dimen name="challenge_tile_margin">6dp</dimen>
+    <!-- Face-down memory cards. The app's white_08p is too faint to read as a tappable
+         target against the alarm background at 6am. -->
+    <color name="challenge_tile_fill">#26FFFFFF</color>
+    <color name="challenge_tile_edge">#40FFFFFF</color>
 </resources>

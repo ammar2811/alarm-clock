@@ -66,6 +66,9 @@ import com.android.deskclock.challenges.ui.ChallengeFragment
 import com.android.deskclock.challenges.ui.ChallengeHost
 import com.android.deskclock.challenges.ui.ChallengeRunnerViewModel
 import com.android.deskclock.challenges.ui.MathChallengeFragment
+import com.android.deskclock.challenges.ui.MemoryChallengeFragment
+import com.android.deskclock.challenges.ui.RetypeChallengeFragment
+import com.android.deskclock.challenges.ui.SequenceChallengeFragment
 import com.android.deskclock.data.DataModel.AlarmVolumeButtonBehavior
 import com.android.deskclock.events.Events
 import com.android.deskclock.provider.AlarmInstance
@@ -596,10 +599,13 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
 
         val fragment: ChallengeFragment = when (config.kind) {
             ChallengeKind.MATH -> MathChallengeFragment()
-            // The remaining kinds land here as they are implemented. Until then they must
-            // not block dismissal, since an alarm nobody can turn off is worse than one
-            // challenge going unenforced.
-            else -> {
+            ChallengeKind.MEMORY -> MemoryChallengeFragment()
+            ChallengeKind.RETYPE -> RetypeChallengeFragment()
+            ChallengeKind.SEQUENCE -> SequenceChallengeFragment()
+            // The photo challenge lands here until its camera plumbing exists. An
+            // unimplemented kind must not block dismissal, since an alarm nobody can turn
+            // off is worse than one challenge going unenforced.
+            ChallengeKind.PHOTO -> {
                 LOGGER.w("No fragment yet for challenge kind: %s", config.kind)
                 onChallengeUnavailable(config.kind.name)
                 return

@@ -45,9 +45,13 @@
     <string name="challenge_memory_preview">Memorise the board</string>
     <string name="challenge_memory_card_description">Card <xliff:g id="position" example="4">%1$d</xliff:g></string>
 
+    <!-- Button confirming an answer. -->
+    <string name="challenge_check">Check</string>
+
     <!-- Retype challenge -->
     <string name="challenge_retype_prompt">Retype this exactly</string>
     <string name="challenge_retype_wrong">That does not match. Try again.</string>
+    <string name="challenge_retype_hint">Type it here</string>
 
     <!-- Sequence challenge -->
     <string name="challenge_sequence_prompt">Repeat the sequence</string>

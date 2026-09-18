@@ -15,10 +15,10 @@
   limitations under the License.
   -->
 
-<resources>
-    <!-- Vertical padding on a digit pad key, which sets the key's touch target height. -->
-    <dimen name="challenge_key_padding">14dp</dimen>
-    <!-- Edge length of a memory card and a sequence shape. -->
-    <dimen name="challenge_tile_size">76dp</dimen>
-    <dimen name="challenge_tile_margin">6dp</dimen>
-</resources>
+<!-- An unlit sequence shape: outline only, so lighting it up is an obvious change. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/transparent" />
+    <stroke android:width="2dp" android:color="@color/white_63p" />
+    <corners android:radius="12dp" />
+</shape>

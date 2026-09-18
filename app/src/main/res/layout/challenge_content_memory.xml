@@ -15,10 +15,18 @@
   limitations under the License.
   -->
 
-<resources>
-    <!-- Vertical padding on a digit pad key, which sets the key's touch target height. -->
-    <dimen name="challenge_key_padding">14dp</dimen>
-    <!-- Edge length of a memory card and a sequence shape. -->
-    <dimen name="challenge_tile_size">76dp</dimen>
-    <dimen name="challenge_tile_margin">6dp</dimen>
-</resources>
+<!-- The board is built in code, since its size depends on the configured pair count. -->
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.gridlayout.widget.GridLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/memory_board"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:columnCount="4" />
+
+</FrameLayout>
