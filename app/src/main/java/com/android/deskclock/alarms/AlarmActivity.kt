@@ -67,6 +67,7 @@ import com.android.deskclock.challenges.ui.ChallengeHost
 import com.android.deskclock.challenges.ui.ChallengeRunnerViewModel
 import com.android.deskclock.challenges.ui.MathChallengeFragment
 import com.android.deskclock.challenges.ui.MemoryChallengeFragment
+import com.android.deskclock.challenges.ui.PhotoChallengeFragment
 import com.android.deskclock.challenges.ui.RetypeChallengeFragment
 import com.android.deskclock.challenges.ui.SequenceChallengeFragment
 import com.android.deskclock.data.DataModel.AlarmVolumeButtonBehavior
@@ -602,14 +603,7 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
             ChallengeKind.MEMORY -> MemoryChallengeFragment()
             ChallengeKind.RETYPE -> RetypeChallengeFragment()
             ChallengeKind.SEQUENCE -> SequenceChallengeFragment()
-            // The photo challenge lands here until its camera plumbing exists. An
-            // unimplemented kind must not block dismissal, since an alarm nobody can turn
-            // off is worse than one challenge going unenforced.
-            ChallengeKind.PHOTO -> {
-                LOGGER.w("No fragment yet for challenge kind: %s", config.kind)
-                onChallengeUnavailable(config.kind.name)
-                return
-            }
+            ChallengeKind.PHOTO -> PhotoChallengeFragment()
         }
 
         supportFragmentManager.beginTransaction()
@@ -634,23 +628,35 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
     }
 
     override fun onChallengePassed() {
-        if (challengeRunner.advance()) {
-            showCurrentChallenge()
-        } else {
-            onAllChallengesPassed()
+        // A challenge can report its result from inside onCreateView, for example when it
+        // finds it cannot run at all. Committing a fragment transaction from there throws,
+        // so every move between challenges is posted rather than run inline.
+        mHandler.post {
+            if (isFinishing || isDestroyed) return@post
+            if (challengeRunner.advance()) {
+                showCurrentChallenge()
+            } else {
+                onAllChallengesPassed()
+            }
         }
     }
 
     override fun onChallengeAbandoned() {
         // Back out to the ring screen rather than dismissing. The alarm keeps ringing and
         // the challenges can be started again.
-        hideChallenges()
+        mHandler.post {
+            if (isFinishing || isDestroyed) return@post
+            hideChallenges()
+        }
     }
 
     override fun onSnoozeRequested() {
         // Snooze is never gated by challenges.
-        hideChallenges()
-        snooze()
+        mHandler.post {
+            if (isFinishing || isDestroyed) return@post
+            hideChallenges()
+            snooze()
+        }
     }
 
     override fun onChallengeUnavailable(reason: String) {

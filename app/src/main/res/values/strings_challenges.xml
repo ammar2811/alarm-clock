@@ -65,6 +65,10 @@
     <string name="challenge_photo_searching">Point the camera at it</string>
     <string name="challenge_photo_found">Got it</string>
     <string name="challenge_photo_no_camera_permission">no camera access</string>
+    <string name="challenge_photo_no_camera">the camera did not start</string>
+    <string name="challenge_photo_no_detector">object recognition is unavailable</string>
+    <!-- Joins several acceptable targets, as in "Cup or sink". -->
+    <string name="challenge_photo_target_separator"> or </string>
     <string name="challenge_photo_shutter_description">Capture</string>
     <string name="challenge_photo_step"><xliff:g id="position" example="1">%1$d</xliff:g> of <xliff:g id="total" example="2">%2$d</xliff:g> photos</string>
 

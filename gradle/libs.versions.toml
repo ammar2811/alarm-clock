@@ -4,6 +4,8 @@ agp = "9.4.0"
 kotlin = "2.2.10"
 serializationJson = "1.11.0"
 robolectric = "4.17"
+cameraX = "1.6.2"
+mediapipeVision = "1.0.0"
 appcompat = "1.8.0"
 coreKtx = "1.19.0"
 preference = "1.2.1"
@@ -34,6 +36,11 @@ androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-view
 androidx-legacy-support-core-ui = { module = "androidx.legacy:legacy-support-core-ui", version.ref = "legacy" }
 androidx-legacy-support-v13 = { module = "androidx.legacy:legacy-support-v13", version.ref = "legacy" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
+androidx-camera-core = { module = "androidx.camera:camera-core", version.ref = "cameraX" }
+androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraX" }
+androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "cameraX" }
+androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "cameraX" }
+mediapipe-tasks-vision = { module = "com.google.mediapipe:tasks-vision", version.ref = "mediapipeVision" }
 
 junit = { module = "junit:junit", version.ref = "junit" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serializationJson" }
