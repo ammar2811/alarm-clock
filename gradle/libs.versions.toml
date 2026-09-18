@@ -1,0 +1,40 @@
+[versions]
+agp = "9.4.0"
+appcompat = "1.8.0"
+coreKtx = "1.19.0"
+preference = "1.2.1"
+recyclerview = "1.4.0"
+gridlayout = "1.1.0"
+percentlayout = "1.0.0"
+transition = "1.7.1"
+media = "1.8.0"
+collection = "1.6.0"
+lifecycle = "2.11.0"
+legacy = "1.0.0"
+material = "1.14.0"
+junit = "4.13.2"
+androidxTest = "1.7.0"
+
+[libraries]
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
+androidx-preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "preference" }
+androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
+androidx-gridlayout = { module = "androidx.gridlayout:gridlayout", version.ref = "gridlayout" }
+androidx-percentlayout = { module = "androidx.percentlayout:percentlayout", version.ref = "percentlayout" }
+androidx-transition = { module = "androidx.transition:transition", version.ref = "transition" }
+androidx-media = { module = "androidx.media:media", version.ref = "media" }
+androidx-collection = { module = "androidx.collection:collection", version.ref = "collection" }
+androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
+androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
+androidx-legacy-support-core-ui = { module = "androidx.legacy:legacy-support-core-ui", version.ref = "legacy" }
+androidx-legacy-support-v13 = { module = "androidx.legacy:legacy-support-v13", version.ref = "legacy" }
+material = { module = "com.google.android.material:material", version.ref = "material" }
+
+junit = { module = "junit:junit", version.ref = "junit" }
+androidx-test-core = { module = "androidx.test:core", version.ref = "androidxTest" }
+androidx-test-runner = { module = "androidx.test:runner", version.ref = "androidxTest" }
+androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidxTest" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
