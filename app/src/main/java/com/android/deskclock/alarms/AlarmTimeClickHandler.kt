@@ -30,6 +30,7 @@ import com.android.deskclock.alarms.dataadapter.AlarmItemHolder
 import com.android.deskclock.data.DataModel
 import com.android.deskclock.data.Weekdays
 import com.android.deskclock.events.Events
+import com.android.deskclock.challenges.ui.config.ChallengesActivity
 import com.android.deskclock.provider.Alarm
 import com.android.deskclock.provider.AlarmInstance
 import com.android.deskclock.provider.ClockContract.InstancesColumns
@@ -167,6 +168,11 @@ class AlarmTimeClickHandler(
 
         val intent: Intent = RingtonePickerActivity.createAlarmRingtonePickerIntent(context, alarm)
         context.startActivity(intent)
+    }
+
+    /** Opens the screen for choosing which challenges this alarm requires. */
+    fun onChallengesClicked(alarm: Alarm) {
+        mFragment.startActivity(ChallengesActivity.createIntent(mContext, alarm))
     }
 
     fun onEditLabelClicked(alarm: Alarm) {

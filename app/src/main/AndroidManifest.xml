@@ -149,6 +149,20 @@
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
 
         <activity
+            android:name=".challenges.ui.config.ChallengesActivity"
+            android:excludeFromRecents="true"
+            android:label="@string/challenges_title"
+            android:parentActivityName=".DeskClock"
+            android:taskAffinity=""
+            android:theme="@style/Theme.DeskClock.Settings" />
+
+        <activity
+            android:name=".challenges.ui.config.ChallengePreviewActivity"
+            android:excludeFromRecents="true"
+            android:label="@string/challenge_try_out"
+            android:taskAffinity="" />
+
+        <activity
             android:name=".AlarmSelectionActivity"
             android:label="@string/dismiss_alarm"
             android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar" />

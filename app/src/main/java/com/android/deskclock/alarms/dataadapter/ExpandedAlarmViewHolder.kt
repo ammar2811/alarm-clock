@@ -42,6 +42,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.android.deskclock.AnimatorUtils
 import com.android.deskclock.ItemAdapter.ItemViewHolder
 import com.android.deskclock.R
+import com.android.deskclock.challenges.ChallengeSummary
 import com.android.deskclock.ThemeUtils
 import com.android.deskclock.Utils
 import com.android.deskclock.alarms.AlarmTimeClickHandler
@@ -57,6 +58,7 @@ class ExpandedAlarmViewHolder private constructor(itemView: View, private val mH
     : AlarmItemViewHolder(itemView) {
     val repeat: CheckBox = itemView.findViewById(R.id.repeat_onoff) as CheckBox
     private val editLabel: TextView = itemView.findViewById(R.id.edit_label) as TextView
+    private val challenges: TextView = itemView.findViewById(R.id.challenges) as TextView
     val repeatDays: LinearLayout = itemView.findViewById(R.id.repeat_days) as LinearLayout
     private val dayButtons: Array<CompoundButton?> = arrayOfNulls<CompoundButton>(7)
     val vibrate: CheckBox = itemView.findViewById(R.id.vibrate_onoff) as CheckBox
@@ -89,6 +91,10 @@ class ExpandedAlarmViewHolder private constructor(itemView: View, private val mH
         // Cannot set in xml since we need compat functionality for API < 21
         val labelIcon: Drawable? = Utils.getVectorDrawable(context, R.drawable.ic_label)
         editLabel.setCompoundDrawablesRelativeWithIntrinsicBounds(labelIcon, null, null, null)
+        val challengesIcon: Drawable? =
+                Utils.getVectorDrawable(context, R.drawable.ic_challenge_generic)
+        challenges.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                challengesIcon, null, null, null)
         val deleteIcon: Drawable? = Utils.getVectorDrawable(context, R.drawable.ic_delete_small)
         delete.setCompoundDrawablesRelativeWithIntrinsicBounds(deleteIcon, null, null, null)
 
@@ -106,6 +112,11 @@ class ExpandedAlarmViewHolder private constructor(itemView: View, private val mH
             alarmTimeClickHandler.onClockClicked(itemHolder!!.item)
         }
         // Edit label handler
+        challenges.setOnClickListener { _ ->
+            Events.sendAlarmEvent(R.string.action_set_challenges, R.string.label_deskclock)
+            alarmTimeClickHandler.onChallengesClicked(itemHolder!!.item)
+        }
+
         editLabel.setOnClickListener { _ ->
             alarmTimeClickHandler.onEditLabelClicked(itemHolder!!.item)
         }
@@ -190,6 +201,9 @@ class ExpandedAlarmViewHolder private constructor(itemView: View, private val mH
     }
 
     private fun bindEditLabel(context: Context, alarm: Alarm) {
+        challenges.text = ChallengeSummary.describeList(context, alarm.challenges)
+        // Dimmed while unset, so a configured alarm stands out at a glance.
+        challenges.alpha = if (alarm.challenges.isEmpty()) UNSET_ROW_ALPHA else 1f
         editLabel.text = alarm.label
         editLabel.contentDescription = if (!alarm.label.isNullOrEmpty()) {
             context.getString(R.string.label_description).toString() + " " + alarm.label
@@ -347,6 +361,8 @@ class ExpandedAlarmViewHolder private constructor(itemView: View, private val mH
                 .setDuration(shortDuration)
         val hairLineAnimation: Animator = ObjectAnimator.ofFloat(hairLine, View.ALPHA, 0f)
                 .setDuration(shortDuration)
+        val challengesAnimation: Animator = ObjectAnimator.ofFloat(challenges, View.ALPHA, 0f)
+                .setDuration(shortDuration)
 
         // Set the staggered delays; use the first portion (duration * (1 - 1/4 - 1/6)) of the time,
         // so that the final animation, with a duration of 1/4 the total duration, finishes exactly
@@ -360,6 +376,8 @@ class ExpandedAlarmViewHolder private constructor(itemView: View, private val mH
             dismissAnimation.setStartDelay(startDelay)
         }
         hairLineAnimation.setStartDelay(startDelay)
+        startDelay += delayIncrement
+        challengesAnimation.setStartDelay(startDelay)
         startDelay += delayIncrement
         editLabelAnimation.setStartDelay(startDelay)
         startDelay += delayIncrement
@@ -375,7 +393,7 @@ class ExpandedAlarmViewHolder private constructor(itemView: View, private val mH
         val animatorSet = AnimatorSet()
         animatorSet.playTogether(backgroundAnimator, boundsAnimator, repeatAnimation,
                 repeatDaysAnimation, vibrateAnimation, ringtoneAnimation, editLabelAnimation,
-                deleteAnimation, hairLineAnimation, dismissAnimation)
+                challengesAnimation, deleteAnimation, hairLineAnimation, dismissAnimation)
         return animatorSet
     }
 
@@ -415,6 +433,8 @@ class ExpandedAlarmViewHolder private constructor(itemView: View, private val mH
                 .setDuration(longDuration)
         val editLabelAnimation: Animator = ObjectAnimator.ofFloat(editLabel, View.ALPHA, 1f)
                 .setDuration(longDuration)
+        val challengesAnimation: Animator = ObjectAnimator.ofFloat(challenges, View.ALPHA, 1f)
+                .setDuration(longDuration)
         val hairLineAnimation: Animator = ObjectAnimator.ofFloat(hairLine, View.ALPHA, 1f)
                 .setDuration(longDuration)
         val deleteAnimation: Animator = ObjectAnimator.ofFloat(delete, View.ALPHA, 1f)
@@ -441,6 +461,8 @@ class ExpandedAlarmViewHolder private constructor(itemView: View, private val mH
         startDelay += delayIncrement
         editLabelAnimation.setStartDelay(startDelay)
         startDelay += delayIncrement
+        challengesAnimation.setStartDelay(startDelay)
+        startDelay += delayIncrement
         hairLineAnimation.setStartDelay(startDelay)
         if (preemptiveDismissButton.getVisibility() == View.VISIBLE) {
             dismissAnimation.setStartDelay(startDelay)
@@ -451,7 +473,8 @@ class ExpandedAlarmViewHolder private constructor(itemView: View, private val mH
         val animatorSet = AnimatorSet()
         animatorSet.playTogether(backgroundAnimator, repeatAnimation, boundsAnimator,
                 repeatDaysAnimation, vibrateAnimation, ringtoneAnimation, editLabelAnimation,
-                deleteAnimation, hairLineAnimation, dismissAnimation, arrowAnimation)
+                challengesAnimation, deleteAnimation, hairLineAnimation, dismissAnimation,
+                arrowAnimation)
         animatorSet.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationStart(animator: Animator) {
                 AnimatorUtils.startDrawableAnimation(arrow)
@@ -461,8 +484,8 @@ class ExpandedAlarmViewHolder private constructor(itemView: View, private val mH
     }
 
     private fun countNumberOfItems(): Int {
-        // Always between 4 and 6 items.
-        var numberOfItems = 4
+        // Always between 5 and 7 items: the fixed rows plus the two optional ones.
+        var numberOfItems = 5
         if (preemptiveDismissButton.getVisibility() == View.VISIBLE) {
             numberOfItems++
         }
@@ -475,6 +498,7 @@ class ExpandedAlarmViewHolder private constructor(itemView: View, private val mH
     private fun setChangingViewsAlpha(alpha: Float) {
         repeat.alpha = alpha
         editLabel.alpha = alpha
+        challenges.alpha = alpha
         repeatDays.alpha = alpha
         vibrate.alpha = alpha
         ringtone.alpha = alpha
@@ -495,6 +519,9 @@ class ExpandedAlarmViewHolder private constructor(itemView: View, private val mH
     }
 
     companion object {
+        /** Applied to the challenges row while no challenges are set. */
+        private const val UNSET_ROW_ALPHA = 0.63f
+
         @JvmField
         val VIEW_TYPE: Int = R.layout.alarm_time_expanded
     }

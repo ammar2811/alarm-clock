@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2026 The Android Open Source Project
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+<!-- Strings for configuring an alarm's challenges. -->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <!-- Row in the alarm editor, and the title of the screen it opens. -->
+    <string name="challenges_title">Challenges</string>
+    <string name="challenges_none">Off</string>
+    <!-- Summary when more challenges are configured than fit in the row. -->
+    <string name="challenges_and_more"><xliff:g id="names" example="Math problems, Memory game">%1$s</xliff:g> +<xliff:g id="count" example="2">%2$d</xliff:g></string>
+    <string name="challenges_row_description">Challenges required to dismiss this alarm</string>
+
+    <!-- Challenge names -->
+    <string name="challenge_name_math">Math problems</string>
+    <string name="challenge_name_photo">Take a photo</string>
+    <string name="challenge_name_memory">Memory game</string>
+    <string name="challenge_name_retype">Retype the letters</string>
+    <string name="challenge_name_sequence">Repeat the sequence</string>
+
+    <!-- One-line descriptions, shown when picking a challenge to add. -->
+    <string name="challenge_about_math">Solve arithmetic to dismiss</string>
+    <string name="challenge_about_photo">Photograph something across the room</string>
+    <string name="challenge_about_memory">Match every pair on a board</string>
+    <string name="challenge_about_retype">Copy a random string exactly</string>
+    <string name="challenge_about_sequence">Tap shapes back in order</string>
+
+    <!-- Difficulty levels -->
+    <string name="difficulty_easy">Easy</string>
+    <string name="difficulty_medium">Medium</string>
+    <string name="difficulty_hard">Hard</string>
+    <string name="difficulty_expert">Expert</string>
+    <string name="difficulty_label">Difficulty</string>
+
+    <!-- Per-challenge settings, shown as the card summary and as slider labels. -->
+    <string name="challenge_setting_equations">Number of equations</string>
+    <string name="challenge_setting_pairs">Number of pairs</string>
+    <string name="challenge_setting_characters">Number of characters</string>
+    <string name="challenge_setting_rounds">Rounds</string>
+    <string name="challenge_setting_shapes">Number of shapes</string>
+    <string name="challenge_setting_sequence_length">Sequence length</string>
+    <string name="challenge_setting_photos">Number of photos</string>
+    <string name="challenge_setting_targets">What to photograph</string>
+
+    <plurals name="challenge_summary_equations">
+        <item quantity="one"><xliff:g id="count">%d</xliff:g> equation</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> equations</item>
+    </plurals>
+    <plurals name="challenge_summary_pairs">
+        <item quantity="one"><xliff:g id="count">%d</xliff:g> pair</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> pairs</item>
+    </plurals>
+    <plurals name="challenge_summary_characters">
+        <item quantity="one"><xliff:g id="count">%d</xliff:g> character</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> characters</item>
+    </plurals>
+    <plurals name="challenge_summary_rounds">
+        <item quantity="one"><xliff:g id="count">%d</xliff:g> round</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> rounds</item>
+    </plurals>
+    <plurals name="challenge_summary_shapes">
+        <item quantity="one"><xliff:g id="count">%d</xliff:g> shape</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> shapes</item>
+    </plurals>
+    <plurals name="challenge_summary_length">
+        <item quantity="one">length <xliff:g id="count">%d</xliff:g></item>
+        <item quantity="other">length <xliff:g id="count">%d</xliff:g></item>
+    </plurals>
+    <plurals name="challenge_summary_photos">
+        <item quantity="one"><xliff:g id="count">%d</xliff:g> photo</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> photos</item>
+    </plurals>
+
+    <!-- Joins the parts of a card summary, as in "Medium, 2 equations". -->
+    <string name="challenge_summary_separator">", "</string>
+
+    <!-- Actions on the challenges screen -->
+    <string name="challenge_add">Add a challenge</string>
+    <string name="challenge_remove">Remove</string>
+    <string name="challenge_try_out">Try out</string>
+    <string name="challenge_save">Save</string>
+    <string name="challenge_empty_hint">No challenges. This alarm is dismissed with a swipe.</string>
+    <string name="challenge_reorder_description">Drag to reorder</string>
+    <string name="challenge_camera_needed">Camera access is needed for the photo challenge. Without it the challenge is skipped.</string>
+    <string name="challenge_grant_camera">Grant</string>
+    <string name="challenge_preview_done">That is how it will look. Nothing was dismissed.</string>
+
+</resources>

@@ -24,7 +24,7 @@
     android:paddingStart="16dp"
     app:columnCount="8"
     app:columnOrderPreserved="false"
-    app:rowCount="8">
+    app:rowCount="9">
 
     <include
         layout="@layout/alarm_time_summary"
@@ -128,13 +128,34 @@
         app:layout_gravity="fill_horizontal"
         app:layout_row="4" />
 
+    <TextView
+        android:id="@+id/challenges"
+        style="@style/body"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:contentDescription="@string/challenges_row_description"
+        android:drawablePadding="@dimen/alarm_horizontal_padding"
+        android:ellipsize="end"
+        android:gravity="start|center_vertical"
+        android:paddingBottom="12dp"
+        android:paddingEnd="4dp"
+        android:paddingStart="4dp"
+        android:paddingTop="12dp"
+        android:singleLine="true"
+        android:textAlignment="viewStart"
+        app:layout_column="0"
+        app:layout_columnSpan="8"
+        app:layout_gravity="fill_horizontal"
+        app:layout_row="5" />
+
     <include
         layout="@layout/preemptive_dismiss"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_column="0"
         app:layout_columnSpan="3"
-        app:layout_row="5" />
+        app:layout_row="6" />
 
     <View
         android:id="@+id/hairline"
@@ -146,7 +167,7 @@
         app:layout_column="0"
         app:layout_columnSpan="8"
         app:layout_gravity="fill_horizontal"
-        app:layout_row="6" />
+        app:layout_row="7" />
 
     <Button
         android:id="@+id/delete"
@@ -164,7 +185,7 @@
         android:textAppearance="@style/body"
         app:layout_column="0"
         app:layout_gravity="center_vertical"
-        app:layout_row="7" />
+        app:layout_row="8" />
 
     <ImageButton
         android:id="@+id/arrow"
@@ -178,7 +199,7 @@
         android:scaleType="center"
         app:layout_column="7"
         app:layout_gravity="center_vertical"
-        app:layout_row="7"
+        app:layout_row="8"
         app:srcCompat="@drawable/ic_caret_up" />
 
 </androidx.gridlayout.widget.GridLayout>

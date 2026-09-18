@@ -47,6 +47,7 @@
     <string name="action_set_time">Set Time</string>
     <string name="action_set_label">Set Label</string>
     <string name="action_set_ringtone">Set Ringtone</string>
+    <string name="action_set_challenges">Set Challenges</string>
     <string name="action_toggle_vibrate">Toggle Vibrate</string>
     <string name="action_toggle_repeat_days">Toggle Repeat Days</string>
 
