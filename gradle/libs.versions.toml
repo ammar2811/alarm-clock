@@ -1,5 +1,9 @@
 [versions]
 agp = "9.4.0"
+# Must match the Kotlin version AGP 9.4.0 bundles, for the serialization compiler plugin.
+kotlin = "2.2.10"
+serializationJson = "1.11.0"
+robolectric = "4.17"
 appcompat = "1.8.0"
 coreKtx = "1.19.0"
 preference = "1.2.1"
@@ -32,9 +36,12 @@ androidx-legacy-support-v13 = { module = "androidx.legacy:legacy-support-v13", v
 material = { module = "com.google.android.material:material", version.ref = "material" }
 
 junit = { module = "junit:junit", version.ref = "junit" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serializationJson" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 androidx-test-core = { module = "androidx.test:core", version.ref = "androidxTest" }
 androidx-test-runner = { module = "androidx.test:runner", version.ref = "androidxTest" }
 androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidxTest" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

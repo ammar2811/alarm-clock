@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -35,6 +36,15 @@ android {
             isMinifyEnabled = false
         }
     }
+
+    testOptions {
+        unitTests {
+            // Robolectric needs merged resources, and stubbed android.util.Log calls
+            // should return defaults rather than throwing.
+            isIncludeAndroidResources = true
+            isReturnDefaultValues = true
+        }
+    }
 }
 
 
@@ -52,6 +62,10 @@ dependencies {
     implementation(libs.androidx.legacy.support.core.ui)
     implementation(libs.androidx.legacy.support.v13)
     implementation(libs.material)
+    implementation(libs.kotlinx.serialization.json)
+
+    testImplementation(libs.junit)
+    testImplementation(libs.robolectric)
 
     androidTestImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.core)
