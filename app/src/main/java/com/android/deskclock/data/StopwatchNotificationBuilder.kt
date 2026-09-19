@@ -146,9 +146,7 @@ internal class StopwatchNotificationBuilder {
                 .setStyle(NotificationCompat.DecoratedCustomViewStyle())
                 .setColor(ContextCompat.getColor(context, R.color.default_background))
 
-        if (Utils.isNOrLater) {
-            notification.setGroup(nm.stopwatchNotificationGroupKey)
-        }
+        notification.setGroup(nm.stopwatchNotificationGroupKey)
 
         for (action in actions) {
             notification.addAction(action)

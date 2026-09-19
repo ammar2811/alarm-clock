@@ -37,7 +37,6 @@ import com.android.deskclock.AlarmAlertWakeLock
 import com.android.deskclock.LogUtils
 import com.android.deskclock.NotificationUtils
 import com.android.deskclock.R
-import com.android.deskclock.Utils
 import com.android.deskclock.events.Events
 import com.android.deskclock.settings.SettingsActivity
 import com.android.deskclock.timer.TimerKlaxon
@@ -810,12 +809,8 @@ internal class TimerModel(
         private val MISSED_THRESHOLD: Long = -MINUTE_IN_MILLIS
 
         fun schedulePendingIntent(am: AlarmManager, triggerTime: Long, pi: PendingIntent) {
-            if (Utils.isMOrLater) {
-                // Ensure the timer fires even if the device is dozing.
-                am.setExactAndAllowWhileIdle(ELAPSED_REALTIME_WAKEUP, triggerTime, pi)
-            } else {
-                am.setExact(ELAPSED_REALTIME_WAKEUP, triggerTime, pi)
-            }
+            // Ensure the timer fires even if the device is dozing.
+            am.setExactAndAllowWhileIdle(ELAPSED_REALTIME_WAKEUP, triggerTime, pi)
         }
     }
 }

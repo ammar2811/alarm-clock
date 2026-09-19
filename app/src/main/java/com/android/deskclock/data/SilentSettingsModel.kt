@@ -16,7 +16,6 @@
 
 package com.android.deskclock.data
 
-import android.annotation.TargetApi
 import android.app.NotificationManager
 import android.app.NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED
 import android.app.NotificationManager.INTERRUPTION_FILTER_NONE
@@ -34,14 +33,12 @@ import android.media.RingtoneManager
 import android.media.RingtoneManager.TYPE_ALARM
 import android.net.Uri
 import android.os.AsyncTask
-import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings.System.CONTENT_URI
 import android.provider.Settings.System.DEFAULT_ALARM_ALERT_URI
 import androidx.core.app.NotificationManagerCompat
 
-import com.android.deskclock.Utils
 import com.android.deskclock.data.DataModel.SilentSetting
 
 /**
@@ -80,10 +77,8 @@ internal class SilentSettingsModel(
         val contentChangeWatcher: ContentObserver = ContentChangeWatcher()
         cr.registerContentObserver(VOLUME_URI, false, contentChangeWatcher)
         cr.registerContentObserver(DEFAULT_ALARM_ALERT_URI, false, contentChangeWatcher)
-        if (Utils.isMOrLater) {
-            val filter = IntentFilter(ACTION_INTERRUPTION_FILTER_CHANGED)
-            mContext.registerReceiver(DoNotDisturbChangeReceiver(), filter)
-        }
+        mContext.registerReceiver(DoNotDisturbChangeReceiver(),
+                IntentFilter(ACTION_INTERRUPTION_FILTER_CHANGED))
     }
 
     fun addSilentSettingsListener(listener: OnSilentSettingsListener) {
@@ -162,11 +157,8 @@ internal class SilentSettingsModel(
             }
         }
 
-        @get:TargetApi(Build.VERSION_CODES.M)
         private val isDoNotDisturbBlockingAlarms: Boolean
-            get() = if (!Utils.isMOrLater) {
-                false
-            } else try {
+            get() = try {
                 val interruptionFilter: Int = mNotificationManager.getCurrentInterruptionFilter()
                 interruptionFilter == INTERRUPTION_FILTER_NONE
             } catch (e: Exception) {

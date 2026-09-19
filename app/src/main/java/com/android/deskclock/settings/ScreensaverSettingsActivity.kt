@@ -16,8 +16,6 @@
 
 package com.android.deskclock.settings
 
-import android.annotation.TargetApi
-import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -26,7 +24,6 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 
 import com.android.deskclock.R
-import com.android.deskclock.Utils
 
 /**
  * Settings for Clock screen saver
@@ -52,12 +49,9 @@ class ScreensaverSettingsActivity : AppCompatActivity() {
 
     class PrefsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChangeListener {
 
-        @TargetApi(Build.VERSION_CODES.N)
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
-            if (Utils.isNOrLater) {
-                getPreferenceManager().setStorageDeviceProtected()
-            }
+            getPreferenceManager().setStorageDeviceProtected()
         }
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {

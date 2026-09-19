@@ -23,8 +23,6 @@ import android.transition.TransitionSet
 import android.view.View
 import android.view.ViewGroup
 
-import com.android.deskclock.Utils
-
 /**
  * Controller that displays empty view and handles animation appropriately.
  *
@@ -36,22 +34,15 @@ class EmptyViewController(
     private val mContentView: View,
     private val mEmptyView: View
 ) {
-    private var mEmptyViewTransition: Transition? = null
-    private var mIsEmpty = false
+    private val mEmptyViewTransition: Transition = TransitionSet()
+            .setOrdering(TransitionSet.ORDERING_SEQUENTIAL)
+            .addTarget(mContentView)
+            .addTarget(mEmptyView)
+            .addTransition(Fade(Fade.OUT))
+            .addTransition(Fade(Fade.IN))
+            .setDuration(ANIMATION_DURATION.toLong())
 
-    init {
-        mEmptyViewTransition = if (USE_TRANSITION_FRAMEWORK) {
-            TransitionSet()
-                    .setOrdering(TransitionSet.ORDERING_SEQUENTIAL)
-                    .addTarget(mContentView)
-                    .addTarget(mEmptyView)
-                    .addTransition(Fade(Fade.OUT))
-                    .addTransition(Fade(Fade.IN))
-                    .setDuration(ANIMATION_DURATION.toLong())
-        } else {
-            null
-        }
-    }
+    private var mIsEmpty = false
 
     /**
      * Sets the state for the controller. If it's empty, it will display the empty view.
@@ -64,15 +55,12 @@ class EmptyViewController(
         }
         mIsEmpty = isEmpty
         // State changed, perform transition.
-        if (USE_TRANSITION_FRAMEWORK) {
-            TransitionManager.beginDelayedTransition(mMainLayout, mEmptyViewTransition)
-        }
+        TransitionManager.beginDelayedTransition(mMainLayout, mEmptyViewTransition)
         mEmptyView.visibility = if (mIsEmpty) View.VISIBLE else View.GONE
         mContentView.visibility = if (mIsEmpty) View.GONE else View.VISIBLE
     }
 
     companion object {
         private const val ANIMATION_DURATION = 300
-        private val USE_TRANSITION_FRAMEWORK = Utils.isLOrLater
     }
 }

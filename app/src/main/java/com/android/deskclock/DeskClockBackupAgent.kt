@@ -84,10 +84,8 @@ class DeskClockBackupAgent : BackupAgent() {
      * in the execution of [.processRestoredData].
      */
     override fun onRestoreFinished() {
-        if (Utils.isNOrLater) {
-            // TODO: migrate restored database and preferences over into
-            // the device-encrypted storage area
-        }
+        // TODO: migrate restored database and preferences over into
+        // the device-encrypted storage area
 
         // Indicate a data restore has been completed.
         DataModel.dataModel.isRestoreBackupFinished = true

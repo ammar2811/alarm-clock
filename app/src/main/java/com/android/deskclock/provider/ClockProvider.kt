@@ -16,7 +16,6 @@
 
 package com.android.deskclock.provider
 
-import android.annotation.TargetApi
 import android.content.ContentProvider
 import android.content.ContentResolver
 import android.content.ContentUris
@@ -27,13 +26,11 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteQueryBuilder
 import android.net.Uri
-import android.os.Build
 import android.provider.BaseColumns
 import android.text.TextUtils
 import android.util.ArrayMap
 
 import com.android.deskclock.LogUtils
-import com.android.deskclock.Utils
 import com.android.deskclock.provider.ClockContract.AlarmSettingColumns
 import com.android.deskclock.provider.ClockContract.AlarmsColumns
 import com.android.deskclock.provider.ClockContract.InstancesColumns
@@ -133,21 +130,14 @@ class ClockProvider : ContentProvider() {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.N)
     override fun onCreate(): Boolean {
         val context: Context = getContext()!!
-        val storageContext: Context
-        if (Utils.isNOrLater) {
-            // All N devices have split storage areas, but we may need to
-            // migrate existing database into the new device encrypted
-            // storage area, which is where our data lives from now on.
-            storageContext = context.createDeviceProtectedStorageContext()
-            if (!storageContext.moveDatabaseFrom(context, ClockDatabaseHelper.DATABASE_NAME)) {
-                LogUtils.wtf("Failed to migrate database: %s",
-                        ClockDatabaseHelper.DATABASE_NAME)
-            }
-        } else {
-            storageContext = context
+        // Every supported device has split storage areas, but we may need to migrate an
+        // existing database into the device encrypted storage area, which is where our data
+        // lives from now on.
+        val storageContext = context.createDeviceProtectedStorageContext()
+        if (!storageContext.moveDatabaseFrom(context, ClockDatabaseHelper.DATABASE_NAME)) {
+            LogUtils.wtf("Failed to migrate database: %s", ClockDatabaseHelper.DATABASE_NAME)
         }
 
         mOpenHelper = ClockDatabaseHelper(storageContext)

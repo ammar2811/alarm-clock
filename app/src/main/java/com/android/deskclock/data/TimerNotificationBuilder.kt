@@ -16,8 +16,6 @@
 
 package com.android.deskclock.data
 
-import android.annotation.TargetApi
-import android.app.AlarmManager
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -28,7 +26,6 @@ import android.content.res.Resources
 import android.os.Build
 import android.os.SystemClock
 import android.text.TextUtils
-import android.text.format.DateUtils.MINUTE_IN_MILLIS
 import android.text.format.DateUtils.SECOND_IN_MILLIS
 import android.widget.RemoteViews
 import androidx.annotation.DrawableRes
@@ -38,7 +35,6 @@ import androidx.core.app.NotificationCompat.Builder
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 
-import com.android.deskclock.AlarmUtils
 import com.android.deskclock.R
 import com.android.deskclock.Utils
 import com.android.deskclock.events.Events
@@ -183,47 +179,8 @@ internal class TimerNotificationBuilder {
             notification.addAction(action)
         }
 
-        if (Utils.isNOrLater) {
-            notification.setCustomContentView(buildChronometer(pname, base, running, stateText))
-                    .setGroup(nm.timerNotificationGroupKey)
-        } else {
-            val contentTextPreN: CharSequence?
-            contentTextPreN = when {
-                count == 1 -> {
-                    TimerStringFormatter.formatTimeRemaining(context, timer.remainingTime, false)
-                }
-                running -> {
-                    val timeRemaining = TimerStringFormatter.formatTimeRemaining(context,
-                            timer.remainingTime, false)
-                    context.getString(R.string.next_timer_notif, timeRemaining)
-                }
-                else -> context.getString(R.string.all_timers_stopped_notif)
-            }
-
-            notification.setContentTitle(stateText).setContentText(contentTextPreN)
-
-            val am: AlarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            val updateNotification: Intent = TimerService.createUpdateNotificationIntent(context)
-            val remainingTime = timer.remainingTime
-            if (timer.isRunning && remainingTime > MINUTE_IN_MILLIS) {
-                // Schedule a callback to update the time-sensitive information of the running timer
-                val pi: PendingIntent =
-                        PendingIntent.getService(context, REQUEST_CODE_UPCOMING, updateNotification,
-                        PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_UPDATE_CURRENT)
-
-                val nextMinuteChange: Long = remainingTime % MINUTE_IN_MILLIS
-                val triggerTime: Long = SystemClock.elapsedRealtime() + nextMinuteChange
-                TimerModel.schedulePendingIntent(am, triggerTime, pi)
-            } else {
-                // Cancel the update notification callback.
-                val pi: PendingIntent? = PendingIntent.getService(context, 0, updateNotification,
-                        PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_NO_CREATE)
-                if (pi != null) {
-                    am.cancel(pi)
-                    pi.cancel()
-                }
-            }
-        }
+        notification.setCustomContentView(buildChronometer(pname, base, running, stateText))
+                .setGroup(nm.timerNotificationGroupKey)
         return notification.build()
     }
 
@@ -296,16 +253,7 @@ internal class TimerNotificationBuilder {
             notification.addAction(action)
         }
 
-        if (Utils.isNOrLater) {
-            notification.setCustomContentView(buildChronometer(pname, base, true, stateText))
-        } else {
-            val contentTextPreN: CharSequence = if (count == 1) {
-                context.getString(R.string.timer_times_up)
-            } else {
-                context.getString(R.string.timer_multi_times_up, count)
-            }
-            notification.setContentTitle(stateText).setContentText(contentTextPreN)
-        }
+        notification.setCustomContentView(buildChronometer(pname, base, true, stateText))
 
         return notification.build()
     }
@@ -381,19 +329,12 @@ internal class TimerNotificationBuilder {
                 .addAction(action)
                 .setColor(ContextCompat.getColor(context, R.color.default_background))
 
-        if (Utils.isNOrLater) {
-            notification.setCustomContentView(buildChronometer(pname, base, true, stateText))
-                    .setGroup(nm.timerNotificationGroupKey)
-        } else {
-            val contentText: CharSequence = AlarmUtils.getFormattedTime(context,
-                    timer.wallClockExpirationTime)
-            notification.setContentText(contentText).setContentTitle(stateText)
-        }
+        notification.setCustomContentView(buildChronometer(pname, base, true, stateText))
+                .setGroup(nm.timerNotificationGroupKey)
 
         return notification.build()
     }
 
-    @TargetApi(Build.VERSION_CODES.N)
     private fun buildChronometer(
         pname: String,
         base: Long,

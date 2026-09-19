@@ -16,17 +16,17 @@
 
 package com.android.deskclock.events
 
-import android.annotation.TargetApi
 import android.content.Context
 import android.content.pm.ShortcutManager
 import android.os.Build
+import androidx.annotation.RequiresApi
 import android.util.ArraySet
 import androidx.annotation.StringRes
 
 import com.android.deskclock.R
 import com.android.deskclock.uidata.UiDataModel
 
-@TargetApi(Build.VERSION_CODES.N_MR1)
+@RequiresApi(Build.VERSION_CODES.N_MR1)
 class ShortcutEventTracker(context: Context) : EventTracker {
     private val mShortcutManager: ShortcutManager =
             context.getSystemService(ShortcutManager::class.java)

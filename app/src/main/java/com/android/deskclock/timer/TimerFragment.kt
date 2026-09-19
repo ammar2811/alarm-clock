@@ -47,7 +47,6 @@ import com.android.deskclock.DeskClock
 import com.android.deskclock.DeskClockFragment
 import com.android.deskclock.FabContainer
 import com.android.deskclock.R
-import com.android.deskclock.Utils
 
 import java.io.Serializable
 import kotlin.math.max
@@ -266,7 +265,7 @@ class TimerFragment : DeskClockFragment(UiDataModel.Tab.TIMERS) {
 
     override fun onMorphFab(fab: ImageView) {
         // Update the fab's drawable to match the current timer state.
-        updateFab(fab, Utils.isNOrLater)
+        updateFab(fab, true)
         // Animate the drawable.
         AnimatorUtils.startDrawableAnimation(fab)
     }

@@ -100,7 +100,9 @@ class Controller private constructor() {
 
     fun updateShortcuts() {
         Utils.enforceMainLooper()
-        mShortcutController?.updateShortcuts()
+        if (Utils.isNMR1OrLater) {
+            mShortcutController?.updateShortcuts()
+        }
     }
 
     companion object {

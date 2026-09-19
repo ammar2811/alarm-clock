@@ -16,7 +16,6 @@
 
 package com.android.deskclock
 
-import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -92,14 +91,9 @@ class AlarmInitReceiver : BroadcastReceiver() {
 
     companion object {
         /**
-         * When running on N devices, we're interested in the boot completed event that is sent
-         * while the user is still locked, so that we can schedule alarms.
+         * We're interested in the boot completed event that is sent while the user is still
+         * locked, so that we can schedule alarms.
          */
-        @SuppressLint("InlinedApi")
-        private val ACTION_BOOT_COMPLETED = if (Utils.isNOrLater) {
-            Intent.ACTION_LOCKED_BOOT_COMPLETED
-        } else {
-            Intent.ACTION_BOOT_COMPLETED
-        }
+        private const val ACTION_BOOT_COMPLETED = Intent.ACTION_LOCKED_BOOT_COMPLETED
     }
 }

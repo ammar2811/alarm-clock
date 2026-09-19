@@ -18,7 +18,6 @@ package com.android.deskclock.stopwatch
 
 import android.R.attr.state_activated
 import android.R.attr.state_pressed
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -255,7 +254,7 @@ class StopwatchFragment : DeskClockFragment(UiDataModel.Tab.STOPWATCH) {
 
     override fun onMorphFab(fab: ImageView) {
         // Update the fab's drawable to match the current timer state.
-        updateFab(fab, Utils.isNOrLater)
+        updateFab(fab, true)
         // Animate the drawable.
         AnimatorUtils.startDrawableAnimation(fab)
     }
@@ -341,13 +340,8 @@ class StopwatchFragment : DeskClockFragment(UiDataModel.Tab.STOPWATCH) {
         val subject = subjects[(Math.random() * subjects.size).toInt()]
         val text = mLapsAdapter.shareText
 
-        @SuppressLint("InlinedApi")
         val shareIntent: Intent = Intent(Intent.ACTION_SEND)
-                .addFlags(if (Utils.isLOrLater) {
-                    Intent.FLAG_ACTIVITY_NEW_DOCUMENT
-                } else {
-                    Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
-                })
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT)
                 .putExtra(Intent.EXTRA_SUBJECT, subject)
                 .putExtra(Intent.EXTRA_TEXT, text)
                 .setType("text/plain")

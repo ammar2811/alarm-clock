@@ -33,11 +33,6 @@ import android.widget.ImageView
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 
-import java.lang.reflect.InvocationTargetException
-import java.lang.reflect.Method
-
-import kotlin.math.roundToLong
-
 object AnimatorUtils {
     @JvmField
     val DECELERATE_ACCELERATE_INTERPOLATOR =
@@ -115,44 +110,9 @@ object AnimatorUtils {
     @JvmField
     val ARGB_EVALUATOR: TypeEvaluator<Int> = ArgbEvaluator() as TypeEvaluator<Int>
 
-    private var sAnimateValue: Method? = null
-
-    private var sTryAnimateValue = true
-
     @JvmStatic
     fun setAnimatedFraction(animator: ValueAnimator, fraction: Float) {
-        if (Utils.isLMR1OrLater) {
-            animator.setCurrentFraction(fraction)
-            return
-        }
-
-        if (sTryAnimateValue) {
-            // try to set the animated fraction directly so that it isn't affected by the
-            // internal animator scale or time (b/17938711)
-            try {
-                if (sAnimateValue == null) {
-                    sAnimateValue = ValueAnimator::class.java
-                            .getDeclaredMethod("animateValue", Float::class.javaPrimitiveType)
-                    sAnimateValue!!.isAccessible = true
-                }
-
-                sAnimateValue!!.invoke(animator, fraction)
-                return
-            } catch (e: NoSuchMethodException) {
-                // something went wrong, don't try that again
-                LogUtils.e("Unable to use animateValue directly", e)
-                sTryAnimateValue = false
-            } catch (e: InvocationTargetException) {
-                LogUtils.e("Unable to use animateValue directly", e)
-                sTryAnimateValue = false
-            } catch (e: IllegalAccessException) {
-                LogUtils.e("Unable to use animateValue directly", e)
-                sTryAnimateValue = false
-            }
-        }
-
-        // if that doesn't work then just fall back to setting the current play time
-        animator.currentPlayTime = (fraction * animator.duration).roundToLong()
+        animator.setCurrentFraction(fraction)
     }
 
     @JvmStatic

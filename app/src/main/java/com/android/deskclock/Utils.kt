@@ -17,7 +17,6 @@
 package com.android.deskclock
 
 import android.annotation.SuppressLint
-import android.annotation.TargetApi
 import android.app.AlarmManager
 import android.app.AlarmManager.AlarmClockInfo
 import android.app.PendingIntent
@@ -37,7 +36,6 @@ import android.graphics.Typeface
 import android.net.Uri
 import android.os.Build
 import android.os.Looper
-import android.provider.Settings
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextUtils
@@ -53,7 +51,6 @@ import android.widget.TextView
 import androidx.annotation.AnyRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.core.os.BuildCompat
 import androidx.core.view.AccessibilityDelegateCompat
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat
@@ -102,51 +99,10 @@ object Utils {
     }
 
     /**
-     * @return `true` if the device is prior to [Build.VERSION_CODES.LOLLIPOP]
-     */
-    val isPreL: Boolean
-        get() = Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP
-
-    /**
-     * @return `true` if the device is [Build.VERSION_CODES.LOLLIPOP] or
-     * [Build.VERSION_CODES.LOLLIPOP_MR1]
-     */
-    val isLOrLMR1: Boolean
-        get() {
-            val sdkInt = Build.VERSION.SDK_INT
-            return sdkInt == Build.VERSION_CODES.LOLLIPOP ||
-                    sdkInt == Build.VERSION_CODES.LOLLIPOP_MR1
-        }
-
-    /**
-     * @return `true` if the device is [Build.VERSION_CODES.LOLLIPOP] or later
-     */
-    val isLOrLater: Boolean
-        get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-
-    /**
-     * @return `true` if the device is [Build.VERSION_CODES.LOLLIPOP_MR1] or later
-     */
-    val isLMR1OrLater: Boolean
-        get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1
-
-    /**
-     * @return `true` if the device is [Build.VERSION_CODES.M] or later
-     */
-    val isMOrLater: Boolean
-        get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-
-    /**
-     * @return `true` if the device is [Build.VERSION_CODES.N] or later
-     */
-    val isNOrLater: Boolean
-        get() = BuildCompat.isAtLeastN()
-
-    /**
      * @return `true` if the device is [Build.VERSION_CODES.N_MR1] or later
      */
     val isNMR1OrLater: Boolean
-        get() = BuildCompat.isAtLeastNMR1()
+        get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1
 
     /**
      * @return `true` if the device is [Build.VERSION_CODES.O] or later
@@ -309,17 +265,6 @@ object Utils {
      * @return The next alarm from [AlarmManager]
      */
     fun getNextAlarm(context: Context): String? {
-        return if (isPreL) getNextAlarmPreL(context) else getNextAlarmLOrLater(context)
-    }
-
-    @TargetApi(Build.VERSION_CODES.KITKAT)
-    private fun getNextAlarmPreL(context: Context): String {
-        val cr = context.contentResolver
-        return Settings.System.getString(cr, Settings.System.NEXT_ALARM_FORMATTED)
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private fun getNextAlarmLOrLater(context: Context): String? {
         val am = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val info = getNextAlarmClock(am)
         if (info != null) {
@@ -332,12 +277,10 @@ object Utils {
         return null
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private fun getNextAlarmClock(am: AlarmManager): AlarmClockInfo? {
         return am.nextAlarmClock
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     fun updateNextAlarm(am: AlarmManager, info: AlarmClockInfo, op: PendingIntent) {
         am.setAlarmClock(info, op)
     }
@@ -443,20 +386,13 @@ object Utils {
 
     /**
      * Returns string denoting the timezone hour offset (e.g. GMT -8:00)
-     *
-     * @param useShortForm Whether to return a short form of the header that rounds to the
-     * nearest hour and excludes the "GMT" prefix
      */
-    fun getGMTHourOffset(timezone: TimeZone, useShortForm: Boolean): String {
+    fun getGMTHourOffset(timezone: TimeZone): String {
         val gmtOffset = timezone.rawOffset
         val hour = gmtOffset / DateUtils.HOUR_IN_MILLIS
         val min = abs(gmtOffset) % DateUtils.HOUR_IN_MILLIS / DateUtils.MINUTE_IN_MILLIS
 
-        return if (useShortForm) {
-            String.format(Locale.ENGLISH, "%+d", hour)
-        } else {
-            String.format(Locale.ENGLISH, "GMT %+d:%02d", hour, min)
-        }
+        return String.format(Locale.ENGLISH, "GMT %+d:%02d", hour, min)
     }
 
     /**

@@ -16,7 +16,6 @@
 
 package com.android.deskclock.alarms
 
-import android.annotation.TargetApi
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -41,7 +40,6 @@ import com.android.deskclock.provider.Alarm
 import com.android.deskclock.provider.AlarmInstance
 import com.android.deskclock.provider.ClockContract.InstancesColumns
 import com.android.deskclock.R
-import com.android.deskclock.Utils
 
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -134,9 +132,7 @@ internal object AlarmNotifications {
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setLocalOnly(true)
 
-        if (Utils.isNOrLater) {
-            builder.setGroup(UPCOMING_GROUP_KEY)
-        }
+        builder.setGroup(UPCOMING_GROUP_KEY)
 
         // Setup up hide notification
         val hideIntent: Intent = AlarmStateManager.createStateChangeIntent(context,
@@ -196,9 +192,7 @@ internal object AlarmNotifications {
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setLocalOnly(true)
 
-        if (Utils.isNOrLater) {
-            builder.setGroup(UPCOMING_GROUP_KEY)
-        }
+        builder.setGroup(UPCOMING_GROUP_KEY)
 
         // Setup up dismiss action
         val dismissIntent: Intent = AlarmStateManager.createStateChangeIntent(context,
@@ -227,7 +221,6 @@ internal object AlarmNotifications {
         updateUpcomingAlarmGroupNotification(context, -1, notification)
     }
 
-    @TargetApi(Build.VERSION_CODES.N)
     private fun isGroupSummary(n: Notification): Boolean {
         return n.flags and Notification.FLAG_GROUP_SUMMARY == Notification.FLAG_GROUP_SUMMARY
     }
@@ -245,7 +238,6 @@ internal object AlarmNotifications {
      * @param postedNotification The notification that was just posted
      * @return The first active notification for the group
      */
-    @TargetApi(Build.VERSION_CODES.N)
     private fun getFirstActiveNotification(
         context: Context,
         group: String,
@@ -269,7 +261,6 @@ internal object AlarmNotifications {
         return firstActiveNotification
     }
 
-    @TargetApi(Build.VERSION_CODES.N)
     private fun getActiveGroupSummaryNotification(context: Context, group: String): Notification? {
         val nm: NotificationManager =
                 context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -288,10 +279,6 @@ internal object AlarmNotifications {
         canceledNotificationId: Int,
         postedNotification: Notification?
     ) {
-        if (!Utils.isNOrLater) {
-            return
-        }
-
         val nm: NotificationManagerCompat = NotificationManagerCompat.from(context)
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
@@ -332,10 +319,6 @@ internal object AlarmNotifications {
         canceledNotificationId: Int,
         postedNotification: Notification?
     ) {
-        if (!Utils.isNOrLater) {
-            return
-        }
-
         val nm: NotificationManagerCompat = NotificationManagerCompat.from(context)
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
@@ -401,9 +384,7 @@ internal object AlarmNotifications {
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setLocalOnly(true)
 
-        if (Utils.isNOrLater) {
-            builder.setGroup(UPCOMING_GROUP_KEY)
-        }
+        builder.setGroup(UPCOMING_GROUP_KEY)
 
         // Setup up dismiss action
         val dismissIntent: Intent = AlarmStateManager.createStateChangeIntent(context,
@@ -459,9 +440,7 @@ internal object AlarmNotifications {
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setLocalOnly(true)
 
-        if (Utils.isNOrLater) {
-            builder.setGroup(MISSED_GROUP_KEY)
-        }
+        builder.setGroup(MISSED_GROUP_KEY)
 
         val id = instance.hashCode()
 

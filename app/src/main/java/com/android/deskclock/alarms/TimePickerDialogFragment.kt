@@ -21,13 +21,9 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.os.Bundle
 import android.text.format.DateFormat
-import android.widget.TimePicker
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-
-import com.android.deskclock.Utils
 
 import java.util.Calendar
 
@@ -43,27 +39,10 @@ class TimePickerDialogFragment : DialogFragment() {
         val args: Bundle = arguments ?: Bundle.EMPTY
         val hour: Int = args.getInt(ARG_HOUR, now[Calendar.HOUR_OF_DAY])
         val minute: Int = args.getInt(ARG_MINUTE, now[Calendar.MINUTE])
-        return if (Utils.isLOrLater) {
-            val context: Context = requireActivity()
-            TimePickerDialog(context, { _, hourOfDay, minuteOfHour ->
-                listener.onTimeSet(this@TimePickerDialogFragment, hourOfDay, minuteOfHour)
-            }, hour, minute, DateFormat.is24HourFormat(context))
-        } else {
-            val builder: AlertDialog.Builder = AlertDialog.Builder(requireActivity())
-            val context: Context = builder.getContext()
-
-            val timePicker = TimePicker(context)
-            timePicker.setCurrentHour(hour)
-            timePicker.setCurrentMinute(minute)
-            timePicker.setIs24HourView(DateFormat.is24HourFormat(context))
-
-            builder.setView(timePicker)
-                    .setPositiveButton(android.R.string.ok, { _, _ ->
-                        listener.onTimeSet(this@TimePickerDialogFragment,
-                                timePicker.getCurrentHour(), timePicker.getCurrentMinute())
-                    }).setNegativeButton(android.R.string.cancel, null /* listener */)
-                    .create()
-        }
+        val context: Context = requireActivity()
+        return TimePickerDialog(context, { _, hourOfDay, minuteOfHour ->
+            listener.onTimeSet(this@TimePickerDialogFragment, hourOfDay, minuteOfHour)
+        }, hour, minute, DateFormat.is24HourFormat(context))
     }
 
     /**

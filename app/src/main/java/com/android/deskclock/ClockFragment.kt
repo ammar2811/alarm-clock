@@ -21,10 +21,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.database.ContentObserver
 import android.os.Bundle
-import android.os.Handler
-import android.provider.Settings
 import android.text.format.DateUtils
 import android.view.GestureDetector
 import android.view.LayoutInflater
@@ -57,10 +54,7 @@ class ClockFragment : DeskClockFragment(UiDataModel.Tab.CLOCKS) {
     private val mQuarterHourUpdater: Runnable = QuarterHourRunnable()
 
     // Updates the UI in response to changes to the scheduled alarm.
-    private var mAlarmChangeReceiver: BroadcastReceiver? = null
-
-    // Detects changes to the next scheduled alarm pre-L.
-    private var mAlarmObserver: ContentObserver? = null
+    private val mAlarmChangeReceiver: BroadcastReceiver = AlarmChangedBroadcastReceiver()
 
     private var mDigitalClock: TextClock? = null
     private var mAnalogClock: AnalogClock? = null
@@ -69,13 +63,6 @@ class ClockFragment : DeskClockFragment(UiDataModel.Tab.CLOCKS) {
     private lateinit var mCityList: RecyclerView
     private lateinit var mDateFormat: String
     private lateinit var mDateFormatForAccessibility: String
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        mAlarmObserver = if (Utils.isPreL) AlarmObserverPreL() else null
-        mAlarmChangeReceiver = if (Utils.isLOrLater) AlarmChangedBroadcastReceiver() else null
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -132,10 +119,8 @@ class ClockFragment : DeskClockFragment(UiDataModel.Tab.CLOCKS) {
         mDateFormatForAccessibility = getString(R.string.full_wday_month_day_no_year)
 
         // Watch for system events that effect clock time or format.
-        if (mAlarmChangeReceiver != null) {
-            val filter = IntentFilter(AlarmManager.ACTION_NEXT_ALARM_CLOCK_CHANGED)
-            activity.registerReceiver(mAlarmChangeReceiver, filter)
-        }
+        activity.registerReceiver(mAlarmChangeReceiver,
+                IntentFilter(AlarmManager.ACTION_NEXT_ALARM_CLOCK_CHANGED))
 
         // Resume can be invoked after changing the clock style or seconds display.
         if (mDigitalClock != null && mAnalogClock != null) {
@@ -154,24 +139,12 @@ class ClockFragment : DeskClockFragment(UiDataModel.Tab.CLOCKS) {
         }
 
         refreshAlarm()
-
-        // Alarm observer is null on L or later.
-        mAlarmObserver?.let {
-            val uri = Settings.System.getUriFor(Settings.System.NEXT_ALARM_FORMATTED)
-            activity.contentResolver.registerContentObserver(uri, false, it)
-        }
     }
 
     override fun onPause() {
         super.onPause()
 
-        val activity = requireActivity()
-        if (mAlarmChangeReceiver != null) {
-            activity.unregisterReceiver(mAlarmChangeReceiver)
-        }
-        if (mAlarmObserver != null) {
-            activity.contentResolver.unregisterContentObserver(mAlarmObserver!!)
-        }
+        requireActivity().unregisterReceiver(mAlarmChangeReceiver)
     }
 
     override fun onDestroyView() {
@@ -248,17 +221,6 @@ class ClockFragment : DeskClockFragment(UiDataModel.Tab.CLOCKS) {
     private inner class QuarterHourRunnable : Runnable {
         override fun run() {
             mCityAdapter.notifyDataSetChanged()
-        }
-    }
-
-    /**
-     * Prior to L, a ContentObserver was used to monitor changes to the next scheduled alarm.
-     * In L and beyond this is accomplished via a system broadcast of
-     * [AlarmManager.ACTION_NEXT_ALARM_CLOCK_CHANGED].
-     */
-    private inner class AlarmObserverPreL : ContentObserver(Handler()) {
-        override fun onChange(selfChange: Boolean) {
-            refreshAlarm()
         }
     }
 

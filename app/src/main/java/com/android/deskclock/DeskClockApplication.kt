@@ -16,11 +16,9 @@
 
 package com.android.deskclock
 
-import android.annotation.TargetApi
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.Build
 import android.preference.PreferenceManager
 
 import com.android.deskclock.controller.Controller
@@ -45,19 +43,13 @@ class DeskClockApplication : Application() {
         /**
          * Returns the default [SharedPreferences] instance from the underlying storage context.
          */
-        @TargetApi(Build.VERSION_CODES.N)
         private fun getDefaultSharedPreferences(context: Context): SharedPreferences {
-            val storageContext: Context
-            if (Utils.isNOrLater) {
-                // All N devices have split storage areas. Migrate the existing preferences
-                // into the new device encrypted storage area if that has not yet occurred.
-                val name = PreferenceManager.getDefaultSharedPreferencesName(context)
-                storageContext = context.createDeviceProtectedStorageContext()
-                if (!storageContext.moveSharedPreferencesFrom(context, name)) {
-                    LogUtils.wtf("Failed to migrate shared preferences")
-                }
-            } else {
-                storageContext = context
+            // Every supported device has split storage areas. Migrate the existing preferences
+            // into the device encrypted storage area if that has not yet occurred.
+            val name = PreferenceManager.getDefaultSharedPreferencesName(context)
+            val storageContext = context.createDeviceProtectedStorageContext()
+            if (!storageContext.moveSharedPreferencesFrom(context, name)) {
+                LogUtils.wtf("Failed to migrate shared preferences")
             }
             return PreferenceManager.getDefaultSharedPreferences(storageContext)
         }

@@ -56,7 +56,6 @@ import com.android.deskclock.DeskClock
 import com.android.deskclock.LogUtils
 import com.android.deskclock.R
 import com.android.deskclock.Utils
-import com.android.deskclock.alarms.AlarmStateManager
 import com.android.deskclock.data.DataModel
 import com.android.deskclock.uidata.UiDataModel
 import com.android.deskclock.worldclock.CitySelectionActivity
@@ -118,7 +117,6 @@ class DigitalAppWidgetProvider : AppWidgetProvider() {
             ACTION_SCREEN_ON,
             ACTION_TIME_CHANGED,
             ACTION_TIMEZONE_CHANGED,
-            AlarmStateManager.ACTION_ALARM_CHANGED,
             ACTION_ON_DAY_CHANGE,
             DataModel.ACTION_WORLD_CITIES_CHANGED -> widgetIds.forEach { widgetId ->
                 relayoutWidget(context, wm, widgetId, wm.getAppWidgetOptions(widgetId))

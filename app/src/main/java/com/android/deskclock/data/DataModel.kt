@@ -126,18 +126,16 @@ class DataModel private constructor() {
         private class ChangeAppNotificationSettingsListener : View.OnClickListener {
             override fun onClick(v: View) {
                 val context: Context = v.context
-                if (Utils.isLOrLater) {
-                    try {
-                        // Attempt to open the notification settings for this app.
-                        context.startActivity(
-                                Intent("android.settings.APP_NOTIFICATION_SETTINGS")
-                                        .putExtra(EXTRA_APP_PACKAGE, context.packageName)
-                                        .putExtra("app_uid", context.applicationInfo.uid)
-                                        .addFlags(FLAG_ACTIVITY_NEW_TASK))
-                        return
-                    } catch (ignored: Exception) {
-                        // best attempt only; recovery code below
-                    }
+                try {
+                    // Attempt to open the notification settings for this app.
+                    context.startActivity(
+                            Intent("android.settings.APP_NOTIFICATION_SETTINGS")
+                                    .putExtra(EXTRA_APP_PACKAGE, context.packageName)
+                                    .putExtra("app_uid", context.applicationInfo.uid)
+                                    .addFlags(FLAG_ACTIVITY_NEW_TASK))
+                    return
+                } catch (ignored: Exception) {
+                    // best attempt only; recovery code below
                 }
 
                 // Fall back to opening the app settings page.

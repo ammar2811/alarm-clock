@@ -328,7 +328,7 @@ class CitySelectionActivity : BaseActivity() {
                                 holder.index.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24f)
                             }
                             DataModel.CitySort.UTC_OFFSET -> {
-                                holder.index.text = Utils.getGMTHourOffset(timeZone, false)
+                                holder.index.text = Utils.getGMTHourOffset(timeZone)
                                 holder.index.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
                             }
                         }
@@ -395,7 +395,7 @@ class CitySelectionActivity : BaseActivity() {
                             DataModel.CitySort.NAME -> sections.add(city.indexString.orEmpty())
                             DataModel.CitySort.UTC_OFFSET -> {
                                 val timezone: TimeZone = city.timeZone
-                                sections.add(Utils.getGMTHourOffset(timezone, Utils.isPreL))
+                                sections.add(Utils.getGMTHourOffset(timezone))
                             }
                         }
                         positions.add(position)

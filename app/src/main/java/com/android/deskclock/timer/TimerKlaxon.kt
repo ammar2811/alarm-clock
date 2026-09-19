@@ -16,16 +16,13 @@
 
 package com.android.deskclock.timer
 
-import android.annotation.TargetApi
 import android.content.Context
 import android.media.AudioAttributes
 import android.net.Uri
-import android.os.Build
 import android.os.Vibrator
 
 import com.android.deskclock.AsyncRingtonePlayer
 import com.android.deskclock.LogUtils
-import com.android.deskclock.Utils
 import com.android.deskclock.data.DataModel
 
 /**
@@ -64,18 +61,12 @@ object TimerKlaxon {
         }
 
         if (DataModel.dataModel.timerVibrate) {
-            val vibrator = getVibrator(context)
-            if (Utils.isLOrLater) {
-                vibrateLOrLater(vibrator)
-            } else {
-                vibrator.vibrate(VIBRATE_PATTERN, 0)
-            }
+            vibrate(getVibrator(context))
         }
         sStarted = true
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private fun vibrateLOrLater(vibrator: Vibrator) {
+    private fun vibrate(vibrator: Vibrator) {
         vibrator.vibrate(VIBRATE_PATTERN, 0, AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_ALARM)
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)

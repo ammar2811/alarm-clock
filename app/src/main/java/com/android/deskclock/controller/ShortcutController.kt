@@ -16,7 +16,6 @@
 
 package com.android.deskclock.controller
 
-import android.annotation.TargetApi
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -24,6 +23,7 @@ import android.content.pm.ShortcutInfo
 import android.content.pm.ShortcutManager
 import android.graphics.drawable.Icon
 import android.os.Build
+import androidx.annotation.RequiresApi
 import android.os.UserManager
 import android.provider.AlarmClock
 import androidx.annotation.StringRes
@@ -43,7 +43,7 @@ import com.android.deskclock.events.ShortcutEventTracker
 import com.android.deskclock.stopwatch.StopwatchService
 import com.android.deskclock.uidata.UiDataModel
 
-@TargetApi(Build.VERSION_CODES.N_MR1)
+@RequiresApi(Build.VERSION_CODES.N_MR1)
 internal class ShortcutController(val context: Context) {
     private val mComponentName = ComponentName(context, DeskClock::class.java)
     private val mShortcutManager = context.getSystemService(ShortcutManager::class.java)

@@ -21,12 +21,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.database.ContentObserver
 import android.os.BatteryManager
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.provider.Settings
 import android.view.View
 import android.view.View.OnSystemUiVisibilityChangeListener
 import android.view.ViewTreeObserver.OnPreDrawListener
@@ -53,17 +49,6 @@ class ScreensaverActivity : BaseActivity() {
                 }
             }
         }
-    }
-
-    /* Register ContentObserver to see alarm changes for pre-L */
-    private val mSettingsContentObserver: ContentObserver? = if (Utils.isPreL) {
-        object : ContentObserver(Handler(Looper.myLooper()!!)) {
-            override fun onChange(selfChange: Boolean) {
-                Utils.refreshAlarm(this@ScreensaverActivity, mContentView)
-            }
-        }
-    } else {
-        null
     }
 
     // Runs every midnight or when the time changes and refreshes the date.
@@ -120,15 +105,8 @@ class ScreensaverActivity : BaseActivity() {
         filter.addAction(Intent.ACTION_POWER_CONNECTED)
         filter.addAction(Intent.ACTION_POWER_DISCONNECTED)
         filter.addAction(Intent.ACTION_USER_PRESENT)
-        if (Utils.isLOrLater) {
-            filter.addAction(AlarmManager.ACTION_NEXT_ALARM_CLOCK_CHANGED)
-        }
+        filter.addAction(AlarmManager.ACTION_NEXT_ALARM_CLOCK_CHANGED)
         registerReceiver(mIntentReceiver, filter)
-
-        mSettingsContentObserver?.let {
-            val uri = Settings.System.getUriFor(Settings.System.NEXT_ALARM_FORMATTED)
-            getContentResolver().registerContentObserver(uri, false, it)
-        }
     }
 
     override fun onResume() {
@@ -152,9 +130,6 @@ class ScreensaverActivity : BaseActivity() {
     }
 
     override fun onStop() {
-        mSettingsContentObserver?.let {
-            getContentResolver().unregisterContentObserver(it)
-        }
         unregisterReceiver(mIntentReceiver)
         super.onStop()
     }
