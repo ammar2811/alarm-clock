@@ -16,13 +16,15 @@
 
 package com.android.deskclock
 
+import android.annotation.SuppressLint
+import android.app.Notification
 import android.app.NotificationChannel
+import android.app.NotificationManager.IMPORTANCE_HIGH
+import android.app.NotificationManager.IMPORTANCE_LOW
 import android.content.Context
 import android.util.ArraySet
 import android.util.Log
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.app.NotificationManagerCompat.IMPORTANCE_HIGH
-import androidx.core.app.NotificationManagerCompat.IMPORTANCE_LOW
 
 object NotificationUtils {
     private val TAG = NotificationUtils::class.java.simpleName
@@ -92,6 +94,21 @@ object NotificationUtils {
                 R.string.timer_channel,
                 IMPORTANCE_LOW
         )
+    }
+
+    /**
+     * Posts [notification] under [id].
+     *
+     * POST_NOTIFICATIONS is declared in the manifest, and while targetSdk stays below 33 the
+     * platform grants it at install time: a user who turns notifications off causes the post to
+     * be dropped silently rather than throwing SecurityException, so there is nothing to catch
+     * and nothing to request. Every post goes through here so that reasoning lives in one place,
+     * and so raising targetSdk has a single site to add a real runtime permission check to.
+     */
+    @JvmStatic
+    @SuppressLint("MissingPermission")
+    fun post(nm: NotificationManagerCompat, id: Int, notification: Notification) {
+        nm.notify(id, notification)
     }
 
     @JvmStatic

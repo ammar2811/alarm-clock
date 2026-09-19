@@ -66,7 +66,7 @@ internal class TimerNotificationBuilder {
             val channel = NotificationChannel(
                     TIMER_MODEL_NOTIFICATION_CHANNEL_ID,
                     context.getString(R.string.default_label),
-                    NotificationManagerCompat.IMPORTANCE_DEFAULT)
+                    NotificationManager.IMPORTANCE_DEFAULT)
             notificationManager.createNotificationChannel(channel)
         }
     }
@@ -171,7 +171,7 @@ internal class TimerNotificationBuilder {
                 .setShowWhen(false)
                 .setAutoCancel(false)
                 .setContentIntent(pendingShowApp)
-                .setPriority(NotificationManager.IMPORTANCE_HIGH)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_ALARM)
                 .setSmallIcon(R.drawable.stat_notify_timer)
                 .setSortKey(nm.timerNotificationSortKey)
@@ -285,7 +285,7 @@ internal class TimerNotificationBuilder {
                 .setShowWhen(false)
                 .setAutoCancel(false)
                 .setContentIntent(contentIntent)
-                .setPriority(NotificationManager.IMPORTANCE_HIGH)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setDefaults(Notification.DEFAULT_LIGHTS)
                 .setSmallIcon(R.drawable.stat_notify_timer)
                 .setFullScreenIntent(pendingFullScreen, true)
@@ -372,7 +372,7 @@ internal class TimerNotificationBuilder {
                 .setShowWhen(false)
                 .setAutoCancel(false)
                 .setContentIntent(pendingShowApp)
-                .setPriority(NotificationManager.IMPORTANCE_HIGH)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_ALARM)
                 .setSmallIcon(R.drawable.stat_notify_timer)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
