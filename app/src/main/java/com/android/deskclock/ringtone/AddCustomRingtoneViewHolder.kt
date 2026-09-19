@@ -16,6 +16,7 @@
 
 package com.android.deskclock.ringtone
 
+import android.graphics.PorterDuff
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,6 +25,7 @@ import android.widget.TextView
 
 import com.android.deskclock.ItemAdapter.ItemViewHolder
 import com.android.deskclock.R
+import com.android.deskclock.ThemeUtils
 
 internal class AddCustomRingtoneViewHolder private constructor(itemView: View)
     : ItemViewHolder<AddCustomRingtoneHolder>(itemView), View.OnClickListener {
@@ -37,6 +39,10 @@ internal class AddCustomRingtoneViewHolder private constructor(itemView: View)
         nameView.alpha = 0.63f
         val imageView = itemView.findViewById<View>(R.id.ringtone_image) as ImageView
         imageView.setImageResource(R.drawable.ic_add_white_24dp)
+        // The plus is a white PNG, so unlike the bell vectors beside it there is no tint
+        // baked into the drawable and it would be invisible on a light surface.
+        imageView.setColorFilter(ThemeUtils.resolveColor(itemView.context,
+                com.google.android.material.R.attr.colorOnSurface), PorterDuff.Mode.SRC_ATOP)
         imageView.alpha = 0.63f
     }
 
