@@ -76,7 +76,7 @@
                 android:layout_centerVertical="true"
                 android:importantForAccessibility="no"
                 android:scaleType="center"
-                android:tint="?attr/colorPrimary"
+                app:tint="?attr/colorPrimary"
                 android:visibility="gone"
                 app:srcCompat="@drawable/ic_checkmark" />
 

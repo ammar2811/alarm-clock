@@ -49,6 +49,7 @@ import android.widget.ImageView
 import android.widget.TextClock
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.WindowCompat
@@ -247,6 +248,16 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
         mPulseAnimator.setRepeatCount(ValueAnimator.INFINITE)
         mPulseAnimator.start()
 
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // Backing out of a challenge returns to the ring screen; it never dismisses.
+                if (mChallengeContainer.visibility == View.VISIBLE) {
+                    onChallengeAbandoned()
+                }
+                // Otherwise swallow the gesture: back must not dismiss a ringing alarm.
+            }
+        })
+
         maybeStartChallengesFromIntent(getIntent())
     }
 
@@ -340,16 +351,6 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
             }
         }
         return super.dispatchKeyEvent(keyEvent)
-    }
-
-    override fun onBackPressed() {
-        // Backing out of a challenge returns to the ring screen; it never dismisses.
-        if (mChallengeContainer.visibility == View.VISIBLE) {
-            onChallengeAbandoned()
-            return
-        }
-
-        // Don't allow back to dismiss.
     }
 
     override fun onClick(view: View) {

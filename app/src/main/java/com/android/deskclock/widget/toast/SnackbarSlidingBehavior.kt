@@ -16,6 +16,7 @@
 
 package com.android.deskclock.widget.toast
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
@@ -34,6 +35,7 @@ class SnackbarSlidingBehavior(
     context: Context?,
     attrs: AttributeSet?
 ) : CoordinatorLayout.Behavior<View?>() {
+    @SuppressLint("RestrictedApi")
     override fun layoutDependsOn(
         parent: CoordinatorLayout,
         child: View,

@@ -85,9 +85,19 @@ object TimerStringFormatter {
         val showMinutes = minutes > 0
         val showSeconds = seconds > 0 && shouldShowSeconds
 
-        var formatStringId = -1
-        if (showHours) {
-            formatStringId = if (showMinutes) {
+        // Nothing to name: either the caller wants seconds and there is genuinely no time
+        // left, or it does not and the remainder rounds away to "less than a minute". That
+        // string carries no format specifiers, so it must not reach String.format below.
+        if (!showHours && !showMinutes && !showSeconds) {
+            return if (shouldShowSeconds) {
+                null
+            } else {
+                context.getString(R.string.timer_notifications_less_min)
+            }
+        }
+
+        val formatStringId = if (showHours) {
+            if (showMinutes) {
                 if (showSeconds) {
                     R.string.timer_notifications_hours_minutes_seconds
                 } else {
@@ -99,23 +109,17 @@ object TimerStringFormatter {
                 R.string.timer_notifications_hours
             }
         } else if (showMinutes) {
-            formatStringId = if (showSeconds) {
+            if (showSeconds) {
                 R.string.timer_notifications_minutes_seconds
             } else {
                 R.string.timer_notifications_minutes
             }
-        } else if (showSeconds) {
-            formatStringId = R.string.timer_notifications_seconds
-        } else if (!shouldShowSeconds) {
-            formatStringId = R.string.timer_notifications_less_min
+        } else {
+            R.string.timer_notifications_seconds
         }
 
-        return if (formatStringId == -1) {
-            null
-        } else {
-            String.format(context.getString(formatStringId), hourSeq, minSeq,
-                    remainingSuffix, secSeq)
-        }
+        return String.format(context.getString(formatStringId), hourSeq, minSeq,
+                remainingSuffix, secSeq)
     }
 
     @JvmStatic

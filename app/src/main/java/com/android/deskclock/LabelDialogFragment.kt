@@ -34,6 +34,7 @@ import android.widget.TextView.OnEditorActionListener
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.fragment.app.DialogFragment
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.FragmentManager
 
 import com.android.deskclock.data.DataModel
@@ -79,7 +80,7 @@ class LabelDialogFragment : DialogFragment() {
         val colorControlNormal = ThemeUtils.resolveColor(context, androidx.appcompat.R.attr.colorControlNormal)
 
         mLabelBox = AppCompatEditText(context)
-        mLabelBox?.setSupportBackgroundTintList(ColorStateList(
+        ViewCompat.setBackgroundTintList(mLabelBox!!, ColorStateList(
                 arrayOf(intArrayOf(android.R.attr.state_activated), intArrayOf()),
                 intArrayOf(colorControlActivated, colorControlNormal)))
         mLabelBox?.setOnEditorActionListener(ImeDoneListener())
