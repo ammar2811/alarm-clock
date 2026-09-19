@@ -63,6 +63,9 @@ internal class SettingsModel(
     val clockStyle: DataModel.ClockStyle
         get() = SettingsDAO.getClockStyle(mContext, mPrefs)
 
+    val theme: DataModel.Theme
+        get() = SettingsDAO.getTheme(mContext, mPrefs)
+
     var displayClockSeconds: Boolean
         get() = SettingsDAO.getDisplayClockSeconds(mPrefs)
         set(shouldDisplaySeconds) {

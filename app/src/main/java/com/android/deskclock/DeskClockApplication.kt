@@ -20,6 +20,7 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
+import androidx.appcompat.app.AppCompatDelegate
 
 import com.android.deskclock.controller.Controller
 import com.android.deskclock.data.DataModel
@@ -38,6 +39,12 @@ class DeskClockApplication : Application() {
         UiDataModel.uiDataModel.init(applicationContext, prefs)
         Controller.getController().setContext(applicationContext)
         Controller.getController().addEventTracker(LogEventTracker(applicationContext))
+
+        // Before DynamicColors, because the overlay an activity picks up at pre-create is
+        // read off the theme the night mode has already resolved. The preference lives in
+        // device protected storage, so this is readable before the device is unlocked, which
+        // matters for the directBootAware AlarmActivity.
+        AppCompatDelegate.setDefaultNightMode(DataModel.dataModel.theme.nightMode)
 
         // Android already derives a palette from the wallpaper; this only asks for it. The
         // overlay is read off each activity's own theme at onActivityPreCreated, which is why

@@ -34,6 +34,7 @@ import android.provider.Settings.EXTRA_APP_PACKAGE
 import android.view.View
 import androidx.annotation.Keep
 import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatDelegate
 
 import com.android.deskclock.Predicate
 import com.android.deskclock.R
@@ -53,6 +54,17 @@ class DataModel private constructor() {
     /** Indicates the display style of clocks.  */
     enum class ClockStyle {
         ANALOG, DIGITAL
+    }
+
+    /**
+     * Indicates which of the app's two colour modes is in force. The constant each one
+     * carries is the one AppCompatDelegate.setDefaultNightMode expects, so the setting
+     * never has to be translated at the call site.
+     */
+    enum class Theme(val nightMode: Int) {
+        SYSTEM(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM),
+        LIGHT(AppCompatDelegate.MODE_NIGHT_NO),
+        DARK(AppCompatDelegate.MODE_NIGHT_YES)
     }
 
     /** Indicates the preferred sort order of cities.  */
@@ -969,6 +981,15 @@ class DataModel private constructor() {
         get() {
             Utils.enforceMainLooper()
             return mSettingsModel!!.clockStyle
+        }
+
+    /**
+     * @return whether the app follows the system's colour mode or forces light or dark
+     */
+    val theme: Theme
+        get() {
+            Utils.enforceMainLooper()
+            return mSettingsModel!!.theme
         }
 
     var displayClockSeconds: Boolean

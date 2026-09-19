@@ -24,6 +24,7 @@ import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.ListPreference
 import androidx.preference.ListPreferenceDialogFragmentCompat
 import androidx.preference.Preference
@@ -40,6 +41,8 @@ import com.android.deskclock.actionbarmenu.NavUpMenuItemController
 import com.android.deskclock.actionbarmenu.OptionsMenuManager
 import com.android.deskclock.data.DataModel
 import com.android.deskclock.ringtone.RingtonePickerActivity
+
+import java.util.Locale
 
 /**
  * Settings for the Alarm Clock.
@@ -137,6 +140,16 @@ class SettingsActivity : BaseActivity() {
                     val i: Int = simpleMenuPreference.findIndexOfValue(newValue as String)
                     pref.setSummary(simpleMenuPreference.getEntries().get(i))
                 }
+                KEY_THEME -> {
+                    val simpleMenuPreference = pref as SimpleMenuPreference
+                    val i: Int = simpleMenuPreference.findIndexOfValue(newValue as String)
+                    pref.setSummary(simpleMenuPreference.getEntries().get(i))
+                    // The preference has not been written yet, so read the new value rather
+                    // than the model. Applying it here rather than waiting for a restart is
+                    // what makes the settings screen itself recolour under the user's finger.
+                    val theme = DataModel.Theme.valueOf(newValue.uppercase(Locale.US))
+                    AppCompatDelegate.setDefaultNightMode(theme.nightMode)
+                }
                 KEY_CLOCK_DISPLAY_SECONDS -> {
                     DataModel.dataModel.displayClockSeconds = newValue as Boolean
                 }
@@ -225,6 +238,12 @@ class SettingsActivity : BaseActivity() {
                 it.setOnPreferenceChangeListener(this)
             }
 
+            val themePref: SimpleMenuPreference? = findPreference(KEY_THEME)
+            themePref?.let {
+                it.setSummary(it.getEntry())
+                it.setOnPreferenceChangeListener(this)
+            }
+
             val clockStylePref: SimpleMenuPreference? = findPreference(KEY_CLOCK_STYLE)
             clockStylePref?.let {
                 it.setSummary(it.getEntry())
@@ -298,6 +317,7 @@ class SettingsActivity : BaseActivity() {
         const val KEY_TIMER_RINGTONE = "timer_ringtone"
         const val KEY_TIMER_VIBRATE = "timer_vibrate"
         const val KEY_AUTO_SILENCE = "auto_silence"
+        const val KEY_THEME = "theme"
         const val KEY_CLOCK_STYLE = "clock_style"
         const val KEY_CLOCK_DISPLAY_SECONDS = "display_clock_seconds"
         const val KEY_HOME_TZ = "home_time_zone"

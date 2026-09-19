@@ -624,6 +624,26 @@
 
     <!-- Entries listed in the ListPreference when invoking the clock style
          preference. -->
+    <!-- Title of the settings section covering how the app looks -->
+    <string name="appearance_settings">Appearance</string>
+    <!-- Title of the setting that chooses between the light and the dark colour mode -->
+    <string name="theme_title">Theme</string>
+
+    <!-- Entries for the theme setting, shown to the user. -->
+    <string-array name="theme_entries">
+        <item>System default</item>
+        <item>Light</item>
+        <item>Dark</item>
+    </string-array>
+
+    <!-- Values that are retrieved from the ListPreference. These must match
+         the theme_entries above. -->
+    <string-array name="theme_values" translatable="false">
+        <item>system</item>
+        <item>light</item>
+        <item>dark</item>
+    </string-array>
+
     <string-array name="clock_style_entries">
         <item>Analog</item>
         <item>Digital</item>

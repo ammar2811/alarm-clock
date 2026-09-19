@@ -29,6 +29,7 @@ import com.android.deskclock.R
 import com.android.deskclock.data.DataModel.AlarmVolumeButtonBehavior
 import com.android.deskclock.data.DataModel.CitySort
 import com.android.deskclock.data.DataModel.ClockStyle
+import com.android.deskclock.data.DataModel.Theme
 import com.android.deskclock.data.Weekdays.Order
 import com.android.deskclock.settings.ScreensaverSettingsActivity
 import com.android.deskclock.settings.SettingsActivity
@@ -125,6 +126,17 @@ internal object SettingsDAO {
      */
     fun getClockStyle(context: Context, prefs: SharedPreferences): ClockStyle {
         return getClockStyle(context, prefs, SettingsActivity.KEY_CLOCK_STYLE)
+    }
+
+    /**
+     * @return whether the app follows the system's colour mode or forces light or dark
+     */
+    fun getTheme(context: Context, prefs: SharedPreferences): Theme {
+        val defaultTheme: String = context.getString(R.string.default_theme)
+        val theme: String = prefs.getString(SettingsActivity.KEY_THEME, defaultTheme)!!
+        // Hardcoded locale for the same reason as getClockStyle below: some languages add an
+        // accent when uppercasing, which would not match the enum constant.
+        return Theme.valueOf(theme.uppercase(Locale.US))
     }
 
     /**
