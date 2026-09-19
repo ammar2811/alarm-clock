@@ -30,7 +30,7 @@
         android:fontFamily="monospace"
         android:gravity="center"
         android:letterSpacing="0.15"
-        android:textColor="@color/white"
+        android:textColor="?attr/colorOnSurface"
         android:textIsSelectable="false"
         android:textSize="32sp" />
 
@@ -47,8 +47,8 @@
         android:inputType="textVisiblePassword"
         android:letterSpacing="0.15"
         android:maxLines="1"
-        android:textColor="@color/white"
-        android:textColorHint="@color/white_63p"
+        android:textColor="?attr/colorOnSurface"
+        android:textColorHint="?attr/colorOnSurfaceVariant"
         android:textSize="28sp" />
 
     <Button
@@ -59,6 +59,6 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp"
         android:text="@string/challenge_check"
-        android:textColor="?attr/colorAccent" />
+        android:textColor="?attr/colorPrimary" />
 
 </LinearLayout>

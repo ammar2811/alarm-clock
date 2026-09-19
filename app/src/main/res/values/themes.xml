@@ -28,19 +28,35 @@
         <item name="android:windowContentOverlay">@null</item>
 
         <!-- Attributes from androidx.appcompat.appcompat -->
-        <item name="colorAccent">#DA4336</item>
+        <item name="colorAccent">?attr/colorPrimary</item>
         <item name="colorBackgroundFloating">#303030</item>
         <item name="colorControlActivated">@android:color/white</item>
         <item name="colorControlNormal">?android:attr/textColorPrimary</item>
         <item name="colorPrimaryDark">#66000000</item>
         <item name="imageButtonStyle">@style/Widget.ImageButton</item>
         <item name="popupTheme">@style/ThemeOverlay.Popup</item>
+
+        <!-- Material 3 colour roles. These are the app's single vocabulary for colour;
+             nothing outside this block should name a colour literally. The values below
+             are the dark indigo palette the app has always shipped, so this file is the
+             only place that knows the app is currently dark. -->
+        <item name="colorPrimary">#DA4336</item>
+        <item name="colorOnPrimary">@color/default_background</item>
+        <item name="colorSecondaryContainer">#26FFFFFF</item>
+        <item name="colorOnSecondaryContainer">@color/white</item>
+        <item name="colorSurface">@color/default_background</item>
+        <item name="colorOnSurface">@color/white</item>
+        <item name="colorOnSurfaceVariant">@color/white_63p</item>
+        <item name="colorSurfaceContainerHigh">@color/white_08p</item>
+        <item name="colorSurfaceContainerHighest">@color/white</item>
+        <item name="colorOutline">#40FFFFFF</item>
+        <item name="colorOutlineVariant">@color/hairline</item>
     </style>
 
     <style name="Theme.DeskClock.Settings">
         <!-- Attributes from androidx.appcompat.appcompat -->
         <item name="actionBarStyle">@style/Widget.ActionBar</item>
-        <item name="colorControlActivated">?attr/colorAccent</item>
+        <item name="colorControlActivated">?attr/colorPrimary</item>
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">false</item>
 
@@ -64,7 +80,7 @@
 
     <style name="ThemeOverlay.Control.Accent" parent="ThemeOverlay.AppCompat">
         <!-- Attributes from androidx.appcompat.appcompat -->
-        <item name="colorControlActivated">?attr/colorAccent</item>
+        <item name="colorControlActivated">?attr/colorPrimary</item>
     </style>
 
     <style name="ThemeOverlay.Popup" parent="ThemeOverlay.AppCompat">

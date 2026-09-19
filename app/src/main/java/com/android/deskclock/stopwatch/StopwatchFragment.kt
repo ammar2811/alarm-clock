@@ -151,12 +151,12 @@ class StopwatchFragment : DeskClockFragment(UiDataModel.Tab.STOPWATCH) {
         }
 
         val c: Context = mMainTimeText.getContext()
-        val colorAccent = ThemeUtils.resolveColor(c, androidx.appcompat.R.attr.colorAccent)
+        val colorPrimary = ThemeUtils.resolveColor(c, androidx.appcompat.R.attr.colorPrimary)
         val textColorPrimary = ThemeUtils.resolveColor(c, android.R.attr.textColorPrimary)
         val timeTextColor =
                 ColorStateList(
                         arrayOf(intArrayOf(-state_activated, -state_pressed), intArrayOf()),
-                        intArrayOf(textColorPrimary, colorAccent)
+                        intArrayOf(textColorPrimary, colorPrimary)
                 )
         mMainTimeText.setTextColor(timeTextColor)
         mHundredthsTimeText.setTextColor(timeTextColor)

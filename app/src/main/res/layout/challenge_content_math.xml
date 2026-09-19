@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:singleLine="true"
-        android:textColor="@color/white"
+        android:textColor="?attr/colorOnSurface"
         android:textSize="44sp" />
 
     <TextView
@@ -48,8 +48,8 @@
         android:gravity="center"
         android:hint="@string/challenge_math_answer_hint"
         android:singleLine="true"
-        android:textColor="?attr/colorAccent"
-        android:textColorHint="@color/white_63p"
+        android:textColor="?attr/colorPrimary"
+        android:textColorHint="?attr/colorOnSurfaceVariant"
         android:textSize="36sp" />
 
     <View

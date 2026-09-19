@@ -39,7 +39,7 @@
             android:minHeight="56dp"
             android:paddingBottom="8dp"
             android:paddingTop="8dp"
-            android:textColor="?attr/colorAccent"
+            android:textColor="?attr/colorPrimary"
             android:textSize="22sp" />
 
         <TextView
@@ -71,7 +71,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="8dp"
             android:text="@string/challenge_try_out"
-            android:textColor="?attr/colorAccent" />
+            android:textColor="?attr/colorPrimary" />
 
     </LinearLayout>
 

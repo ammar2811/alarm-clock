@@ -28,7 +28,7 @@
         android:id="@+id/challenges_permission_banner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white_08p"
+        android:background="?attr/colorSurfaceContainerHigh"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="16dp"
@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/challenge_camera_needed"
-            android:textColor="@color/white" />
+            android:textColor="?attr/colorOnSurface" />
 
         <Button
             android:id="@+id/challenges_grant_camera"
@@ -47,7 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/challenge_grant_camera"
-            android:textColor="?attr/colorAccent" />
+            android:textColor="?attr/colorPrimary" />
 
     </LinearLayout>
 
@@ -59,7 +59,7 @@
         android:gravity="center"
         android:padding="32dp"
         android:text="@string/challenge_empty_hint"
-        android:textColor="@color/white_63p"
+        android:textColor="?attr/colorOnSurfaceVariant"
         android:textSize="16sp" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -78,6 +78,6 @@
         android:layout_height="wrap_content"
         android:padding="16dp"
         android:text="@string/challenge_add"
-        android:textColor="?attr/colorAccent" />
+        android:textColor="?attr/colorPrimary" />
 
 </LinearLayout>

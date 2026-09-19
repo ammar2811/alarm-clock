@@ -26,6 +26,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.gridlayout.widget.GridLayout
 import com.android.deskclock.R
+import com.android.deskclock.ThemeUtils
 import com.android.deskclock.challenges.ChallengeTuning
 import com.android.deskclock.challenges.SequenceChallenge
 import com.android.deskclock.challenges.engine.SequenceGame
@@ -81,7 +82,7 @@ class SequenceChallengeFragment : ChallengeFragment() {
         for (index in 0 until count) {
             val shape = TextView(requireContext()).apply {
                 text = ChallengeSymbols.glyph(index)
-                setTextColor(ChallengeSymbols.color(index))
+                setTextColor(ChallengeSymbols.color(requireContext(), index))
                 gravity = Gravity.CENTER
                 textSize = 30f
                 alpha = UNLIT_ALPHA
@@ -109,7 +110,7 @@ class SequenceChallengeFragment : ChallengeFragment() {
             val dot = TextView(requireContext()).apply {
                 text = "●"
                 textSize = 10f
-                setTextColor(resources.getColor(R.color.white_63p, requireContext().theme))
+                setTextColor(ThemeUtils.resolveColor(requireContext(), com.google.android.material.R.attr.colorOnSurfaceVariant))
                 alpha = UNLIT_ALPHA
             }
             dotViews += dot

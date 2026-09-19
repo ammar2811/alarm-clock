@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:minWidth="32dp"
             android:gravity="end"
-            android:textColor="?attr/colorAccent"
+            android:textColor="?attr/colorPrimary"
             android:textSize="14sp" />
 
     </LinearLayout>

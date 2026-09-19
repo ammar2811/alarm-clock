@@ -137,7 +137,7 @@ class MemoryChallengeFragment : ChallengeFragment() {
             val view = cardViews[position]
             if (card.faceUp || card.matched) {
                 view.text = ChallengeSymbols.glyph(card.symbol)
-                view.setTextColor(ChallengeSymbols.color(card.symbol))
+                view.setTextColor(ChallengeSymbols.color(requireContext(), card.symbol))
                 // Matched pairs fade back so attention stays on what is left to find.
                 view.alpha = if (card.matched) 0.4f else 1f
             } else {

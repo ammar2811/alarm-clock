@@ -16,7 +16,10 @@
 
 package com.android.deskclock.challenges.ui
 
-import android.graphics.Color
+import android.content.Context
+import androidx.annotation.ColorInt
+
+import com.android.deskclock.R
 
 /**
  * The shapes the memory and sequence challenges are built from.
@@ -40,23 +43,23 @@ object ChallengeSymbols {
         "☀", // sun
     )
 
-    private val COLORS = listOf(
-        Color.parseColor("#FF7043"),
-        Color.parseColor("#42A5F5"),
-        Color.parseColor("#66BB6A"),
-        Color.parseColor("#FFCA28"),
-        Color.parseColor("#AB47BC"),
-        Color.parseColor("#EC407A"),
-        Color.parseColor("#26C6DA"),
-        Color.parseColor("#D4E157"),
-        Color.parseColor("#8D6E63"),
-        Color.parseColor("#FFFFFF"),
-    )
-
     /** How many distinct symbols are available. */
     val count: Int get() = GLYPHS.size
 
     fun glyph(index: Int): String = GLYPHS[index % GLYPHS.size]
 
-    fun color(index: Int): Int = COLORS[index % COLORS.size]
+    /**
+     * The colour for a symbol. These cannot be theme roles, because the whole point is
+     * that the ten are tellable apart from each other, so they live in a resource array
+     * that can be qualified for night instead.
+     */
+    @ColorInt
+    fun color(context: Context, index: Int): Int {
+        val colors = context.resources.obtainTypedArray(R.array.challenge_symbol_colors)
+        try {
+            return colors.getColor(index % colors.length(), 0)
+        } finally {
+            colors.recycle()
+        }
+    }
 }

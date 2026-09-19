@@ -36,7 +36,7 @@
         android:gravity="center"
         android:includeFontPadding="false"
         android:singleLine="true"
-        android:textColor="@color/white_63p"
+        android:textColor="?attr/colorOnSurfaceVariant"
         android:textSize="32sp" />
 
     <TextView
@@ -46,7 +46,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:gravity="center"
-        android:textColor="@color/white_63p"
+        android:textColor="?attr/colorOnSurfaceVariant"
         android:visibility="gone" />
 
     <TextView
@@ -55,7 +55,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:gravity="center"
-        android:textColor="@color/white"
+        android:textColor="?attr/colorOnSurface"
         android:textSize="20sp" />
 
     <!-- Reserved height so appearing and clearing the message does not shift the layout. -->
@@ -66,7 +66,7 @@
         android:layout_height="20dp"
         android:layout_marginTop="8dp"
         android:gravity="center"
-        android:textColor="?attr/colorAccent" />
+        android:textColor="?attr/colorPrimary" />
 
     <FrameLayout
         android:id="@+id/challenge_content"
@@ -82,6 +82,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="@string/alarm_alert_snooze_text"
-        android:textColor="@color/white_63p" />
+        android:textColor="?attr/colorOnSurfaceVariant" />
 
 </LinearLayout>

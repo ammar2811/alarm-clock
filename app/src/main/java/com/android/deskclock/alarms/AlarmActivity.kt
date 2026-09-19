@@ -518,7 +518,7 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
         mAlarmHandled = true
         LOGGER.v("Snoozed: %s", mAlarmInstance)
 
-        val colorAccent = ThemeUtils.resolveColor(this, androidx.appcompat.R.attr.colorAccent)
+        val colorPrimary = ThemeUtils.resolveColor(this, androidx.appcompat.R.attr.colorPrimary)
         setAnimatedFractions(1.0f /* snoozeFraction */, 0.0f /* dismissFraction */)
 
         val snoozeMinutes = DataModel.dataModel.snoozeLength
@@ -528,7 +528,7 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
                 R.plurals.alarm_alert_snooze_set, snoozeMinutes, snoozeMinutes)
 
         getAlertAnimator(mSnoozeButton, R.string.alarm_alert_snoozed_text, infoText,
-                accessibilityText, colorAccent, colorAccent).start()
+                accessibilityText, colorPrimary, colorPrimary).start()
 
         AlarmStateManager.setSnoozeState(this, mAlarmInstance!!, false /* showToast */)
 

@@ -26,5 +26,5 @@
     android:paddingStart="15dp"
     android:paddingTop="16dp"
     android:textAlignment="viewStart"
-    android:textColor="?attr/colorAccent"
+    android:textColor="?attr/colorPrimary"
     android:textSize="15sp" />

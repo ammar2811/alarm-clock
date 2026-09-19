@@ -79,8 +79,8 @@ class StopwatchCircleView(context: Context, attrs: AttributeSet?) : View(context
         mMarkerStrokeSize = resources.getDimension(R.dimen.circletimer_marker_size)
         mRadiusOffset = Utils.calculateRadiusOffset(mStrokeSize, dotDiameter, mMarkerStrokeSize)
 
-        mRemainderColor = Color.WHITE
-        mCompletedColor = ThemeUtils.resolveColor(context, androidx.appcompat.R.attr.colorAccent)
+        mRemainderColor = ThemeUtils.resolveColor(context, com.google.android.material.R.attr.colorSurfaceContainerHighest)
+        mCompletedColor = ThemeUtils.resolveColor(context, androidx.appcompat.R.attr.colorPrimary)
 
         mPaint.setAntiAlias(true)
         mPaint.setStyle(Paint.Style.STROKE)

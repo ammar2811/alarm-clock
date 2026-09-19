@@ -19,7 +19,6 @@ package com.android.deskclock.challenges.ui
 import android.view.Gravity
 import android.view.View
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.gridlayout.widget.GridLayout
 import com.android.deskclock.R
 import com.android.deskclock.ThemeUtils
@@ -86,7 +85,7 @@ class MathChallengeFragment : ChallengeFragment() {
         val labels = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9",
                 DELETE, "0", SUBMIT)
         val keyBackground = androidx.appcompat.R.attr.selectableItemBackgroundBorderless
-        val textColor = ContextCompat.getColor(requireContext(), R.color.white)
+        val textColor = ThemeUtils.resolveColor(requireContext(), com.google.android.material.R.attr.colorOnSurface)
         val padding = resources.getDimensionPixelSize(R.dimen.challenge_key_padding)
 
         for ((position, label) in labels.withIndex()) {

@@ -17,14 +17,15 @@
 package com.android.deskclock.settings
 
 import android.content.Context
+import android.graphics.Color
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import androidx.core.content.ContextCompat
 import androidx.preference.DropDownPreference
 
 import com.android.deskclock.R
+import com.android.deskclock.ThemeUtils
 import com.android.deskclock.Utils
 
 /**
@@ -97,11 +98,11 @@ class SimpleMenuPreference(
 
         override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
             val view: View = super.getDropDownView(position, convertView, parent)
-            if (position == 0) {
-                view.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white_08p))
+            view.setBackgroundColor(if (position == 0) {
+                ThemeUtils.resolveColor(getContext(), com.google.android.material.R.attr.colorSurfaceContainerHigh)
             } else {
-                view.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.transparent))
-            }
+                Color.TRANSPARENT
+            })
             return view
         }
     }

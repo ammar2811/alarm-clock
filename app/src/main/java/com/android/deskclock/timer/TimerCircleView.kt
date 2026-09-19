@@ -69,8 +69,8 @@ class TimerCircleView @JvmOverloads constructor(
         mStrokeSize = resources.getDimension(R.dimen.circletimer_circle_size)
         mRadiusOffset = Utils.calculateRadiusOffset(mStrokeSize, dotDiameter, 0f)
 
-        mRemainderColor = Color.WHITE
-        mCompletedColor = ThemeUtils.resolveColor(context, androidx.appcompat.R.attr.colorAccent)
+        mRemainderColor = ThemeUtils.resolveColor(context, com.google.android.material.R.attr.colorSurfaceContainerHighest)
+        mCompletedColor = ThemeUtils.resolveColor(context, androidx.appcompat.R.attr.colorPrimary)
 
         mPaint.isAntiAlias = true
         mPaint.style = Paint.Style.STROKE
