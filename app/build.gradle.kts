@@ -52,6 +52,35 @@ android {
         }
     }
 
+    lint {
+        // Lint gates :app:check, so every remaining error has to be a real one.
+        abortOnError = true
+
+        // The ~100 res/values-* directories come from AOSP untouched and account for roughly
+        // 1200 findings on their own, which is enough to bury anything real. They are not ours
+        // to fix: the strings are upstream translations of upstream copy, and we ship no
+        // translations of our own, so every string this fork adds would reopen the same noise.
+        disable += setOf(
+            // Upstream translations disagree with the English source about how many format
+            // specifiers a string has, and about which plural quantities a language uses.
+            "StringFormatCount",
+            "ImpliedQuantity",
+            "UnusedQuantity",
+            "PluralsCandidate",
+            // Lint's dictionary does not speak the ~100 languages bundled here.
+            "Typos",
+            // Everything this fork adds is English only and always will be, so the check
+            // reports one finding per locale per new string and never anything actionable.
+            "MissingTranslation"
+        )
+
+        // Raising targetSdk past 30 changes real runtime behavior: notification and exact alarm
+        // permissions become runtime grants, foreground services need declared types, and
+        // ACTION_CLOSE_SYSTEM_DIALOGS stops working. That is its own piece of work with its own
+        // testing, not something to smuggle in under a lint cleanup.
+        disable += "ExpiredTargetSdkVersion"
+    }
+
     testOptions {
         unitTests {
             // Robolectric needs merged resources, and stubbed android.util.Log calls
