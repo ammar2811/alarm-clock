@@ -74,7 +74,7 @@ class Screensaver : DreamService() {
     override fun onCreate() {
         LOGGER.v("Screensaver created")
 
-        setTheme(R.style.Theme_DeskClock)
+        setTheme(R.style.Theme_DeskClock_Screensaver)
         super.onCreate()
 
         mDateFormat = getString(R.string.abbrev_wday_month_day_no_year)

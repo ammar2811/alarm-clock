@@ -32,7 +32,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.ServiceConnection
 import android.content.pm.ActivityInfo
-import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.media.AudioManager
@@ -51,6 +50,9 @@ import android.widget.TextClock
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.graphics.ColorUtils
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.animation.PathInterpolatorCompat
 
 import androidx.fragment.app.Fragment
@@ -126,7 +128,8 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
 
     private lateinit var mChallengeContainer: ViewGroup
     private var mVolumeBehavior: AlarmVolumeButtonBehavior? = null
-    private var mCurrentHourColor = 0
+    private var mSurfaceColor = 0
+    private var mOnSurfaceColor = 0
     private var mReceiverRegistered = false
     /** Whether the AlarmService is currently bound  */
     private var mServiceBound = false
@@ -218,16 +221,20 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
         titleView.setText(mAlarmInstance!!.getLabelOrDefault(this))
         Utils.setTimeFormat(digitalClock, false)
 
-        mCurrentHourColor = ThemeUtils.resolveColor(this, android.R.attr.windowBackground)
-        getWindow().setBackgroundDrawable(ColorDrawable(mCurrentHourColor))
+        mSurfaceColor = ThemeUtils.resolveColor(this, com.google.android.material.R.attr.colorSurface)
+        mOnSurfaceColor = ThemeUtils.resolveColor(this, com.google.android.material.R.attr.colorOnSurface)
 
         mAlarmButton.setOnTouchListener(this)
         mSnoozeButton.setOnClickListener(this)
         mDismissButton.setOnClickListener(this)
 
+        // Each button's icon settles on the "on" colour of the circle it sits in: snooze is
+        // a secondary container, dismiss is the primary one.
         mAlarmAnimator = AnimatorUtils.getScaleAnimator(mAlarmButton, 1.0f, 0.0f)
-        mSnoozeAnimator = getButtonAnimator(mSnoozeButton, Color.WHITE)
-        mDismissAnimator = getButtonAnimator(mDismissButton, mCurrentHourColor)
+        mSnoozeAnimator = getButtonAnimator(mSnoozeButton,
+                ThemeUtils.resolveColor(this, com.google.android.material.R.attr.colorOnSecondaryContainer))
+        mDismissAnimator = getButtonAnimator(mDismissButton,
+                ThemeUtils.resolveColor(this, com.google.android.material.R.attr.colorOnPrimary))
         mPulseAnimator = ObjectAnimator.ofPropertyValuesHolder(pulseView,
                 PropertyValuesHolder.ofFloat(CircleView.RADIUS, 0.0f, pulseView.radius),
                 PropertyValuesHolder.ofObject(CircleView.FILL_COLOR, AnimatorUtils.ARGB_EVALUATOR,
@@ -449,9 +456,16 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
     }
 
     private fun hideNavigationBar() {
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
+        // Through the insets controller rather than setSystemUiVisibility, because the light
+        // status bar flag shares that bitmask: setting the immersive flags directly wipes
+        // what android:windowLightStatusBar put there and the clock and battery icons come
+        // out white on a white ring screen.
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false)
+        WindowInsetsControllerCompat(getWindow(), getWindow().getDecorView()).apply {
+            systemBarsBehavior =
+                    WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            hide(WindowInsetsCompat.Type.navigationBars())
+        }
     }
 
     /**
@@ -563,7 +577,7 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
 
         getAlertAnimator(mDismissButton, R.string.alarm_alert_off_text, null /* infoText */,
                 getString(R.string.alarm_alert_off_text) /* accessibilityText */,
-                Color.WHITE, mCurrentHourColor).start()
+                mOnSurfaceColor, mSurfaceColor).start()
 
         AlarmStateManager.deleteInstanceAndUpdateParent(this, mAlarmInstance!!)
 
@@ -716,7 +730,7 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
                 PropertyValuesHolder.ofInt(AnimatorUtils.DRAWABLE_ALPHA,
                         BUTTON_DRAWABLE_ALPHA_DEFAULT, 255),
                 PropertyValuesHolder.ofObject(AnimatorUtils.DRAWABLE_TINT,
-                        AnimatorUtils.ARGB_EVALUATOR, Color.WHITE, tintColor))
+                        AnimatorUtils.ARGB_EVALUATOR, mOnSurfaceColor, tintColor))
     }
 
     private fun getAlarmBounceAnimator(translationX: Float, hintResId: Int): ValueAnimator {

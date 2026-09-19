@@ -16,19 +16,18 @@
   -->
 
 <resources>
-    <!-- The memory and sequence symbol palette. These are not theme roles on purpose:
-         the ten have to stay tellable apart from one another, which a set of roles
-         cannot promise. Qualify this array for night rather than reaching for a role. -->
+    <!-- The 400 weights, which carry on a dark tile. The day set in values/ uses the 700
+         weights instead, because these wash out on a light one. -->
     <array name="challenge_symbol_colors">
-        <item>#E64A19</item>
-        <item>#1976D2</item>
-        <item>#388E3C</item>
-        <item>#FFA000</item>
-        <item>#7B1FA2</item>
-        <item>#C2185B</item>
-        <item>#0097A7</item>
-        <item>#AFB42B</item>
-        <item>#5D4037</item>
-        <item>#455A64</item>
+        <item>#FF7043</item>
+        <item>#42A5F5</item>
+        <item>#66BB6A</item>
+        <item>#FFCA28</item>
+        <item>#AB47BC</item>
+        <item>#EC407A</item>
+        <item>#26C6DA</item>
+        <item>#D4E157</item>
+        <item>#8D6E63</item>
+        <item>#B0BEC5</item>
     </array>
 </resources>

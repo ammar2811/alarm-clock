@@ -15,53 +15,58 @@
   limitations under the License.
   -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="Theme.DeskClock" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:colorBackgroundFloating">
-            ?attr/colorBackgroundFloating
-        </item>
-        <item name="android:navigationBarColor">?attr/colorPrimaryDark</item>
-        <item name="android:popupTheme">?attr/popupTheme</item>
-        <item name="android:timePickerStyle">@style/Widget.TimePicker</item>
-        <item name="android:windowBackground">@color/default_background</item>
+    <style name="Theme.DeskClock" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowContentOverlay">@null</item>
 
-        <!-- Attributes from androidx.appcompat.appcompat -->
-        <item name="colorAccent">?attr/colorPrimary</item>
-        <item name="colorBackgroundFloating">#303030</item>
-        <item name="colorControlActivated">@android:color/white</item>
-        <item name="colorControlNormal">?android:attr/textColorPrimary</item>
-        <item name="colorPrimaryDark">#66000000</item>
-        <item name="imageButtonStyle">@style/Widget.ImageButton</item>
-        <item name="popupTheme">@style/ThemeOverlay.Popup</item>
+        <!-- BaseActivity lays content out behind the system bars, so the bars themselves
+             must not paint. Material 3 leaves statusBarColor to its MaterialComponents
+             ancestor, which derives it from the primary colour and draws an opaque band
+             over the layout. The light flags then decide which way the icons point against
+             whatever surface ends up behind them. -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">?attr/isLightTheme</item>
 
-        <!-- Material 3 colour roles. These are the app's single vocabulary for colour;
-             nothing outside this block should name a colour literally. The values below
-             are the dark indigo palette the app has always shipped, so this file is the
-             only place that knows the app is currently dark. -->
-        <item name="colorPrimary">#DA4336</item>
-        <item name="colorOnPrimary">@color/default_background</item>
-        <item name="colorSecondaryContainer">#26FFFFFF</item>
-        <item name="colorOnSecondaryContainer">@color/white</item>
-        <item name="colorSurface">@color/default_background</item>
-        <item name="colorOnSurface">@color/white</item>
-        <item name="colorOnSurfaceVariant">@color/white_63p</item>
-        <item name="colorSurfaceContainerHigh">@color/white_08p</item>
-        <item name="colorSurfaceContainerHighest">@color/white</item>
-        <item name="colorOutline">#40FFFFFF</item>
-        <item name="colorOutlineVariant">@color/hairline</item>
+        <!-- The appcompat widgets that still read colorAccent. Material 3 inherits it as an
+             alias for colorSecondary, which is the desaturated palette, so pin it back to
+             the accent the app actually means. -->
+        <item name="colorAccent">?attr/colorPrimary</item>
+        <item name="colorControlActivated">?attr/colorPrimary</item>
+        <item name="colorControlNormal">?attr/colorOnSurfaceVariant</item>
+        <item name="imageButtonStyle">@style/Widget.ImageButton</item>
+
+        <!-- Fallback palette, seeded from the indigo this app shipped for years. On API 31
+             and up DynamicColors applies the wallpaper palette over the top with
+             Theme.applyStyle(force = true), so every one of these loses cleanly and the
+             device's own colours win. Below 31 there is no wallpaper palette to read, and
+             without these the app would fall back to Material's baseline purple. -->
+        <item name="colorPrimary">#555B96</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorPrimaryContainer">#E0E0FF</item>
+        <item name="colorOnPrimaryContainer">#10174B</item>
+        <item name="colorSecondaryContainer">#E1E0F9</item>
+        <item name="colorOnSecondaryContainer">#181A2C</item>
+        <item name="colorSurface">#FFFBFF</item>
+        <item name="android:colorBackground">#FFFBFF</item>
+        <item name="colorOnSurface">#1B1B1F</item>
+        <item name="colorOnSurfaceVariant">#46464F</item>
+        <item name="colorSurfaceContainerHigh">#E9E7EF</item>
+        <item name="colorSurfaceContainerHighest">#E4E1E9</item>
+        <item name="colorOutline">#777680</item>
+        <item name="colorOutlineVariant">#C7C5D0</item>
     </style>
 
     <style name="Theme.DeskClock.Settings">
         <!-- Attributes from androidx.appcompat.appcompat -->
         <item name="actionBarStyle">@style/Widget.ActionBar</item>
-        <item name="colorControlActivated">?attr/colorPrimary</item>
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">false</item>
 
         <!-- Attributes from androidx.preference.-->
-        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
     </style>
 
     <style name="Theme.DeskClock.RingtonePicker">
@@ -78,13 +83,13 @@
         <item name="windowNoTitle">false</item>
     </style>
 
-    <style name="ThemeOverlay.Control.Accent" parent="ThemeOverlay.AppCompat">
-        <!-- Attributes from androidx.appcompat.appcompat -->
-        <item name="colorControlActivated">?attr/colorPrimary</item>
-    </style>
-
-    <style name="ThemeOverlay.Popup" parent="ThemeOverlay.AppCompat">
-        <item name="android:colorBackground">?attr/colorBackgroundFloating</item>
+    <!-- The screensaver is a dock-at-night display and stays dark whatever the app's theme
+         setting is, because a white screen at 3am is not a feature. A DreamService has no
+         AppCompatDelegate, so it cannot follow setDefaultNightMode anyway; naming the dark
+         theme here is both the correct behaviour and the only one available. -->
+    <style name="Theme.DeskClock.Screensaver" parent="Theme.Material3.DynamicColors.Dark.NoActionBar">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="colorAccent">?attr/colorPrimary</item>
     </style>
 
 </resources>

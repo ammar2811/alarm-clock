@@ -23,7 +23,6 @@ import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.content.Context
 import android.content.Context.VIBRATOR_SERVICE
-import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
@@ -184,10 +183,11 @@ class ExpandedAlarmViewHolder private constructor(itemView: View, private val mH
                 if (alarm.daysOfWeek.isBitOn(weekdays[i])) {
                     dayButton.isChecked = true
                     dayButton.setTextColor(ThemeUtils.resolveColor(context,
-                            android.R.attr.windowBackground))
+                            com.google.android.material.R.attr.colorOnPrimary))
                 } else {
                     dayButton.isChecked = false
-                    dayButton.setTextColor(Color.WHITE)
+                    dayButton.setTextColor(ThemeUtils.resolveColor(context,
+                            com.google.android.material.R.attr.colorOnSurfaceVariant))
                 }
             }
         }

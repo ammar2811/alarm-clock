@@ -97,20 +97,16 @@
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
-    <style name="TextAppearance.Tab" parent="TextAppearance.Design.Tab">
+    <style name="TextAppearance.Tab" parent="TextAppearance.Material3.LabelMedium">
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textSize">12sp</item>
     </style>
 
-    <style name="Widget.ActionBar" parent="Widget.AppCompat.ActionBar">
-        <item name="android:background">@null</item>
-
-        <!-- Attributes from androidx.appcompat.appcompat -->
+    <style name="Widget.ActionBar" parent="Widget.Material3.Light.ActionBar.Solid">
         <item name="displayOptions">showTitle|homeAsUp</item>
     </style>
 
     <style name="Widget.ActionBar.NoTitle">
-        <!-- Attributes from androidx.appcompat.appcompat -->
         <item name="displayOptions">homeAsUp</item>
     </style>
 
@@ -125,13 +121,6 @@
 
     <style name="Widget.ImageButton" parent="Widget.AppCompat.ImageButton">
         <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
-    </style>
-
-    <style name="Widget.TimePicker" parent="android:Widget.Material.TimePicker">
-        <item name="android:headerBackground">@android:color/transparent</item>
-        <item name="android:numbersBackgroundColor">@android:color/transparent</item>
-        <item name="android:numbersSelectorColor">?attr/colorPrimary</item>
-        <item name="android:numbersTextColor">?android:attr/textColorPrimary</item>
     </style>
 
 </resources>
