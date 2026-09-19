@@ -34,6 +34,10 @@
 
     <color name="default_background">#1A237E</color>
 
+    <!-- Launcher shortcut icons are rasterised by the launcher, so they cannot follow the
+         app's theme and keep a literal colour on purpose. -->
+    <color name="launcher_icon_background">#1A237E</color>
+
     <!-- shadowColor for widget text -->
     <color name="widget_shadow_color">#67000000</color>
 </resources>

@@ -21,7 +21,8 @@
     android:width="24dp"
     android:viewportWidth="240"
     android:height="24dp"
-    android:viewportHeight="240" >
+    android:viewportHeight="240"
+    android:tint="?attr/colorOnSurface">
     <group
         android:name="clock_frame"
         android:translateX="120"

@@ -20,7 +20,8 @@
     android:width="48dp"
     android:height="48dp"
     android:viewportHeight="48"
-    android:viewportWidth="48">
+    android:viewportWidth="48"
+    android:tint="?attr/colorOnSurface">
     <group
         android:name="path_0"
         android:rotation="90"
