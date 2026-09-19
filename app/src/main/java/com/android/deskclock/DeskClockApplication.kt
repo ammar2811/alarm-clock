@@ -25,6 +25,7 @@ import com.android.deskclock.controller.Controller
 import com.android.deskclock.data.DataModel
 import com.android.deskclock.events.LogEventTracker
 import com.android.deskclock.uidata.UiDataModel
+import com.google.android.material.color.DynamicColors
 
 class DeskClockApplication : Application() {
     override fun onCreate() {
@@ -37,6 +38,13 @@ class DeskClockApplication : Application() {
         UiDataModel.uiDataModel.init(applicationContext, prefs)
         Controller.getController().setContext(applicationContext)
         Controller.getController().addEventTracker(LogEventTracker(applicationContext))
+
+        // Android already derives a palette from the wallpaper; this only asks for it. The
+        // overlay is read off each activity's own theme at onActivityPreCreated, which is why
+        // no overlay is named here: Theme.Material3.DayNight already resolves to the light or
+        // the dark one according to the mode in force. On API 24-30 there is no palette to
+        // read and this is a no-op, leaving the indigo in values/themes.xml as the fallback.
+        DynamicColors.applyToActivitiesIfAvailable(this)
     }
 
     companion object {

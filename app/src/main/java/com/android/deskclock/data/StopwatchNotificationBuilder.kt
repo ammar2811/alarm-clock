@@ -144,7 +144,7 @@ internal class StopwatchNotificationBuilder {
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setSmallIcon(R.drawable.stat_notify_stopwatch)
                 .setStyle(NotificationCompat.DecoratedCustomViewStyle())
-                .setColor(ContextCompat.getColor(context, R.color.default_background))
+                .setColor(ContextCompat.getColor(context, R.color.notification_accent))
 
         notification.setGroup(nm.stopwatchNotificationGroupKey)
 

@@ -123,7 +123,7 @@ internal object AlarmNotifications {
                         R.string.alarm_alert_predismiss_title))
                 .setContentText(AlarmUtils.getAlarmText(
                         context, instance, true /* includeLabel */))
-                .setColor(ContextCompat.getColor(context, R.color.default_background))
+                .setColor(ContextCompat.getColor(context, R.color.notification_accent))
                 .setSmallIcon(R.drawable.stat_notify_alarm)
                 .setAutoCancel(false)
                 .setSortKey(createSortKey(instance))
@@ -183,7 +183,7 @@ internal object AlarmNotifications {
                         R.string.alarm_alert_predismiss_title))
                 .setContentText(AlarmUtils.getAlarmText(
                         context, instance, true /* includeLabel */))
-                .setColor(ContextCompat.getColor(context, R.color.default_background))
+                .setColor(ContextCompat.getColor(context, R.color.notification_accent))
                 .setSmallIcon(R.drawable.stat_notify_alarm)
                 .setAutoCancel(false)
                 .setSortKey(createSortKey(instance))
@@ -301,7 +301,7 @@ internal object AlarmNotifications {
             summary = NotificationCompat.Builder(context, ALARM_NOTIFICATION_CHANNEL_ID)
                     .setShowWhen(false)
                     .setContentIntent(firstUpcoming.contentIntent)
-                    .setColor(ContextCompat.getColor(context, R.color.default_background))
+                    .setColor(ContextCompat.getColor(context, R.color.notification_accent))
                     .setSmallIcon(R.drawable.stat_notify_alarm)
                     .setGroup(UPCOMING_GROUP_KEY)
                     .setGroupSummary(true)
@@ -348,7 +348,7 @@ internal object AlarmNotifications {
             summary = NotificationCompat.Builder(context, ALARM_NOTIFICATION_CHANNEL_ID)
                     .setShowWhen(false)
                     .setContentIntent(firstMissed.contentIntent)
-                    .setColor(ContextCompat.getColor(context, R.color.default_background))
+                    .setColor(ContextCompat.getColor(context, R.color.notification_accent))
                     .setSmallIcon(R.drawable.stat_notify_alarm)
                     .setGroup(MISSED_GROUP_KEY)
                     .setGroupSummary(true)
@@ -375,7 +375,7 @@ internal object AlarmNotifications {
                 .setContentTitle(instance.getLabelOrDefault(context))
                 .setContentText(context.getString(R.string.alarm_alert_snooze_until,
                         AlarmUtils.getFormattedTime(context, instance.alarmTime)))
-                .setColor(ContextCompat.getColor(context, R.color.default_background))
+                .setColor(ContextCompat.getColor(context, R.color.notification_accent))
                 .setSmallIcon(R.drawable.stat_notify_alarm)
                 .setAutoCancel(false)
                 .setSortKey(createSortKey(instance))
@@ -432,7 +432,7 @@ internal object AlarmNotifications {
                 } else {
                     context.getString(R.string.alarm_missed_text, alarmTime, label)
                 })
-                .setColor(ContextCompat.getColor(context, R.color.default_background))
+                .setColor(ContextCompat.getColor(context, R.color.notification_accent))
                 .setSortKey(createSortKey(instance))
                 .setSmallIcon(R.drawable.stat_notify_alarm)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -481,7 +481,7 @@ internal object AlarmNotifications {
                 .setContentTitle(instance.getLabelOrDefault(service))
                 .setContentText(AlarmUtils.getFormattedTime(
                         service, instance.alarmTime))
-                .setColor(ContextCompat.getColor(service, R.color.default_background))
+                .setColor(ContextCompat.getColor(service, R.color.notification_accent))
                 .setSmallIcon(R.drawable.stat_notify_alarm)
                 .setOngoing(true)
                 .setAutoCancel(false)

@@ -25,7 +25,12 @@
     <color name="white_63p">#A0FFFFFF</color>
     <color name="transparent">#00000000</color>
 
-    <color name="default_background">#1A237E</color>
+    <!-- The accent SystemUI draws on this app's notifications. Notifications are laid out
+         in SystemUI's process and resolved in SystemUI's configuration, so this deliberately
+         has no values-night/ variant: a night qualifier here would be read against the
+         system's night mode, not the app's, and the value has to work on both notification
+         shades anyway. values-v31/ swaps it for the wallpaper accent. -->
+    <color name="notification_accent">#1A237E</color>
 
     <!-- Launcher shortcut icons are rasterised by the launcher, so they cannot follow the
          app's theme and keep a literal colour on purpose. -->
