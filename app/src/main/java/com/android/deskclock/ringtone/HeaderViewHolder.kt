@@ -41,6 +41,10 @@ internal class HeaderViewHolder private constructor(itemView: View)
     }
 
     companion object {
-        const val VIEW_TYPE_ITEM_HEADER = R.layout.ringtone_item_header
+        // Not a const: resource ids are not compile time constants, so const makes the
+        // compiler inline the declaration while callers still emit a getter call that
+        // does not exist. @JvmField matches RingtoneViewHolder's view types below.
+        @JvmField
+        val VIEW_TYPE_ITEM_HEADER: Int = R.layout.ringtone_item_header
     }
 }
