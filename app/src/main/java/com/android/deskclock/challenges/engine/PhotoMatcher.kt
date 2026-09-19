@@ -40,31 +40,41 @@ class PhotoMatcher(
 ) {
     private val tuning = ChallengeTuning.photo(difficulty)
 
-    private var streak = 0
+    /**
+     * Consecutive matching frames per target. Streaks are tracked separately so that
+     * glancing between two different targets cannot add up to one streak; a streak has to
+     * mean one object held steadily in view.
+     */
+    private val streaks = mutableMapOf<String, Int>()
 
-    /** Consecutive matching frames seen so far. */
-    val consecutiveMatches: Int get() = streak
+    /** Consecutive matching frames for whichever target is closest to passing. */
+    val consecutiveMatches: Int get() = streaks.values.maxOrNull() ?: 0
 
     val requiredFrames: Int get() = tuning.requiredFrames
 
+    /** The target that has held for enough consecutive frames, or null if none has. */
+    val matchedTarget: String?
+        get() = targets.firstOrNull { (streaks[it] ?: 0) >= tuning.requiredFrames }
+
     /** True once enough consecutive frames have matched. */
-    val isSatisfied: Boolean get() = streak >= tuning.requiredFrames
+    val isSatisfied: Boolean get() = matchedTarget != null
 
     /**
      * Feeds one frame's detections in.
      *
-     * @return true once the challenge is satisfied.
+     * @return true once the challenge is satisfied; [matchedTarget] names which target did it.
      */
     fun onFrame(detections: List<Detection>): Boolean {
-        val hit = detections.any {
-            it.score >= tuning.scoreThreshold && CocoLabels.matches(it.label, targets)
+        val seen = detections.filter { it.score >= tuning.scoreThreshold }
+        for (target in targets) {
+            val hit = seen.any { CocoLabels.matches(it.label, listOf(target)) }
+            streaks[target] = if (hit) (streaks[target] ?: 0) + 1 else 0
         }
-        streak = if (hit) streak + 1 else 0
         return isSatisfied
     }
 
-    /** Forgets the current streak, for example after the camera is restarted. */
+    /** Forgets every streak, for example after the camera is restarted. */
     fun reset() {
-        streak = 0
+        streaks.clear()
     }
 }

@@ -54,15 +54,16 @@ import java.util.concurrent.Executors
  */
 class PhotoChallengeFragment : ChallengeFragment() {
 
-    /** How many of the required photos have been captured so far. */
+    /** Targets already photographed. A set, because each photo must be a different one. */
     private class State {
-        var captured = 0
+        val captured = mutableSetOf<String>()
     }
 
     private val state: State by lazy { runner.engine(engineKey) { State() } }
 
     private lateinit var previewView: PreviewView
     private lateinit var statusView: TextView
+    private lateinit var targetView: TextView
 
     private var detector: ObjectDetector? = null
     private var analysisExecutor: ExecutorService? = null
@@ -80,14 +81,17 @@ class PhotoChallengeFragment : ChallengeFragment() {
         statusView = view.findViewById(R.id.photo_status)
 
         val photo = config as PhotoChallenge
-        view.findViewById<TextView>(R.id.photo_target).text = describeTargets(photo)
+        targetView = view.findViewById(R.id.photo_target)
+        targetView.text = describeTargets(remainingTargets())
 
         if (!hasCameraPermission()) {
             unavailable(getString(R.string.challenge_photo_no_camera_permission))
             return
         }
 
-        matcher = PhotoMatcher(photo.targets, photo.difficulty)
+        // Built from what is left rather than every target, so a configuration change
+        // part way through does not re-offer one that has already been photographed.
+        matcher = PhotoMatcher(remainingTargets(), photo.difficulty)
         updateStatus()
         startCamera()
     }
@@ -104,11 +108,26 @@ class PhotoChallengeFragment : ChallengeFragment() {
         ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) ==
                 PackageManager.PERMISSION_GRANTED
 
-    /** "Cup", or "Cup or sink" when several targets will do. */
-    private fun describeTargets(photo: PhotoChallenge): String =
-        photo.targets.joinToString(getString(R.string.challenge_photo_target_separator)) {
+    /** Targets still outstanding, in the order they were configured. */
+    private fun remainingTargets(): List<String> =
+        (config as PhotoChallenge).targets.filterNot { it in state.captured }
+
+    /**
+     * "Cup and sink" when every one of them still has to be photographed, "Cup or sink"
+     * when there are more targets left than photos left and so any of them will do.
+     */
+    private fun describeTargets(targets: List<String>): String {
+        val photo = config as PhotoChallenge
+        val stillNeeded = photo.photos - state.captured.size
+        val separator = if (targets.size <= stillNeeded) {
+            R.string.challenge_photo_target_separator_all
+        } else {
+            R.string.challenge_photo_target_separator
+        }
+        return targets.joinToString(getString(separator)) {
             it.replaceFirstChar(Char::uppercase)
         }
+    }
 
     private fun startCamera() {
         val executor = Executors.newSingleThreadExecutor()
@@ -195,29 +214,33 @@ class PhotoChallengeFragment : ChallengeFragment() {
             detection.categories().map { Detection(it.categoryName(), it.score()) }
         }
         val matcher = matcher ?: return
-        val satisfied = matcher.onFrame(detections)
+        val found = if (matcher.onFrame(detections)) matcher.matchedTarget else null
 
         view?.post {
             if (!isAdded || isPaused) return@post
-            if (satisfied) onTargetFound() else updateStatus()
+            if (found != null) onTargetFound(found) else updateStatus()
         }
     }
 
-    private fun onTargetFound() {
+    private fun onTargetFound(target: String) {
         val photo = config as PhotoChallenge
         isPaused = true
-        state.captured++
+        state.captured += target
         statusView.text = getString(R.string.challenge_photo_found)
 
-        if (state.captured >= photo.photos) {
+        if (state.captured.size >= photo.photos) {
             pass()
             return
         }
 
-        // Ask for the next one after a beat, so the confirmation is readable.
-        matcher?.reset()
+        // Ask for the next one after a beat, so the confirmation is readable. The matcher
+        // is rebuilt on what is left rather than reset, so holding the camera on the object
+        // just photographed cannot satisfy the next photo too.
         view?.postDelayed({
             if (!isAdded) return@postDelayed
+            val remaining = remainingTargets()
+            matcher = PhotoMatcher(remaining, photo.difficulty)
+            targetView.text = describeTargets(remaining)
             isPaused = false
             updateStatus()
         }, FOUND_PAUSE_MILLIS)
@@ -226,7 +249,7 @@ class PhotoChallengeFragment : ChallengeFragment() {
     private fun updateStatus() {
         val photo = config as PhotoChallenge
         statusView.text = if (photo.photos > 1) {
-            getString(R.string.challenge_photo_step, state.captured + 1, photo.photos)
+            getString(R.string.challenge_photo_step, state.captured.size + 1, photo.photos)
         } else {
             getString(R.string.challenge_photo_searching)
         }

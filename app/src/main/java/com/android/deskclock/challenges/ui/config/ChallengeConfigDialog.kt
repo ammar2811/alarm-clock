@@ -16,7 +16,6 @@
 
 package com.android.deskclock.challenges.ui.config
 
-import android.app.AlertDialog
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
@@ -27,6 +26,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.android.deskclock.R
@@ -158,9 +158,14 @@ class ChallengeConfigDialog : DialogFragment() {
             }
 
             is PhotoChallenge -> {
-                addSlider(R.string.challenge_setting_photos,
-                        PhotoChallenge.PHOTOS, config.photos) { value ->
-                    working = (working as PhotoChallenge).copy(photos = value)
+                // Each photo has to be a different target, so the count cannot exceed the
+                // number of targets. With only one target there is no choice to offer.
+                val most = minOf(PhotoChallenge.PHOTOS.last, config.targets.size)
+                if (most > PhotoChallenge.PHOTOS.first) {
+                    addSlider(R.string.challenge_setting_photos,
+                            PhotoChallenge.PHOTOS.first..most, config.photos) { value ->
+                        working = (working as PhotoChallenge).copy(photos = value)
+                    }
                 }
                 addTargetPicker()
             }
@@ -217,7 +222,9 @@ class ChallengeConfigDialog : DialogFragment() {
             PhotoTargetDialog.show(parentFragmentManager, (working as PhotoChallenge).targets)
             { chosen ->
                 working = (working as PhotoChallenge).copy(targets = chosen).normalized()
-                refresh()
+                // Rebuilt rather than refreshed: how many targets there are decides the
+                // photo count's range, and normalized() may just have clamped the count.
+                buildSliders()
                 updatePreview()
             }
         }
@@ -242,8 +249,6 @@ class ChallengeConfigDialog : DialogFragment() {
 
             is PhotoChallenge ->
                 ChallengeSummary.describe(requireContext(), config)
-
-            else -> ""
         }
     }
 
@@ -253,7 +258,12 @@ class ChallengeConfigDialog : DialogFragment() {
         private const val ARG_IS_NEW = "is_new"
         private const val TAG = "challenge_config"
 
-        fun show(manager: FragmentManager, position: Int, config: ChallengeConfig) {
+        fun show(
+            manager: FragmentManager,
+            position: Int,
+            config: ChallengeConfig,
+            isNew: Boolean
+        ) {
             // Replace any dialog already up, so a double tap cannot stack two.
             manager.findFragmentByTag(TAG)?.let {
                 manager.beginTransaction().remove(it).commit()
@@ -262,6 +272,7 @@ class ChallengeConfigDialog : DialogFragment() {
                 arguments = Bundle().apply {
                     putInt(ARG_POSITION, position)
                     putString(ARG_CONFIG, ChallengeCodec.encode(listOf(config)))
+                    putBoolean(ARG_IS_NEW, isNew)
                 }
             }.show(manager, TAG)
         }
@@ -275,5 +286,4 @@ private fun ChallengeConfig.withDifficulty(difficulty: Difficulty): ChallengeCon
     is RetypeChallenge -> copy(difficulty = difficulty)
     is SequenceChallenge -> copy(difficulty = difficulty)
     is PhotoChallenge -> copy(difficulty = difficulty)
-    else -> this
 }

@@ -17,13 +17,13 @@
 package com.android.deskclock.challenges.ui.config
 
 import android.Manifest
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -163,14 +163,15 @@ class ChallengesActivity : BaseActivity(), ChallengeConfigDialog.Listener {
                     challenges += defaultChallengeOf(kind)
                     render()
                     // Open the new one straight away, so adding and configuring is one move.
-                    editChallenge(challenges.lastIndex)
+                    // Flagged as new so backing out drops it again rather than leaving it.
+                    editChallenge(challenges.lastIndex, isNew = true)
                 }
                 .show()
     }
 
-    private fun editChallenge(position: Int) {
+    private fun editChallenge(position: Int, isNew: Boolean = false) {
         val config = challenges.getOrNull(position) ?: return
-        ChallengeConfigDialog.show(supportFragmentManager, position, config)
+        ChallengeConfigDialog.show(supportFragmentManager, position, config, isNew)
     }
 
     private fun removeChallenge(position: Int) {

@@ -68,7 +68,12 @@
     <string name="challenge_photo_no_camera">the camera did not start</string>
     <string name="challenge_photo_no_detector">object recognition is unavailable</string>
     <!-- Joins several acceptable targets, as in "Cup or sink". -->
-    <string name="challenge_photo_target_separator"> or </string>
+    <!-- Quoted so the surrounding spaces survive: Android strips whitespace from the
+         edges of an unquoted string resource. -->
+    <string name="challenge_photo_target_separator">" or "</string>
+
+    <!-- Used instead of "or" when every remaining target is required. -->
+    <string name="challenge_photo_target_separator_all">" and "</string>
     <string name="challenge_photo_shutter_description">Capture</string>
     <string name="challenge_photo_step"><xliff:g id="position" example="1">%1$d</xliff:g> of <xliff:g id="total" example="2">%2$d</xliff:g> photos</string>
 

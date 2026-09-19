@@ -25,6 +25,7 @@ import kotlin.random.Random
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -391,6 +392,36 @@ class ChallengeEngineTest {
             assertFalse(matcher.onFrame(frame))
         }
         assertTrue("should pass on frame $required", matcher.onFrame(frame))
+    }
+
+    @Test
+    fun photo_namesWhichTargetPassed() {
+        // The fragment needs the label so the next photo can demand a different one.
+        val matcher = PhotoMatcher(listOf("cup", "sink"), Difficulty.EASY)
+
+        assertTrue(matcher.onFrame(listOf(Detection("sink", 0.9f))))
+        assertEquals("sink", matcher.matchedTarget)
+    }
+
+    @Test
+    fun photo_streakIsKeptPerTarget() {
+        // Glancing between two targets must not add up to one streak: a streak has to mean
+        // a single object held steadily in view, or two half sightings would pass a photo.
+        val matcher = PhotoMatcher(listOf("cup", "sink"), Difficulty.HARD)
+
+        repeat(ChallengeTuning.photo(Difficulty.HARD).requiredFrames * 2) { i ->
+            val label = if (i % 2 == 0) "cup" else "sink"
+            assertFalse(matcher.onFrame(listOf(Detection(label, 0.9f))))
+        }
+        assertNull(matcher.matchedTarget)
+    }
+
+    @Test
+    fun photo_matchedTargetIsNullUntilSatisfied() {
+        val matcher = PhotoMatcher(listOf("cup"), Difficulty.EXPERT)
+
+        matcher.onFrame(listOf(Detection("cup", 0.95f)))
+        assertNull(matcher.matchedTarget)
     }
 
     @Test

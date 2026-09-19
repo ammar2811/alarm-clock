@@ -102,13 +102,32 @@ class ChallengeCodecTest {
     }
 
     @Test
+    fun photoCount_cannotExceedTheNumberOfTargets() {
+        // Every photo must be a different target, so two photos against one target could
+        // never be finished. An alarm nobody can dismiss is worse than a weaker challenge.
+        val decoded = ChallengeCodec.decode(
+                """[{"type":"photo","id":"a","targets":["cup"],"photos":4}]""")
+
+        assertEquals(1, (decoded[0] as PhotoChallenge).photos)
+    }
+
+    @Test
+    fun photoCount_survivesWhenThereAreEnoughTargets() {
+        val decoded = ChallengeCodec.decode(
+                """[{"type":"photo","id":"a","targets":["cup","sink","clock"],"photos":3}]""")
+
+        assertEquals(3, (decoded[0] as PhotoChallenge).photos)
+    }
+
+    @Test
     fun outOfRangeNumbers_areClampedOnDecode() {
         val raw = """[
             {"type":"math","id":"a","equations":99},
             {"type":"memory","id":"b","pairs":0},
             {"type":"retype","id":"c","length":1000,"rounds":0},
             {"type":"sequence","id":"d","shapes":1,"length":99},
-            {"type":"photo","id":"e","photos":42}
+            {"type":"photo","id":"e","photos":42,
+             "targets":["cup","sink","chair","book","clock","bed"]}
         ]"""
 
         val decoded = ChallengeCodec.decode(raw)

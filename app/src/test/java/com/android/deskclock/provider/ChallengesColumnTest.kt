@@ -157,7 +157,7 @@ class ChallengesColumnTest {
             daysOfWeek = Weekdays.NONE
             challenges = listOf(
                 MathChallenge(id = "m", equations = 4, difficulty = Difficulty.HARD),
-                PhotoChallenge(id = "p", targets = listOf("sink"), photos = 2),
+                PhotoChallenge(id = "p", targets = listOf("sink", "cup"), photos = 2),
             )
         }
 

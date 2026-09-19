@@ -93,9 +93,13 @@ data class PhotoChallenge(
         // Drop labels the bundled model cannot detect, so a challenge can never be
         // impossible to satisfy. Fall back to the default rather than an empty target set.
         val known = targets.filter(CocoLabels::isKnown).distinct()
+        val usable = known.ifEmpty { listOf(CocoLabels.DEFAULT_TARGET) }
         return copy(
-            targets = known.ifEmpty { listOf(CocoLabels.DEFAULT_TARGET) },
-            photos = photos.coerceIn(PHOTOS),
+            targets = usable,
+            // Every photo has to be a different target, so asking for more photos than
+            // there are targets could never be finished. Clamping here means no stored
+            // config can strand someone in front of an alarm they cannot dismiss.
+            photos = photos.coerceIn(PHOTOS.first, minOf(PHOTOS.last, usable.size)),
         )
     }
 
