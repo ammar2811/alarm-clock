@@ -49,6 +49,7 @@ import android.widget.ImageView
 import android.widget.TextClock
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -175,7 +176,9 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
         // Get the volume/camera button behavior setting
         mVolumeBehavior = DataModel.dataModel.alarmVolumeButtonBehavior
 
-        if (Utils.isOOrLater) {
+        // setShowWhenLocked/setTurnScreenOn arrived in O_MR1, not O; below that the
+        // deprecated window flags are the only way to get the same behavior.
+        if (Utils.isOMR1OrLater) {
             setShowWhenLocked(true)
             setTurnScreenOn(true)
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
@@ -192,7 +195,7 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
         hideNavigationBar()
 
         // Close dialogs and window shade, so this is fully visible
-        sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
+        Utils.closeSystemDialogs(this)
 
         // Honor rotation on tablets; fix the orientation on phones.
         if (!getResources().getBoolean(R.bool.rotateAlarmAlert)) {
@@ -286,7 +289,8 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
             val filter = IntentFilter(AlarmService.ALARM_DONE_ACTION)
             filter.addAction(AlarmService.ALARM_SNOOZE_ACTION)
             filter.addAction(AlarmService.ALARM_DISMISS_ACTION)
-            registerReceiver(mReceiver, filter, Context.RECEIVER_EXPORTED)
+            ContextCompat.registerReceiver(this, mReceiver, filter,
+                    ContextCompat.RECEIVER_EXPORTED)
             mReceiverRegistered = true
         }
         bindAlarmService()

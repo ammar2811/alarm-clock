@@ -139,15 +139,15 @@ object NotificationUtils {
     }
 
     private fun deleteChannel(nm: NotificationManagerCompat, channelId: String) {
-        val channel: NotificationChannel? = nm.getNotificationChannel(channelId)
-        if (channel != null) {
+        if (nm.getNotificationChannelCompat(channelId) != null) {
             nm.deleteNotificationChannel(channelId)
         }
     }
 
+    // The compat channel type carries the id without requiring API 26 at the call site.
     private fun getAllExistingChannelIds(nm: NotificationManagerCompat): Set<String> {
         val result: MutableSet<String> = ArraySet()
-        for (channel in nm.getNotificationChannels()) {
+        for (channel in nm.getNotificationChannelsCompat()) {
             result.add(channel.id)
         }
         return result

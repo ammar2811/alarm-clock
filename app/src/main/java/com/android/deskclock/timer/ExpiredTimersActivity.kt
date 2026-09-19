@@ -32,6 +32,7 @@ import android.view.WindowManager
 import com.android.deskclock.BaseActivity
 import com.android.deskclock.LogUtils
 import com.android.deskclock.R
+import com.android.deskclock.Utils
 import com.android.deskclock.data.DataModel
 import com.android.deskclock.data.Timer
 import com.android.deskclock.data.TimerListener
@@ -76,14 +77,23 @@ class ExpiredTimersActivity : BaseActivity() {
         val view: View = findViewById(R.id.expired_timers_activity)
         view.systemUiVisibility = View.SYSTEM_UI_FLAG_LOW_PROFILE
 
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-                or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON)
-
-        setTurnScreenOn(true)
-        setShowWhenLocked(true)
+        // setShowWhenLocked/setTurnScreenOn arrived in O_MR1, not O; below that the
+        // deprecated window flags are the only way to get the same behavior.
+        if (Utils.isOMR1OrLater) {
+            setShowWhenLocked(true)
+            setTurnScreenOn(true)
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                    or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON)
+        } else {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                    or WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+                    or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                    or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+                    or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON)
+        }
 
         // Close dialogs and window shade, so this is fully visible
-        sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
+        Utils.closeSystemDialogs(this)
 
         // Honor rotation on tablets; fix the orientation on phones.
         if (!getResources().getBoolean(R.bool.rotateAlarmAlert)) {

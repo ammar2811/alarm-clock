@@ -155,6 +155,29 @@ object Utils {
         get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
 
     /**
+     * @return `true` if the device is [Build.VERSION_CODES.O_MR1] or later
+     */
+    val isOMR1OrLater: Boolean
+        get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1
+
+    /**
+     * Asks the system to dismiss any dialog or notification shade covering the screen so that a
+     * full screen alarm or expired timer is actually the thing the user sees.
+     *
+     * Android 12 stopped honoring this broadcast from ordinary apps. The permission it now
+     * demands, BROADCAST_CLOSE_SYSTEM_DIALOGS, is signature|privileged, so there is nothing an
+     * app can request and the send is dropped with a warning in the log. Stopping at S keeps
+     * that ceiling explicit rather than leaving a call that silently does nothing.
+     */
+    @JvmStatic
+    @SuppressLint("MissingPermission")
+    fun closeSystemDialogs(context: Context) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+            context.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
+        }
+    }
+
+    /**
      * @return {@code true} if the device is {@link Build.VERSION_CODES#P} or later
      */
     val isPOrLater: Boolean
