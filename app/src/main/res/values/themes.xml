@@ -15,15 +15,15 @@
   limitations under the License.
   -->
 
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
     <style name="Theme.DeskClock" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:colorBackgroundFloating" tools:targetApi="23">
+        <item name="android:colorBackgroundFloating">
             ?attr/colorBackgroundFloating
         </item>
-        <item name="android:navigationBarColor" tools:targetApi="21">?attr/colorPrimaryDark</item>
-        <item name="android:popupTheme" tools:targetApi="21">?attr/popupTheme</item>
-        <item name="android:timePickerStyle" tools:targetApi="21">@style/Widget.TimePicker</item>
+        <item name="android:navigationBarColor">?attr/colorPrimaryDark</item>
+        <item name="android:popupTheme">?attr/popupTheme</item>
+        <item name="android:timePickerStyle">@style/Widget.TimePicker</item>
         <item name="android:windowBackground">@color/default_background</item>
         <item name="android:windowContentOverlay">@null</item>
 

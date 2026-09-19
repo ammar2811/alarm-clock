@@ -125,12 +125,15 @@
     <!-- Padding between checkbox and text. -->
     <dimen name="checkbox_start_padding">12dp</dimen>
 
-    <!-- Kitkat and later floating action button elevation. -->
+    <!-- Floating action button elevation. -->
     <dimen name="fab_elevation">8dp</dimen>
 
-    <!-- KitKat floating action button margin; see -v21 folder for newer platforms. -->
-    <dimen name="fab_margin">0dp</dimen>
+    <!-- Mini floating action button margin. -->
+    <dimen name="fab_margin">8dp</dimen>
 
-    <!-- KitKat floating action button container height; see -v21 folder for newer platforms. -->
-    <dimen name="fab_height">96dp</dimen>
+    <!-- Mini floating action button container height. -->
+    <dimen name="fab_height">56dp</dimen>
+
+    <!-- Size of margin between icon and text / title text. -->
+    <dimen name="notification_content_margin_start">0dp</dimen>
 </resources>

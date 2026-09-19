@@ -18,7 +18,6 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
@@ -35,8 +34,7 @@
         android:includeFontPadding="false"
         android:singleLine="true"
         android:textColor="?android:attr/textColorPrimary"
-        android:textSize="@dimen/timer_setup_digit_font_size"
-        tools:targetApi="21" />
+        android:textSize="@dimen/timer_setup_digit_font_size" />
 
     <ImageButton
         android:id="@+id/timer_setup_delete"
