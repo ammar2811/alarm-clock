@@ -56,6 +56,7 @@ class ScreensaverSettingsActivity : AppCompatActivity() {
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             addPreferencesFromResource(R.xml.screensaver_settings)
+            getPreferenceScreen().clearUnsetViewIds()
         }
 
         override fun onResume() {

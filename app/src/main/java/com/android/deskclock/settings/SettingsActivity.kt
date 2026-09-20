@@ -107,6 +107,7 @@ class SettingsActivity : BaseActivity() {
         override fun onCreatePreferences(bundle: Bundle?, rootKey: String?) {
             getPreferenceManager().setStorageDeviceProtected()
             addPreferencesFromResource(R.xml.settings)
+            getPreferenceScreen().clearUnsetViewIds()
             val timerVibrate: Preference? = findPreference(KEY_TIMER_VIBRATE)
             timerVibrate?.let {
                 val hasVibrator: Boolean = (it.getContext()
