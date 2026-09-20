@@ -6,7 +6,7 @@
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+       http://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,18 +15,12 @@
   limitations under the License.
   -->
 
-<resources>
-
-    <!-- The night colour roles live in values-night/colors_theme.xml; the app theme
-         itself is declared once, in values/themes.xml. What is left here is the action
-         bar, whose Material 3 style genuinely differs between the two modes. -->
-
-    <style name="Widget.ActionBar" parent="Widget.Material3.ActionBar.Solid">
-        <item name="displayOptions">showTitle|homeAsUp</item>
-    </style>
-
-    <style name="Widget.ActionBar.NoTitle">
-        <item name="displayOptions">homeAsUp</item>
-    </style>
-
-</resources>
+<!-- The window background for an activity styled as a dialog. Material 3 shapes its own
+     AlertDialogs from code, which an activity window never goes through, so the surface and
+     the 28dp corner have to be stated here. Both sides follow the theme, so this one file
+     covers light and dark. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="?attr/colorSurfaceContainerHigh" />
+    <corners android:radius="28dp" />
+</shape>

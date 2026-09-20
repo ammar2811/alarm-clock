@@ -158,8 +158,13 @@ class AlarmClockFragment : DeskClockFragment(UiDataModel.Tab.ALARMS),
     override fun onStart() {
         super.onStart()
 
-        if (!isTabSelected) {
-            TimePickerDialogFragment.removeTimeEditDialog(parentFragmentManager)
+        // The picker lives in this fragment's own child manager, which is also where it has to
+        // be looked for. Passing the parent manager here meant the dialog was never found, so a
+        // picker opened on the alarm tab survived a switch to another tab.
+        if (isTabSelected) {
+            TimePickerDialogFragment.reattach(this)
+        } else {
+            TimePickerDialogFragment.removeTimeEditDialog(childFragmentManager)
         }
     }
 
@@ -363,7 +368,7 @@ class AlarmClockFragment : DeskClockFragment(UiDataModel.Tab.ALARMS),
         TimePickerDialogFragment.show(this)
     }
 
-    override fun onTimeSet(fragment: TimePickerDialogFragment?, hourOfDay: Int, minute: Int) {
+    override fun onTimeSet(hourOfDay: Int, minute: Int) {
         mAlarmTimeClickHandler.onTimeSet(hourOfDay, minute)
     }
 

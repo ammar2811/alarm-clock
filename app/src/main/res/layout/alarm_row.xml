@@ -33,7 +33,7 @@
             android:layout_marginTop="@dimen/alarm_clock_vertical_margin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="@dimen/label_font_size"
             android:textStyle="bold"/>
 
@@ -45,13 +45,14 @@
             android:ellipsize="end"
             android:singleLine="true"
             android:textSize="@dimen/label_font_size"
-            android:textColor="@color/black"
+            android:textColor="?attr/colorOnSurface"
             android:layout_marginTop="@dimen/alarm_clock_vertical_margin"
             android:layout_marginStart="@dimen/alarm_clock_vertical_margin" />
 
     </LinearLayout>
 
     <com.android.deskclock.widget.EllipsizeLayout
+        android:id="@+id/label_container"
         android:layout_marginTop="@dimen/label_margin_big"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -68,7 +69,7 @@
             android:ellipsize="none"
             android:singleLine="true"
             android:textSize="@dimen/label_font_size"
-            android:textColor="@color/black_54p" />
+            android:textColor="?attr/colorOnSurfaceVariant" />
     </com.android.deskclock.widget.EllipsizeLayout>
 
 </LinearLayout>

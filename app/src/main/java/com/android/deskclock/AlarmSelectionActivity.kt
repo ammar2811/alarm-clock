@@ -16,12 +16,12 @@
 package com.android.deskclock
 
 import android.app.Activity
-import android.app.ListActivity
 import android.os.AsyncTask
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.ListView
+import androidx.appcompat.app.AppCompatActivity
 
 import com.android.deskclock.provider.Alarm
 import com.android.deskclock.widget.selector.AlarmSelection
@@ -29,7 +29,7 @@ import com.android.deskclock.widget.selector.AlarmSelectionAdapter
 
 import java.util.Locale
 
-class AlarmSelectionActivity : ListActivity() {
+class AlarmSelectionActivity : AppCompatActivity() {
     private val mSelections: MutableList<AlarmSelection> = ArrayList()
     private var mAction = 0
 
@@ -47,6 +47,8 @@ class AlarmSelectionActivity : ListActivity() {
         val cancelButton = findViewById<View>(R.id.cancel_button) as Button
         cancelButton.setOnClickListener { finish() }
 
+        val listView = findViewById<View>(android.R.id.list) as ListView
+
         val intent = intent
         val alarmsFromIntent = intent.getParcelableArrayExtra(EXTRA_ALARMS)
         mAction = intent.getIntExtra(EXTRA_ACTION, ACTION_INVALID)
@@ -62,18 +64,15 @@ class AlarmSelectionActivity : ListActivity() {
             mSelections.add(AlarmSelection(label, alarm))
         }
 
-        listAdapter = AlarmSelectionAdapter(this, R.layout.alarm_row, mSelections)
-    }
-
-    public override fun onListItemClick(l: ListView, v: View, position: Int, id: Long) {
-        super.onListItemClick(l, v, position, id)
-        // id corresponds to mSelections id because the view adapter used mSelections
-        val selection = mSelections[id.toInt()]
-        val alarm: Alarm? = selection.alarm
-        alarm?.let {
-            ProcessAlarmActionAsync(it, this, mAction).execute()
+        listView.adapter = AlarmSelectionAdapter(this, R.layout.alarm_row, mSelections)
+        listView.setOnItemClickListener { _, _, position, _ ->
+            // position corresponds to the mSelections index because the adapter wraps mSelections
+            val alarm: Alarm? = mSelections[position].alarm
+            alarm?.let {
+                ProcessAlarmActionAsync(it, this, mAction).execute()
+            }
+            finish()
         }
-        finish()
     }
 
     // TODO(b/165664115) Replace deprecated AsyncTask calls

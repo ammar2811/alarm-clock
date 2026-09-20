@@ -16,34 +16,29 @@
 
 package com.android.deskclock.alarms
 
-import android.app.Dialog
-import android.app.TimePickerDialog
-import android.content.Context
-import android.os.Bundle
 import android.text.format.DateFormat
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+
+import com.google.android.material.timepicker.MaterialTimePicker
+import com.google.android.material.timepicker.TimeFormat
 
 import java.util.Calendar
 
 /**
- * DialogFragment used to show TimePicker.
+ * Shows the time picker used to create an alarm and to change an existing one.
+ *
+ * This is a helper rather than a fragment of its own because [MaterialTimePicker] is itself the
+ * [androidx.fragment.app.DialogFragment], and it is final, so there is nothing left to wrap. The
+ * cost of that is the result callback: a listener cannot survive the fragment being recreated,
+ * so the host has to call [reattach] from its own onStart.
  */
-class TimePickerDialogFragment : DialogFragment() {
+object TimePickerDialogFragment {
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val listener = getParentFragment() as OnTimeSetListener
-
-        val now = Calendar.getInstance()
-        val args: Bundle = arguments ?: Bundle.EMPTY
-        val hour: Int = args.getInt(ARG_HOUR, now[Calendar.HOUR_OF_DAY])
-        val minute: Int = args.getInt(ARG_MINUTE, now[Calendar.MINUTE])
-        val context: Context = requireActivity()
-        return TimePickerDialog(context, { _, hourOfDay, minuteOfHour ->
-            listener.onTimeSet(this@TimePickerDialogFragment, hourOfDay, minuteOfHour)
-        }, hour, minute, DateFormat.is24HourFormat(context))
-    }
+    /**
+     * Tag for the time picker fragment in the host's child FragmentManager.
+     */
+    private const val TAG = "TimePickerDialogFragment"
 
     /**
      * The callback interface used to indicate the user is done filling in the time (e.g. they
@@ -53,62 +48,73 @@ class TimePickerDialogFragment : DialogFragment() {
         /**
          * Called when the user is done setting a new time and the dialog has closed.
          *
-         * @param fragment the fragment associated with this listener
          * @param hourOfDay the hour that was set
          * @param minute the minute that was set
          */
-        fun onTimeSet(fragment: TimePickerDialogFragment?, hourOfDay: Int, minute: Int)
+        fun onTimeSet(hourOfDay: Int, minute: Int)
     }
 
-    companion object {
-        /**
-         * Tag for timer picker fragment in FragmentManager.
-         */
-        private const val TAG = "TimePickerDialogFragment"
+    @JvmStatic
+    fun show(fragment: Fragment) {
+        show(fragment, -1 /* hour */, -1 /* minute */)
+    }
 
-        private const val ARG_HOUR = TAG + "_hour"
-        private const val ARG_MINUTE = TAG + "_minute"
-
-        @JvmStatic
-        fun show(fragment: Fragment) {
-            show(fragment, -1 /* hour */, -1 /* minute */)
+    fun show(parentFragment: Fragment, hourOfDay: Int, minute: Int) {
+        require(parentFragment is OnTimeSetListener) {
+            "Fragment must implement OnTimeSetListener"
         }
 
-        fun show(parentFragment: Fragment, hourOfDay: Int, minute: Int) {
-            require(parentFragment is OnTimeSetListener) {
-                "Fragment must implement OnTimeSetListener"
-            }
-
-            val manager: FragmentManager = parentFragment.getChildFragmentManager()
-            if (manager == null || manager.isDestroyed()) {
-                return
-            }
-
-            // Make sure the dialog isn't already added.
-            removeTimeEditDialog(manager)
-
-            val fragment = TimePickerDialogFragment()
-
-            val args = Bundle()
-            if (hourOfDay in 0..23) {
-                args.putInt(ARG_HOUR, hourOfDay)
-            }
-            if (minute in 0..59) {
-                args.putInt(ARG_MINUTE, minute)
-            }
-
-            fragment.setArguments(args)
-            fragment.show(manager, TAG)
+        val manager: FragmentManager = parentFragment.getChildFragmentManager()
+        if (manager.isDestroyed()) {
+            return
         }
 
-        @JvmStatic
-        fun removeTimeEditDialog(manager: FragmentManager?) {
-            manager?.let { manager ->
-                val prev: Fragment? = manager.findFragmentByTag(TAG)
-                prev?.let {
-                    manager.beginTransaction().remove(it).commit()
-                }
+        // Make sure the dialog isn't already added.
+        removeTimeEditDialog(manager)
+
+        val now = Calendar.getInstance()
+        val picker = MaterialTimePicker.Builder()
+                .setTimeFormat(if (DateFormat.is24HourFormat(parentFragment.requireContext())) {
+                    TimeFormat.CLOCK_24H
+                } else {
+                    TimeFormat.CLOCK_12H
+                })
+                .setHour(if (hourOfDay in 0..23) hourOfDay else now[Calendar.HOUR_OF_DAY])
+                .setMinute(if (minute in 0..59) minute else now[Calendar.MINUTE])
+                .build()
+        bind(picker, parentFragment)
+        picker.show(manager, TAG)
+    }
+
+    /**
+     * Re-attaches the result listener to a picker that is already on screen. Call this from the
+     * host's onStart: a click listener is not part of the fragment's saved state, so after a
+     * rotation or a process death the picker would come back with its OK button wired to
+     * nothing and silently drop the time the user chose.
+     */
+    @JvmStatic
+    fun reattach(parentFragment: Fragment) {
+        val picker = parentFragment.getChildFragmentManager()
+                .findFragmentByTag(TAG) as? MaterialTimePicker
+        picker?.let { bind(it, parentFragment) }
+    }
+
+    @JvmStatic
+    fun removeTimeEditDialog(manager: FragmentManager?) {
+        manager?.let {
+            val prev = it.findFragmentByTag(TAG)
+            prev?.let { fragment ->
+                it.beginTransaction().remove(fragment).commit()
             }
+        }
+    }
+
+    private fun bind(picker: MaterialTimePicker, parentFragment: Fragment) {
+        // Clearing first keeps reattach idempotent: onStart can run more than once for one
+        // picker, and every listener added would otherwise set the time again.
+        picker.clearOnPositiveButtonClickListeners()
+        picker.addOnPositiveButtonClickListener {
+            (parentFragment as OnTimeSetListener).onTimeSet(picker.hour, picker.minute)
         }
     }
 }

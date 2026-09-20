@@ -49,8 +49,13 @@ class AlarmSelectionAdapter(
         val alarmTime = row!!.findViewById<View>(R.id.digital_clock) as TextTime
         alarmTime.setTime(alarm!!.hour, alarm.minutes)
 
+        // Most alarms have no label, and an empty one still reserves its line plus both
+        // margins, which leaves a blank band between every row of the picker.
         val alarmLabel = row.findViewById<View>(R.id.label) as TextView
-        alarmLabel.text = alarm.label
+        val label = alarm.label
+        alarmLabel.text = label
+        row.findViewById<View>(R.id.label_container).visibility =
+                if (label.isNullOrEmpty()) View.GONE else View.VISIBLE
 
         // find days when alarm is firing
         val daysOfWeek: String

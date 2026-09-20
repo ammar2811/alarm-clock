@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2026 The Android Open Source Project
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+<resources>
+
+    <!-- The fallback palette, seeded from the indigo this app shipped for years, for the
+         devices below API 31 that have no wallpaper palette to read. On API 31 and up
+         DynamicColors applies the device's own palette over the top with
+         Theme.applyStyle(force = true) and every one of these loses cleanly.
+
+         They live here rather than inline in themes.xml because more than one theme needs
+         them: the app theme and the dialog theme have to have different Material 3 parents,
+         so neither can inherit from the other. Naming each colour once means the two lists
+         of items in themes.xml cannot drift apart, and the light and the dark set stay one
+         file each. This is the day set; values-night/ has the night one. -->
+
+    <color name="theme_primary">#555B96</color>
+    <color name="theme_on_primary">#FFFFFF</color>
+    <color name="theme_primary_container">#E0E0FF</color>
+    <color name="theme_on_primary_container">#10174B</color>
+    <color name="theme_secondary_container">#E1E0F9</color>
+    <color name="theme_on_secondary_container">#181A2C</color>
+    <color name="theme_surface">#FFFBFF</color>
+    <color name="theme_background">#FFFBFF</color>
+    <color name="theme_on_surface">#1B1B1F</color>
+    <color name="theme_on_surface_variant">#46464F</color>
+    <color name="theme_surface_container_high">#E9E7EF</color>
+    <color name="theme_surface_container_highest">#E4E1E9</color>
+    <color name="theme_outline">#777680</color>
+    <color name="theme_outline_variant">#C7C5D0</color>
+
+    <!-- Roles the Material 3 components read rather than the app's own layouts: the time
+         picker paints its clock face on surfaceVariant and its AM/PM selector in tertiary,
+         and the text buttons fall back to secondary. Without these, a device below API 31
+         would show Material's baseline purple and pink inside an otherwise indigo app.
+         Error stays at Material's baseline red, which is hue-independent and correct. -->
+    <color name="theme_secondary">#5B5D72</color>
+    <color name="theme_on_secondary">#FFFFFF</color>
+    <color name="theme_tertiary">#76546D</color>
+    <color name="theme_on_tertiary">#FFFFFF</color>
+    <color name="theme_tertiary_container">#FFD7F3</color>
+    <color name="theme_on_tertiary_container">#2C1228</color>
+    <color name="theme_surface_variant">#E3E1EC</color>
+
+</resources>

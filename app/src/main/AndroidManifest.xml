@@ -165,7 +165,7 @@
         <activity
             android:name=".AlarmSelectionActivity"
             android:label="@string/dismiss_alarm"
-            android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar" />
+            android:theme="@style/Theme.DeskClock.Dialog" />
 
         <provider
             android:name=".provider.ClockProvider"

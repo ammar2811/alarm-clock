@@ -38,25 +38,69 @@
         <item name="colorControlNormal">?attr/colorOnSurfaceVariant</item>
         <item name="imageButtonStyle">@style/Widget.ImageButton</item>
 
-        <!-- Fallback palette, seeded from the indigo this app shipped for years. On API 31
-             and up DynamicColors applies the wallpaper palette over the top with
-             Theme.applyStyle(force = true), so every one of these loses cleanly and the
-             device's own colours win. Below 31 there is no wallpaper palette to read, and
-             without these the app would fall back to Material's baseline purple. -->
-        <item name="colorPrimary">#555B96</item>
-        <item name="colorOnPrimary">#FFFFFF</item>
-        <item name="colorPrimaryContainer">#E0E0FF</item>
-        <item name="colorOnPrimaryContainer">#10174B</item>
-        <item name="colorSecondaryContainer">#E1E0F9</item>
-        <item name="colorOnSecondaryContainer">#181A2C</item>
-        <item name="colorSurface">#FFFBFF</item>
-        <item name="android:colorBackground">#FFFBFF</item>
-        <item name="colorOnSurface">#1B1B1F</item>
-        <item name="colorOnSurfaceVariant">#46464F</item>
-        <item name="colorSurfaceContainerHigh">#E9E7EF</item>
-        <item name="colorSurfaceContainerHighest">#E4E1E9</item>
-        <item name="colorOutline">#777680</item>
-        <item name="colorOutlineVariant">#C7C5D0</item>
+        <!-- The fallback palette for API 24-30, defined per mode in colors_theme.xml. -->
+        <item name="colorPrimary">@color/theme_primary</item>
+        <item name="colorOnPrimary">@color/theme_on_primary</item>
+        <item name="colorPrimaryContainer">@color/theme_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/theme_on_primary_container</item>
+        <item name="colorSecondaryContainer">@color/theme_secondary_container</item>
+        <item name="colorOnSecondaryContainer">@color/theme_on_secondary_container</item>
+        <item name="colorSurface">@color/theme_surface</item>
+        <item name="android:colorBackground">@color/theme_background</item>
+        <item name="colorOnSurface">@color/theme_on_surface</item>
+        <item name="colorOnSurfaceVariant">@color/theme_on_surface_variant</item>
+        <item name="colorSurfaceContainerHigh">@color/theme_surface_container_high</item>
+        <item name="colorSurfaceContainerHighest">@color/theme_surface_container_highest</item>
+        <item name="colorOutline">@color/theme_outline</item>
+        <item name="colorOutlineVariant">@color/theme_outline_variant</item>
+        <item name="colorSecondary">@color/theme_secondary</item>
+        <item name="colorOnSecondary">@color/theme_on_secondary</item>
+        <item name="colorTertiary">@color/theme_tertiary</item>
+        <item name="colorOnTertiary">@color/theme_on_tertiary</item>
+        <item name="colorTertiaryContainer">@color/theme_tertiary_container</item>
+        <item name="colorOnTertiaryContainer">@color/theme_on_tertiary_container</item>
+        <item name="colorSurfaceVariant">@color/theme_surface_variant</item>
+    </style>
+
+    <!-- The alarm picker shown when a voice command matches more than one alarm. A dialog
+         needs a different Material 3 parent from the app theme, so it cannot inherit from
+         Theme.DeskClock and has to name the palette again. The values themselves are not
+         repeated: both lists point at the same colours in colors_theme.xml. -->
+    <style name="Theme.DeskClock.Dialog" parent="Theme.Material3.DayNight.Dialog">
+        <!-- The layout draws its own heading, so the window title would be a second copy of
+             the same words. -->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
+        <item name="android:windowBackground">@drawable/bg_dialog</item>
+        <item name="android:windowMinWidthMinor">90%</item>
+        <item name="android:windowMinWidthMajor">70%</item>
+
+        <item name="colorAccent">?attr/colorPrimary</item>
+        <item name="colorControlActivated">?attr/colorPrimary</item>
+        <item name="colorControlNormal">?attr/colorOnSurfaceVariant</item>
+
+        <item name="colorPrimary">@color/theme_primary</item>
+        <item name="colorOnPrimary">@color/theme_on_primary</item>
+        <item name="colorPrimaryContainer">@color/theme_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/theme_on_primary_container</item>
+        <item name="colorSecondaryContainer">@color/theme_secondary_container</item>
+        <item name="colorOnSecondaryContainer">@color/theme_on_secondary_container</item>
+        <item name="colorSurface">@color/theme_surface</item>
+        <item name="android:colorBackground">@color/theme_background</item>
+        <item name="colorOnSurface">@color/theme_on_surface</item>
+        <item name="colorOnSurfaceVariant">@color/theme_on_surface_variant</item>
+        <item name="colorSurfaceContainerHigh">@color/theme_surface_container_high</item>
+        <item name="colorSurfaceContainerHighest">@color/theme_surface_container_highest</item>
+        <item name="colorOutline">@color/theme_outline</item>
+        <item name="colorOutlineVariant">@color/theme_outline_variant</item>
+        <item name="colorSecondary">@color/theme_secondary</item>
+        <item name="colorOnSecondary">@color/theme_on_secondary</item>
+        <item name="colorTertiary">@color/theme_tertiary</item>
+        <item name="colorOnTertiary">@color/theme_on_tertiary</item>
+        <item name="colorTertiaryContainer">@color/theme_tertiary_container</item>
+        <item name="colorOnTertiaryContainer">@color/theme_on_tertiary_container</item>
+        <item name="colorSurfaceVariant">@color/theme_surface_variant</item>
     </style>
 
     <style name="Theme.DeskClock.Settings">
