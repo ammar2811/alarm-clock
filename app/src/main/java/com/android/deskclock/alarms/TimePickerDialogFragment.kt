@@ -81,6 +81,11 @@ object TimePickerDialogFragment {
                 })
                 .setHour(if (hourOfDay in 0..23) hourOfDay else now[Calendar.HOUR_OF_DAY])
                 .setMinute(if (minute in 0..59) minute else now[Calendar.MINUTE])
+                // Open on the dial. Setting an alarm is a coarse, familiar gesture - the hand
+                // lands near the hour it wants - and the dial says that in one drag without
+                // raising the keyboard over half the screen. The keypad stays one tap away for
+                // anyone who would rather type the digits.
+                .setInputMode(MaterialTimePicker.INPUT_MODE_CLOCK)
                 .build()
         bind(picker, parentFragment)
         picker.show(manager, TAG)
