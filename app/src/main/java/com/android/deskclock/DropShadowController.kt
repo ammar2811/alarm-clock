@@ -46,9 +46,6 @@ class DropShadowController private constructor(
             AnimatorUtils.getAlphaAnimator(mDropShadowView, 0f, 1f)
                     .setDuration(UiDataModel.uiDataModel.shortAnimationDuration)
 
-    /** Tab bar's hairline, which is hidden whenever the drop shadow is displayed.  */
-    private var mHairlineView: View? = null
-
     // Supported sources of scroll position include: ListView, RecyclerView and UiDataModel.
     private var mRecyclerView: RecyclerView? = null
     private var mUiDataModel: UiDataModel? = null
@@ -57,17 +54,13 @@ class DropShadowController private constructor(
     /**
      * @param dropShadowView to be hidden/shown as `uiDataModel` reports scrolling changes
      * @param uiDataModel models the vertical scrolling state of the application's selected tab
-     * @param hairlineView at the bottom of the tab bar to be hidden or shown when the drop shadow
-     * is displayed or hidden, respectively.
      */
     constructor(
         dropShadowView: View,
-        uiDataModel: UiDataModel,
-        hairlineView: View
+        uiDataModel: UiDataModel
     ) : this(dropShadowView) {
         mUiDataModel = uiDataModel
         mUiDataModel?.addTabScrollListener(mScrollChangeWatcher)
-        mHairlineView = hairlineView
         updateDropShadow(!uiDataModel.isSelectedTabScrolledToTop)
     }
 
@@ -114,7 +107,6 @@ class DropShadowController private constructor(
             } else {
                 mDropShadowView.alpha = 0f
             }
-            mHairlineView?.visibility = View.VISIBLE
         }
         if (shouldShowDropShadow && mDropShadowView.alpha != 1f) {
             if (DataModel.dataModel.isApplicationInForeground) {
@@ -122,7 +114,6 @@ class DropShadowController private constructor(
             } else {
                 mDropShadowView.alpha = 1f
             }
-            mHairlineView?.visibility = View.INVISIBLE
         }
     }
 

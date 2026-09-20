@@ -42,22 +42,15 @@
                 android:id="@+id/tabs"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@null"
                 app:tabGravity="fill"
-                app:tabIndicatorColor="@android:color/transparent"
+                app:tabIndicatorColor="@color/tab_indicator"
                 app:tabMaxWidth="0dp"
                 app:tabMode="fixed"
                 app:tabPaddingEnd="0dp"
                 app:tabPaddingStart="0dp" />
 
         </androidx.appcompat.widget.Toolbar>
-
-        <View
-            android:id="@+id/tab_hairline"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/hairline_height"
-            android:layout_gravity="bottom"
-            android:background="?attr/colorOutlineVariant"
-            android:importantForAccessibility="no" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

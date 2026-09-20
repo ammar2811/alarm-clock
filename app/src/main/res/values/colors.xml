@@ -25,6 +25,13 @@
     <color name="white_63p">#A0FFFFFF</color>
     <color name="transparent">#00000000</color>
 
+    <!-- The selected tab's underline. This is deliberately the flat black/white pair rather
+         than a theme role: the indicator's whole job is to say which tab you are on, and the
+         wallpaper palette's roles are all tinted toward the wallpaper, which is exactly the
+         wrong direction for a marker that has to win against a tinted surface. Defined per
+         mode in values-night/colors.xml. -->
+    <color name="tab_indicator">@color/black</color>
+
     <!-- The accent SystemUI draws on this app's notifications. Notifications are laid out
          in SystemUI's process and resolved in SystemUI's configuration, so this deliberately
          has no values-night/ variant: a night qualifier here would be read against the

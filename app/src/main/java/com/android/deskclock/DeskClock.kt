@@ -291,8 +291,7 @@ class DeskClock : BaseActivity(), FabContainer, AlarmLabelDialogHandler {
         super.onResume()
 
         val dropShadow: View = findViewById(R.id.drop_shadow)
-        mDropShadowController = DropShadowController(dropShadow, UiDataModel.uiDataModel,
-                mSnackbarAnchor.findViewById(R.id.tab_hairline))
+        mDropShadowController = DropShadowController(dropShadow, UiDataModel.uiDataModel)
 
         // ViewPager does not save state; this honors the selected tab in the user interface.
         updateCurrentTab()
