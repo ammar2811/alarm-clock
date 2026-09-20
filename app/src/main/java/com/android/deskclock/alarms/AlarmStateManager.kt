@@ -115,22 +115,58 @@ class AlarmStateManager : BroadcastReceiver() {
             // Treat alarm state change as high priority, use foreground broadcasts
             stateChangeIntent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND)
             val pendingIntent: PendingIntent =
-                    PendingIntent.getService(context, instance.hashCode(),
-                    stateChangeIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+                    stateChangePendingIntent(context, instance, stateChangeIntent,
+                            PendingIntent.FLAG_UPDATE_CURRENT)!!
 
             val am: AlarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager
             // Ensure the alarm fires even if the device is dozing.
             am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent)
         }
 
+        /**
+         * Builds the PendingIntent that fires an alarm, as a foreground service start.
+         *
+         * AlarmService promotes itself with startForeground as soon as it has the instance,
+         * but that code never runs if the start itself is refused. Since O, a plain
+         * PendingIntent.getService is a background service start, and the system rejects it
+         * unless the app already happens to be running in an allowed state:
+         *
+         *     W/ActivityManager: Background start not allowed: service Intent
+         *       { act=change_state ... AlarmService } ... startFg?=false
+         *
+         * Which is to say the alarm fired on time and then silently did nothing, because the
+         * app was in the background with the screen locked, which is the only state that
+         * actually matters for an alarm clock. It looked like it worked during development
+         * purely because the app was in the foreground when the alarm went off.
+         *
+         * getForegroundService declares the intent up front, so the start is allowed and the
+         * service gets its window to call startForeground. FLAG_RECEIVER_FOREGROUND on the
+         * intent does not help here; that flag orders broadcast delivery and says nothing
+         * about starting a service.
+         */
+        private fun stateChangePendingIntent(
+            context: Context,
+            instance: AlarmInstance,
+            intent: Intent,
+            flags: Int
+        ): PendingIntent? = if (Utils.isOOrLater) {
+            PendingIntent.getForegroundService(context, instance.hashCode(), intent, flags)
+        } else {
+            PendingIntent.getService(context, instance.hashCode(), intent, flags)
+        }
+
         override fun cancelScheduledInstanceStateChange(context: Context, instance: AlarmInstance) {
             LogUtils.v("Canceling instance " + instance.mId + " timers")
 
             // Create a PendingIntent that will match any one set for this instance
+            // Must be built the same way as the scheduling side, because a foreground
+            // service PendingIntent and a background one are different kinds as far as
+            // FLAG_NO_CREATE matching is concerned. Look for the wrong kind and nothing is
+            // found, and the alarm is never cancelled.
             val pendingIntent: PendingIntent? =
-                    PendingIntent.getService(context, instance.hashCode(),
-                    createStateChangeIntent(context, ALARM_MANAGER_TAG, instance, null),
-                    PendingIntent.FLAG_NO_CREATE)
+                    stateChangePendingIntent(context, instance,
+                            createStateChangeIntent(context, ALARM_MANAGER_TAG, instance, null),
+                            PendingIntent.FLAG_NO_CREATE)
 
             pendingIntent?.let {
                 val am: AlarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager
