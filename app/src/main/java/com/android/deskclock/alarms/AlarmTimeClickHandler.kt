@@ -20,6 +20,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Vibrator
+import androidx.core.os.BundleCompat
 import androidx.fragment.app.Fragment
 
 import com.android.deskclock.AlarmClockFragment
@@ -49,24 +50,30 @@ class AlarmTimeClickHandler(
 ) {
 
     private val mContext: Context = mFragment.requireActivity().getApplicationContext()
-    private var mSelectedAlarm: Alarm? = null
+
+    /**
+     * The alarm the open time picker will write back to, or null when the picker is creating
+     * a new alarm instead. It is saved and restored because the picker outlives the activity:
+     * the answer to "which alarm is this picker for" is fixed the moment the picker opens and
+     * must not be re-derived from whatever the list happens to look like afterwards.
+     */
+    private var mAlarmBeingEdited: Alarm? = null
     private var mPreviousDaysOfWeekMap: Bundle? = null
 
     init {
         if (savedState != null) {
             mPreviousDaysOfWeekMap = savedState.getBundle(KEY_PREVIOUS_DAY_MAP)
+            mAlarmBeingEdited = BundleCompat.getParcelable(
+                    savedState, KEY_ALARM_BEING_EDITED, Alarm::class.java)
         }
         if (mPreviousDaysOfWeekMap == null) {
             mPreviousDaysOfWeekMap = Bundle()
         }
     }
 
-    fun setSelectedAlarm(selectedAlarm: Alarm?) {
-        mSelectedAlarm = selectedAlarm
-    }
-
     fun saveInstance(outState: Bundle) {
         outState.putBundle(KEY_PREVIOUS_DAY_MAP, mPreviousDaysOfWeekMap)
+        outState.putParcelable(KEY_ALARM_BEING_EDITED, mAlarmBeingEdited)
     }
 
     fun setAlarmEnabled(alarm: Alarm, newState: Boolean) {
@@ -149,9 +156,17 @@ class AlarmTimeClickHandler(
     }
 
     fun onClockClicked(alarm: Alarm) {
-        mSelectedAlarm = alarm
+        mAlarmBeingEdited = alarm
         Events.sendAlarmEvent(R.string.action_set_time, R.string.label_deskclock)
         TimePickerDialogFragment.show(mFragment, alarm.hour, alarm.minutes)
+    }
+
+    /**
+     * Opens the time picker to create an alarm rather than to change one.
+     */
+    fun onNewAlarmClicked() {
+        mAlarmBeingEdited = null
+        TimePickerDialogFragment.show(mFragment)
     }
 
     fun dismissAlarmInstance(alarmInstance: AlarmInstance) {
@@ -163,7 +178,6 @@ class AlarmTimeClickHandler(
     }
 
     fun onRingtoneClicked(context: Context, alarm: Alarm) {
-        mSelectedAlarm = alarm
         Events.sendAlarmEvent(R.string.action_set_ringtone, R.string.label_deskclock)
 
         val intent: Intent = RingtonePickerActivity.createAlarmRingtonePickerIntent(context, alarm)
@@ -182,21 +196,22 @@ class AlarmTimeClickHandler(
     }
 
     fun onTimeSet(hourOfDay: Int, minute: Int) {
-        if (mSelectedAlarm == null) {
-            // If mSelectedAlarm is null then we're creating a new alarm.
+        val alarm = mAlarmBeingEdited
+        mAlarmBeingEdited = null
+
+        if (alarm == null) {
+            // Nothing was being edited, so the picker was opened to create an alarm.
             val a = Alarm()
             a.hour = hourOfDay
             a.minutes = minute
             a.enabled = true
             mAlarmUpdateHandler.asyncAddAlarm(a)
         } else {
-            mSelectedAlarm!!.hour = hourOfDay
-            mSelectedAlarm!!.minutes = minute
-            mSelectedAlarm!!.enabled = true
-            mScrollHandler.setSmoothScrollStableId(mSelectedAlarm!!.id)
-            mAlarmUpdateHandler
-                    .asyncUpdateAlarm(mSelectedAlarm!!, popToast = true, minorUpdate = false)
-            mSelectedAlarm = null
+            alarm.hour = hourOfDay
+            alarm.minutes = minute
+            alarm.enabled = true
+            mScrollHandler.setSmoothScrollStableId(alarm.id)
+            mAlarmUpdateHandler.asyncUpdateAlarm(alarm, popToast = true, minorUpdate = false)
         }
     }
 
@@ -204,5 +219,6 @@ class AlarmTimeClickHandler(
         private val LOGGER = LogUtils.Logger("AlarmTimeClickHandler")
 
         private const val KEY_PREVIOUS_DAY_MAP = "previousDayMap"
+        private const val KEY_ALARM_BEING_EDITED = "alarmBeingEdited"
     }
 }

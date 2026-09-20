@@ -294,14 +294,14 @@ class AlarmClockFragment : DeskClockFragment(UiDataModel.Tab.ALARMS),
                 setTabScrolledToTop(true)
             }
 
-            // Expand the correct alarm.
+            // Expand the correct alarm. Which alarm is expanded says nothing about which one
+            // an open time picker is editing: the picker is told that when it opens, and it
+            // keeps it across a recreation of its own accord.
             if (mExpandedAlarmId != Alarm.INVALID_ID) {
                 val aih = mItemAdapter.findItemById(mExpandedAlarmId)
                 if (aih != null) {
-                    mAlarmTimeClickHandler.setSelectedAlarm(aih.item)
                     aih.expand()
                 } else {
-                    mAlarmTimeClickHandler.setSelectedAlarm(null)
                     mExpandedAlarmId = Alarm.INVALID_ID
                 }
             }
@@ -363,9 +363,7 @@ class AlarmClockFragment : DeskClockFragment(UiDataModel.Tab.ALARMS),
     }
 
     private fun startCreatingAlarm() {
-        // Clear the currently selected alarm.
-        mAlarmTimeClickHandler.setSelectedAlarm(null)
-        TimePickerDialogFragment.show(this)
+        mAlarmTimeClickHandler.onNewAlarmClicked()
     }
 
     override fun onTimeSet(hourOfDay: Int, minute: Int) {
