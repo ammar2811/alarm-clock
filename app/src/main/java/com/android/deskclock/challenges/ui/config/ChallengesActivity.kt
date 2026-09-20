@@ -42,6 +42,8 @@ import com.android.deskclock.challenges.PhotoChallenge
 import com.android.deskclock.challenges.defaultChallengeOf
 import com.android.deskclock.provider.Alarm
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+
 /**
  * Chooses which challenges an alarm requires before it can be dismissed, and how hard each
  * one is.
@@ -156,7 +158,7 @@ class ChallengesActivity : BaseActivity(), ChallengeConfigDialog.Listener {
         val kinds = ChallengeKind.entries
         val labels = kinds.map { getString(ChallengeSummary.nameOf(it)) }.toTypedArray()
 
-        AlertDialog.Builder(this)
+        MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.challenge_add)
                 .setItems(labels) { _, which ->
                     val kind = kinds[which]

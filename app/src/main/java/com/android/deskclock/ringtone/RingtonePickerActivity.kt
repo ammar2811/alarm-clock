@@ -59,6 +59,8 @@ import com.android.deskclock.alarms.AlarmUpdateHandler
 import com.android.deskclock.data.DataModel
 import com.android.deskclock.provider.Alarm
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+
 /**
  * This activity presents a set of ringtones from which the user may select one. The set includes:
  *
@@ -378,13 +380,13 @@ class RingtonePickerActivity : BaseActivity(), LoaderCallbacks<List<ItemHolder<U
             }
 
             return if (arguments.getBoolean(ARG_RINGTONE_HAS_PERMISSIONS)) {
-                AlertDialog.Builder(requireActivity())
+                MaterialAlertDialogBuilder(requireActivity())
                         .setPositiveButton(R.string.remove_sound, okListener)
                         .setNegativeButton(android.R.string.cancel, null /* listener */)
                         .setMessage(R.string.confirm_remove_custom_ringtone)
                         .create()
             } else {
-                AlertDialog.Builder(requireActivity())
+                MaterialAlertDialogBuilder(requireActivity())
                         .setPositiveButton(R.string.remove_sound, okListener)
                         .setMessage(R.string.custom_ringtone_lost_permissions)
                         .create()

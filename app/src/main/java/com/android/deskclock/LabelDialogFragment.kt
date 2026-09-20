@@ -41,6 +41,8 @@ import com.android.deskclock.data.DataModel
 import com.android.deskclock.data.Timer
 import com.android.deskclock.provider.Alarm
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+
 /**
  * DialogFragment to edit label.
  */
@@ -69,7 +71,7 @@ class LabelDialogFragment : DialogFragment() {
             label = it.getString(ARG_LABEL, label)
         }
 
-        val dialog: AlertDialog = AlertDialog.Builder(requireActivity())
+        val dialog: AlertDialog = MaterialAlertDialogBuilder(requireActivity())
                 .setPositiveButton(android.R.string.ok, OkListener())
                 .setNegativeButton(android.R.string.cancel, null)
                 .setMessage(R.string.label)

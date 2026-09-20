@@ -42,6 +42,8 @@ import com.android.deskclock.challenges.SequenceChallenge
 import com.android.deskclock.challenges.engine.MathProblemGenerator
 import com.android.deskclock.challenges.engine.RetypeGenerator
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+
 /**
  * Settings for a single challenge: its difficulty, its own numbers, and a live preview of
  * what the result will actually ask for.
@@ -83,7 +85,7 @@ class ChallengeConfigDialog : DialogFragment() {
             startActivity(ChallengePreviewActivity.createIntent(requireContext(), working))
         }
 
-        return AlertDialog.Builder(requireContext())
+        return MaterialAlertDialogBuilder(requireContext())
                 .setTitle(ChallengeSummary.nameOf(working.kind))
                 .setView(view)
                 .setPositiveButton(R.string.challenge_save) { _, _ ->

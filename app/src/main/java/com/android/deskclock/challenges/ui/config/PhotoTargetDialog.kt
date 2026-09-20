@@ -24,6 +24,8 @@ import androidx.fragment.app.FragmentManager
 import com.android.deskclock.R
 import com.android.deskclock.challenges.CocoLabels
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+
 /**
  * Picks which objects satisfy a photo challenge.
  *
@@ -41,7 +43,7 @@ class PhotoTargetDialog : DialogFragment() {
         val labels = ordered.map { it.replaceFirstChar(Char::uppercase) }.toTypedArray()
         val checked = ordered.map { it in selected }.toBooleanArray()
 
-        return AlertDialog.Builder(requireContext())
+        return MaterialAlertDialogBuilder(requireContext())
                 .setTitle(R.string.challenge_setting_targets)
                 .setMultiChoiceItems(labels, checked) { _, which, isChecked ->
                     if (isChecked) selected += ordered[which] else selected -= ordered[which]
