@@ -113,9 +113,6 @@ internal class SettingsModel(
     val alarmTimeout: Int
         get() = SettingsDAO.getAlarmTimeout(mPrefs)
 
-    val snoozeLength: Int
-        get() = SettingsDAO.getSnoozeLength(mPrefs)
-
     var defaultAlarmRingtoneUri: Uri
         get() = SettingsDAO.getDefaultAlarmRingtoneUri(mPrefs)
         set(uri) {

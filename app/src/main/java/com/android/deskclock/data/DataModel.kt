@@ -74,7 +74,7 @@ class DataModel private constructor() {
 
     /** Indicates the preferred behavior of hardware volume buttons when firing alarms.  */
     enum class AlarmVolumeButtonBehavior {
-        NOTHING, SNOOZE, DISMISS
+        NOTHING, DISMISS
     }
 
     /** Indicates the reason alarms may not fire or may fire silently.  */
@@ -733,12 +733,6 @@ class DataModel private constructor() {
      */
     val alarmTimeout: Int
         get() = mAlarmModel!!.alarmTimeout
-
-    /**
-     * @return the number of minutes an alarm will remain snoozed before it rings again
-     */
-    val snoozeLength: Int
-        get() = mAlarmModel!!.snoozeLength
 
     //
     // Stopwatch

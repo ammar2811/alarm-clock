@@ -22,13 +22,11 @@ import android.widget.CompoundButton
 import android.widget.ImageView
 import android.widget.TextView
 
-import com.android.deskclock.AlarmUtils
 import com.android.deskclock.ItemAdapter.ItemViewHolder
 import com.android.deskclock.ItemAnimator.OnAnimateChangeListener
 import com.android.deskclock.R
 import com.android.deskclock.provider.Alarm
 import com.android.deskclock.provider.AlarmInstance
-import com.android.deskclock.provider.ClockContract.InstancesColumns
 import com.android.deskclock.widget.TextTime
 
 /**
@@ -82,13 +80,7 @@ abstract class AlarmItemViewHolder(itemView: View)
         val canBind = alarm.canPreemptivelyDismiss() && alarmInstance != null
         if (canBind) {
             preemptiveDismissButton.visibility = View.VISIBLE
-            val dismissText: String = if (alarm.instanceState == InstancesColumns.SNOOZE_STATE) {
-                context.getString(R.string.alarm_alert_snooze_until,
-                        AlarmUtils.getAlarmText(context, alarmInstance!!, false))
-            } else {
-                context.getString(R.string.alarm_alert_dismiss_text)
-            }
-            preemptiveDismissButton.text = dismissText
+            preemptiveDismissButton.text = context.getString(R.string.alarm_alert_dismiss_text)
             preemptiveDismissButton.isClickable = true
         } else {
             preemptiveDismissButton.visibility = View.GONE

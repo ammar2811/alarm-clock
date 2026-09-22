@@ -143,12 +143,11 @@ class Alarm : Parcelable, AlarmsColumns {
     }
 
     /**
-     * Whether the alarm is in a state to show preemptive dismiss. Valid states are SNOOZE_STATE
+     * Whether the alarm is in a state to show preemptive dismiss. Valid states are
      * HIGH_NOTIFICATION, LOW_NOTIFICATION, and HIDE_NOTIFICATION.
      */
     fun canPreemptivelyDismiss(): Boolean {
-        return instanceState == InstancesColumns.SNOOZE_STATE ||
-                instanceState == InstancesColumns.HIGH_NOTIFICATION_STATE ||
+        return instanceState == InstancesColumns.HIGH_NOTIFICATION_STATE ||
                 instanceState == InstancesColumns.LOW_NOTIFICATION_STATE ||
                 instanceState == InstancesColumns.HIDE_NOTIFICATION_STATE
     }
@@ -457,10 +456,6 @@ class Alarm : Parcelable, AlarmsColumns {
 
         @JvmStatic
         fun isTomorrow(alarm: Alarm, now: Calendar): Boolean {
-            if (alarm.instanceState == InstancesColumns.SNOOZE_STATE) {
-                return false
-            }
-
             val totalAlarmMinutes = alarm.hour * 60 + alarm.minutes
             val totalNowMinutes = now[Calendar.HOUR_OF_DAY] * 60 + now[Calendar.MINUTE]
             return totalAlarmMinutes <= totalNowMinutes

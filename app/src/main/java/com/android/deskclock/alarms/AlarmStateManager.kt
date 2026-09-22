@@ -25,11 +25,10 @@ import android.content.Context
 import android.content.Context.ALARM_SERVICE
 import android.content.Intent
 import android.net.Uri
-import android.os.Handler
 import android.os.PowerManager
 import android.text.format.DateFormat
-import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 
 import com.android.deskclock.AlarmAlertWakeLock
 import com.android.deskclock.AlarmClockFragment
@@ -195,9 +194,8 @@ class AlarmStateManager : BroadcastReceiver() {
         // Extra key to set the global broadcast id.
         private const val ALARM_GLOBAL_ID_EXTRA = "intent.extra.alarm.global.id"
 
-        // Intent category tags used to dismiss, snooze or delete an alarm
+        // Intent category tags used to dismiss or delete an alarm
         const val ALARM_DISMISS_TAG = "DISMISS_TAG"
-        const val ALARM_SNOOZE_TAG = "SNOOZE_TAG"
         const val ALARM_DELETE_TAG = "DELETE_TAG"
 
         // Intent category tag used when schedule state change intents in alarm manager.
@@ -514,61 +512,6 @@ class AlarmStateManager : BroadcastReceiver() {
         }
 
         /**
-         * This will set the alarm instance to the SNOOZE_STATE and update
-         * the application notifications and schedule any state changes that need
-         * to occur in the future.
-         *
-         * @param context application context
-         * @param instance to set state to
-         */
-        @JvmStatic
-        fun setSnoozeState(
-            context: Context,
-            instance: AlarmInstance,
-            showToast: Boolean
-        ) {
-            // Stop alarm if this instance is firing it
-            AlarmService.stopAlarm(context, instance)
-
-            // Calculate the new snooze alarm time
-            val snoozeMinutes = DataModel.dataModel.snoozeLength
-            val newAlarmTime = Calendar.getInstance()
-            newAlarmTime.add(Calendar.MINUTE, snoozeMinutes)
-
-            // Update alarm state and new alarm time in db.
-            LogUtils.i("Setting snoozed state to instance " + instance.mId + " for " +
-                    AlarmUtils.getFormattedTime(context, newAlarmTime))
-            instance.alarmTime = newAlarmTime
-            instance.mAlarmState = InstancesColumns.SNOOZE_STATE
-            AlarmInstance.updateInstance(context.getContentResolver(), instance)
-
-            // Setup instance notification and scheduling timers
-            AlarmNotifications.showSnoozeNotification(context, instance)
-            scheduleInstanceStateChange(context, instance.alarmTime,
-                    instance, InstancesColumns.FIRED_STATE)
-
-            // Display the snooze minutes in a toast.
-            if (showToast) {
-                val mainHandler = Handler(context.getMainLooper())
-                val myRunnable = Runnable {
-                    val displayTime =
-                        String.format(
-                            context
-                                    .getResources()
-                                    .getQuantityText(R.plurals.alarm_alert_snooze_set,
-                                            snoozeMinutes)
-                                    .toString(),
-                            snoozeMinutes)
-                    Toast.makeText(context, displayTime, Toast.LENGTH_LONG).show()
-                }
-                mainHandler.post(myRunnable)
-            }
-
-            // Instance time changed, so find next alarm that will fire and notify system
-            updateNextAlarm(context)
-        }
-
-        /**
          * This will set the alarm instance to the MISSED_STATE and update
          * the application notifications and schedule any state changes that need
          * to occur in the future.
@@ -695,7 +638,6 @@ class AlarmStateManager : BroadcastReceiver() {
          *  * Make sure pre-dismissed alarms stay predismissed
          *  * Make sure firing alarms stayed fired unless they should be auto-silenced
          *  * Missed instance that have parents should be re-enabled if we went back in time
-         *  * If alarm was SNOOZED, then show the notification but don't update time
          *  * If low priority notification was hidden, then make sure it stays hidden
          *
          *
@@ -732,6 +674,7 @@ class AlarmStateManager : BroadcastReceiver() {
                 val hasTimeout = timeoutTime != null && currentTime.after(timeoutTime)
                 if (!hasTimeout) {
                     setFiredState(context, instance)
+                    resumeRinging(context, instance)
                     return
                 }
             } else if (instance.mAlarmState == InstancesColumns.MISSED_STATE) {
@@ -743,10 +686,6 @@ class AlarmStateManager : BroadcastReceiver() {
                         deleteInstanceAndUpdateParent(context, instance)
                         return
                     }
-
-                    // TODO: This will re-activate missed snoozed alarms, but will
-                    // use our normal notifications. This is not ideal, but very rare use-case.
-                    // We should look into fixing this in the future.
 
                     // Make sure we re-enable the parent alarm of the instance
                     // because it will get activated by by the below code
@@ -778,12 +717,6 @@ class AlarmStateManager : BroadcastReceiver() {
                 } else {
                     setMissedState(context, instance)
                 }
-            } else if (instance.mAlarmState == InstancesColumns.SNOOZE_STATE) {
-                // We only want to display snooze notification and not update the time,
-                // so handle showing the notification directly
-                AlarmNotifications.showSnoozeNotification(context, instance)
-                scheduleInstanceStateChange(context, instance.alarmTime,
-                        instance, InstancesColumns.FIRED_STATE)
             } else if (currentTime.after(highNotificationTime)) {
                 setHighNotificationState(context, instance)
             } else if (currentTime.after(lowNotificationTime)) {
@@ -805,6 +738,25 @@ class AlarmStateManager : BroadcastReceiver() {
         }
 
         /**
+         * Starts [instance] ringing again if nothing is playing it.
+         *
+         * The FIRED state lives in the database, but the ringing lives in AlarmService, and a
+         * reboot or an app update kills the service without touching the database. Setting the
+         * state back to FIRED then left a silent alarm that sat there until auto-silence, so
+         * rebooting the phone was a way to turn off any alarm without completing its
+         * challenges. This sends the same foreground service start that fires an alarm on
+         * schedule. The boot, package replaced and time change broadcasts that lead here are
+         * all exempt from the background start restrictions, and AlarmService ignores the
+         * request if it is already ringing this instance.
+         */
+        private fun resumeRinging(context: Context, instance: AlarmInstance) {
+            LogUtils.i("Resuming ringing for fired instance " + instance.mId)
+            val intent: Intent = createStateChangeIntent(
+                    context, ALARM_MANAGER_TAG, instance, InstancesColumns.FIRED_STATE)
+            ContextCompat.startForegroundService(context, intent)
+        }
+
+        /**
          * This will delete and unregister all instances associated with alarmId, without affect
          * the alarm itself. This should be used whenever modifying or deleting an alarm.
          *
@@ -817,24 +769,6 @@ class AlarmStateManager : BroadcastReceiver() {
             val cr: ContentResolver = context.getContentResolver()
             val instances = AlarmInstance.getInstancesByAlarmId(cr, alarmId)
             for (instance in instances) {
-                unregisterInstance(context, instance)
-                AlarmInstance.deleteInstance(context.getContentResolver(), instance.mId)
-            }
-            updateNextAlarm(context)
-        }
-
-        /**
-         * Delete and unregister all instances unless they are snoozed. This is used whenever an
-         * alarm is modified superficially (label, vibrate, or ringtone change).
-         */
-        fun deleteNonSnoozeInstances(context: Context, alarmId: Long) {
-            LogUtils.i("Deleting all non-snooze instances of alarm: $alarmId")
-            val cr: ContentResolver = context.getContentResolver()
-            val instances = AlarmInstance.getInstancesByAlarmId(cr, alarmId)
-            for (instance in instances) {
-                if (instance.mAlarmState == InstancesColumns.SNOOZE_STATE) {
-                    continue
-                }
                 unregisterInstance(context, instance)
                 AlarmInstance.deleteInstance(context.getContentResolver(), instance.mId)
             }
@@ -917,9 +851,6 @@ class AlarmStateManager : BroadcastReceiver() {
                     setHighNotificationState(context, instance)
                 }
                 InstancesColumns.FIRED_STATE -> setFiredState(context, instance)
-                InstancesColumns.SNOOZE_STATE -> {
-                    setSnoozeState(context, instance, true /* showToast */)
-                }
                 InstancesColumns.MISSED_STATE -> setMissedState(context, instance)
                 InstancesColumns.PREDISMISSED_STATE -> setPreDismissState(context, instance)
                 InstancesColumns.DISMISSED_STATE -> deleteInstanceAndUpdateParent(context, instance)
@@ -946,9 +877,8 @@ class AlarmStateManager : BroadcastReceiver() {
                 if (intentId != globalId) {
                     LogUtils.i("IntentId: " + intentId + " GlobalId: " + globalId +
                             " AlarmState: " + alarmState)
-                    // Allows dismiss/snooze requests to go through
-                    if (!intent.hasCategory(ALARM_DISMISS_TAG) &&
-                            !intent.hasCategory(ALARM_SNOOZE_TAG)) {
+                    // Allows dismiss requests to go through
+                    if (!intent.hasCategory(ALARM_DISMISS_TAG)) {
                         LogUtils.i("Ignoring old Intent")
                         return
                     }
@@ -957,8 +887,6 @@ class AlarmStateManager : BroadcastReceiver() {
                 if (intent.getBooleanExtra(FROM_NOTIFICATION_EXTRA, false)) {
                     if (intent.hasCategory(ALARM_DISMISS_TAG)) {
                         Events.sendAlarmEvent(R.string.action_dismiss, R.string.label_notification)
-                    } else if (intent.hasCategory(ALARM_SNOOZE_TAG)) {
-                        Events.sendAlarmEvent(R.string.action_snooze, R.string.label_notification)
                     }
                 }
 

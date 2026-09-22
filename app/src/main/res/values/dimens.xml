@@ -39,9 +39,15 @@
     <dimen name="max_timer_circle_size">360dp</dimen>
 
     <dimen name="alarm_lockscreen_alarm_horizontal_padding">16dp</dimen>
-    <dimen name="alarm_lockscreen_alarm_vertical_padding">48dp</dimen>
+    <dimen name="alarm_lockscreen_alarm_vertical_padding">24dp</dimen>
     <dimen name="alarm_lockscreen_pulse_radius">128dp</dimen>
+    <dimen name="alarm_lockscreen_pulse_diameter">256dp</dimen>
     <dimen name="alarm_lockscreen_bottom_margin">40dp</dimen>
+    <dimen name="alarm_lockscreen_button_gap">12dp</dimen>
+    <!-- How far the bell must be dragged down to dismiss. Deliberately independent of the
+         bell-to-dismiss-icon visual gap (alarm_lockscreen_button_gap): that gap is tuned for
+         looks, this is tuned so the gesture reads as a swipe rather than a tap. -->
+    <dimen name="alarm_lockscreen_swipe_distance">160dp</dimen>
 
     <dimen name="main_clock_font_size">64sp</dimen>
     <dimen name="main_clock_digital_font_size">90sp</dimen>

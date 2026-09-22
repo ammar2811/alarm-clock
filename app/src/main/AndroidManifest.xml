@@ -112,7 +112,6 @@
                 <action android:name="android.intent.action.DISMISS_TIMER" />
                 <action android:name="android.intent.action.SHOW_ALARMS" />
                 <action android:name="android.intent.action.SHOW_TIMERS" />
-                <action android:name="android.intent.action.SNOOZE_ALARM" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.VOICE" />

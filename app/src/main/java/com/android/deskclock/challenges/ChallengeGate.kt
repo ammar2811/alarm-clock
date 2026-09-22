@@ -16,6 +16,7 @@
 
 package com.android.deskclock.challenges
 
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import com.android.deskclock.alarms.AlarmActivity
@@ -31,6 +32,13 @@ import com.android.deskclock.provider.ClockContract.InstancesColumns
  * assistant sends. A gate that misses one of those is not a gate, so every one of them asks
  * [requiresChallenge] first and sends the user to [createChallengeIntent] instead of
  * dismissing.
+ *
+ * Editing the alarm is a way to kill it too, because a major edit deletes and re-creates its
+ * instances. Leaving the ring screen does not stop the alarm, so from the alarm list the user
+ * could otherwise switch it off, delete it, move its time or change its repeat days, and an
+ * assistant's ACTION_SET_ALARM for the same time would replace it. Those paths ask
+ * [firingInstanceOf] and refuse while it returns an instance. A firing instance also keeps the
+ * challenges it fired with, so editing the alarm's challenges only affects later occurrences.
  *
  * Note that AlarmStateManager.deleteInstanceAndUpdateParent is deliberately not gated. It is
  * also the cleanup path for missed and stale instances, and blocking it would leave rows
@@ -55,6 +63,15 @@ object ChallengeGate {
         return instance != null &&
                 instance.mAlarmState == InstancesColumns.FIRED_STATE &&
                 instance.mChallenges.isNotEmpty()
+    }
+
+    /**
+     * The instance of the alarm with [alarmId] that is firing with challenges still to
+     * complete, or null when that alarm may be edited or deleted freely.
+     */
+    @JvmStatic
+    fun firingInstanceOf(cr: ContentResolver, alarmId: Long): AlarmInstance? {
+        return AlarmInstance.getInstancesByAlarmId(cr, alarmId).firstOrNull(::requiresChallenge)
     }
 
     /** Brings the ring screen forward and starts this instance's challenges. */

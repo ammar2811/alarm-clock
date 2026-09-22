@@ -97,7 +97,6 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
 
             if (!mAlarmHandled) {
                 when (action) {
-                    AlarmService.ALARM_SNOOZE_ACTION -> snooze()
                     AlarmService.ALARM_DISMISS_ACTION -> requestDismiss()
                     AlarmService.ALARM_DONE_ACTION -> finish()
                     else -> LOGGER.i("Unknown broadcast: %s", action)
@@ -144,12 +143,10 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
 
     private lateinit var mContentView: ViewGroup
     private lateinit var mAlarmButton: ImageView
-    private lateinit var mSnoozeButton: ImageView
     private lateinit var mDismissButton: ImageView
     private lateinit var mHintView: TextView
 
     private lateinit var mAlarmAnimator: ValueAnimator
-    private lateinit var mSnoozeAnimator: ValueAnimator
     private lateinit var mDismissAnimator: ValueAnimator
     private lateinit var mPulseAnimator: ValueAnimator
 
@@ -214,7 +211,6 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
         mChallengeContainer = findViewById(R.id.challenge_container) as ViewGroup
         mContentView = findViewById(R.id.content) as ViewGroup
         mAlarmButton = mContentView.findViewById(R.id.alarm) as ImageView
-        mSnoozeButton = mContentView.findViewById(R.id.snooze) as ImageView
         mDismissButton = mContentView.findViewById(R.id.dismiss) as ImageView
         mHintView = mContentView.findViewById(R.id.hint) as TextView
 
@@ -229,14 +225,10 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
         mOnSurfaceColor = ThemeUtils.resolveColor(this, com.google.android.material.R.attr.colorOnSurface)
 
         mAlarmButton.setOnTouchListener(this)
-        mSnoozeButton.setOnClickListener(this)
         mDismissButton.setOnClickListener(this)
 
-        // Each button's icon settles on the "on" colour of the circle it sits in: snooze is
-        // a secondary container, dismiss is the primary one.
+        // The dismiss button's icon settles on the "on" colour of the primary circle it sits in.
         mAlarmAnimator = AnimatorUtils.getScaleAnimator(mAlarmButton, 1.0f, 0.0f)
-        mSnoozeAnimator = getButtonAnimator(mSnoozeButton,
-                ThemeUtils.resolveColor(this, com.google.android.material.R.attr.colorOnSecondaryContainer))
         mDismissAnimator = getButtonAnimator(mDismissButton,
                 ThemeUtils.resolveColor(this, com.google.android.material.R.attr.colorOnPrimary))
         mPulseAnimator = ObjectAnimator.ofPropertyValuesHolder(pulseView,
@@ -296,9 +288,8 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
         }
 
         if (!mReceiverRegistered) {
-            // Register to get the alarm done/snooze/dismiss intent.
+            // Register to get the alarm done/dismiss intent.
             val filter = IntentFilter(AlarmService.ALARM_DONE_ACTION)
-            filter.addAction(AlarmService.ALARM_SNOOZE_ACTION)
             filter.addAction(AlarmService.ALARM_DISMISS_ACTION)
             ContextCompat.registerReceiver(this, mReceiver, filter,
                     ContextCompat.RECEIVER_EXPORTED)
@@ -332,12 +323,6 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
             KeyEvent.KEYCODE_CAMERA,
             KeyEvent.KEYCODE_FOCUS -> if (!mAlarmHandled) {
                 when (mVolumeBehavior) {
-                    AlarmVolumeButtonBehavior.SNOOZE -> {
-                        if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
-                            snooze()
-                        }
-                        return true
-                    }
                     AlarmVolumeButtonBehavior.DISMISS -> {
                         if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
                             requestDismiss()
@@ -360,19 +345,15 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
         }
         LOGGER.v("onClick: %s", view)
 
-        // If in accessibility mode, allow snooze/dismiss by double tapping on respective icons.
+        // If in accessibility mode, allow dismiss by double tapping the icon.
         if (isAccessibilityEnabled) {
-            if (view == mSnoozeButton) {
-                snooze()
-            } else if (view == mDismissButton) {
+            if (view == mDismissButton) {
                 requestDismiss()
             }
             return
         }
 
-        if (view == mSnoozeButton) {
-            hintSnooze()
-        } else if (view == mDismissButton) {
+        if (view == mDismissButton) {
             hintDismiss()
         }
     }
@@ -415,36 +396,36 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
         val x: Float = event.getRawX() - contentLocation[0]
         val y: Float = event.getRawY() - contentLocation[1]
 
-        val alarmLeft: Int = mAlarmButton.getLeft() + mAlarmButton.getPaddingLeft()
-        val alarmRight: Int = mAlarmButton.getRight() - mAlarmButton.getPaddingRight()
+        // The alarm button is nested several layouts deep, so its own getTop()/getBottom()/
+        // getLeft()/getRight() are relative to its immediate parent, not mContentView. x/y
+        // above are relative to mContentView, so the button's bounds have to be translated
+        // into that same space via screen coordinates before they can be compared.
+        val alarmLocation = intArrayOf(0, 0)
+        mAlarmButton.getLocationOnScreen(alarmLocation)
+        val alarmLeft: Int = alarmLocation[0] - contentLocation[0] + mAlarmButton.getPaddingLeft()
+        val alarmRight: Int = alarmLocation[0] - contentLocation[0] +
+                mAlarmButton.getWidth() - mAlarmButton.getPaddingRight()
+        val alarmBottom: Int = alarmLocation[1] - contentLocation[1] +
+                mAlarmButton.getHeight() - mAlarmButton.getPaddingBottom()
 
-        val snoozeFraction: Float
-        val dismissFraction: Float
-        if (mContentView.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
-            snoozeFraction =
-                    getFraction(alarmRight.toFloat(), mSnoozeButton.getLeft().toFloat(), x)
-            dismissFraction =
-                    getFraction(alarmLeft.toFloat(), mDismissButton.getRight().toFloat(), x)
-        } else {
-            snoozeFraction = getFraction(alarmLeft.toFloat(), mSnoozeButton.getRight().toFloat(), x)
-            dismissFraction =
-                    getFraction(alarmRight.toFloat(), mDismissButton.getLeft().toFloat(), x)
-        }
-        setAnimatedFractions(snoozeFraction, dismissFraction)
+        // The required drag distance is independent of the dismiss icon's own position,
+        // which is tuned for looks (see alarm_lockscreen_swipe_distance), so a tight visual
+        // gap doesn't turn the swipe into an accidental tap.
+        val dismissFraction: Float = getFraction(
+                alarmBottom.toFloat(), alarmBottom + swipeDistancePx.toFloat(), y)
+        setAnimatedFractions(dismissFraction)
 
         if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP) {
             LOGGER.v("onTouch ended: %s", event)
 
             mInitialPointerIndex = MotionEvent.INVALID_POINTER_ID
-            if (snoozeFraction == 1.0f) {
-                snooze()
-            } else if (dismissFraction == 1.0f) {
+            if (dismissFraction == 1.0f) {
                 requestDismiss()
             } else {
-                if (snoozeFraction > 0.0f || dismissFraction > 0.0f) {
+                if (dismissFraction > 0.0f) {
                     // Animate back to the initial state.
-                    AnimatorUtils.reverse(mAlarmAnimator, mSnoozeAnimator, mDismissAnimator)
-                } else if (mAlarmButton.getTop() <= y && y <= mAlarmButton.getBottom()) {
+                    AnimatorUtils.reverse(mAlarmAnimator, mDismissAnimator)
+                } else if (alarmLeft <= x && x <= alarmRight) {
                     // User touched the alarm button, hint the dismiss action.
                     hintDismiss()
                 }
@@ -493,36 +474,20 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
             return !enabledAccessibilityServices.isEmpty()
         }
 
-    private fun hintSnooze() {
-        val alarmLeft: Int = mAlarmButton.getLeft() + mAlarmButton.getPaddingLeft()
-        val alarmRight: Int = mAlarmButton.getRight() - mAlarmButton.getPaddingRight()
-        val translationX = (Math.max(mSnoozeButton.getLeft() - alarmRight, 0) +
-                Math.min(mSnoozeButton.getRight() - alarmLeft, 0)).toFloat()
-        getAlarmBounceAnimator(translationX, if (translationX < 0.0f) {
-            R.string.description_direction_left
-        } else {
-            R.string.description_direction_right
-        }).start()
+    private fun hintDismiss() {
+        getAlarmBounceAnimator(swipeDistancePx.toFloat(), R.string.description_direction_down)
+                .start()
     }
 
-    private fun hintDismiss() {
-        val alarmLeft: Int = mAlarmButton.getLeft() + mAlarmButton.getPaddingLeft()
-        val alarmRight: Int = mAlarmButton.getRight() - mAlarmButton.getPaddingRight()
-        val translationX = (Math.max(mDismissButton.getLeft() - alarmRight, 0) +
-                Math.min(mDismissButton.getRight() - alarmLeft, 0)).toFloat()
-        getAlarmBounceAnimator(translationX, if (translationX < 0.0f) {
-            R.string.description_direction_left
-        } else {
-            R.string.description_direction_right
-        }).start()
-    }
+    private val swipeDistancePx: Int
+        get() = resources.getDimensionPixelSize(R.dimen.alarm_lockscreen_swipe_distance)
 
     /**
      * Set animators to initial values and restart pulse on alarm button.
      */
     private fun resetAnimations() {
         // Set the animators to their initial values.
-        setAnimatedFractions(0.0f /* snoozeFraction */, 0.0f /* dismissFraction */)
+        setAnimatedFractions(0.0f /* dismissFraction */)
         // Restart the pulse.
         mPulseAnimator.setRepeatCount(ValueAnimator.INFINITE)
         if (!mPulseAnimator.isStarted()) {
@@ -530,36 +495,6 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
         }
     }
 
-    /**
-     * Perform snooze animation and send snooze intent.
-     */
-    private fun snooze() {
-        mAlarmHandled = true
-        LOGGER.v("Snoozed: %s", mAlarmInstance)
-
-        val colorPrimary = ThemeUtils.resolveColor(this, androidx.appcompat.R.attr.colorPrimary)
-        setAnimatedFractions(1.0f /* snoozeFraction */, 0.0f /* dismissFraction */)
-
-        val snoozeMinutes = DataModel.dataModel.snoozeLength
-        val infoText: String = getResources().getQuantityString(
-                R.plurals.alarm_alert_snooze_duration, snoozeMinutes, snoozeMinutes)
-        val accessibilityText: String = getResources().getQuantityString(
-                R.plurals.alarm_alert_snooze_set, snoozeMinutes, snoozeMinutes)
-
-        getAlertAnimator(mSnoozeButton, R.string.alarm_alert_snoozed_text, infoText,
-                accessibilityText, colorPrimary, colorPrimary).start()
-
-        AlarmStateManager.setSnoozeState(this, mAlarmInstance!!, false /* showToast */)
-
-        Events.sendAlarmEvent(R.string.action_snooze, R.string.label_deskclock)
-
-        // Unbind here, otherwise alarm will keep ringing until activity finishes.
-        unbindAlarmService()
-    }
-
-    /**
-     * Perform dismiss animation and send dismiss intent.
-     */
     /**
      * Every user-facing dismiss path lands here. It either runs the alarm's challenges or,
      * when there are none left to do, actually dismisses.
@@ -574,11 +509,14 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
         performDismiss()
     }
 
+    /**
+     * Perform dismiss animation and send dismiss intent.
+     */
     private fun performDismiss() {
         mAlarmHandled = true
         LOGGER.v("Dismissed: %s", mAlarmInstance)
 
-        setAnimatedFractions(0.0f /* snoozeFraction */, 1.0f /* dismissFraction */)
+        setAnimatedFractions(1.0f /* dismissFraction */)
 
         getAlertAnimator(mDismissButton, R.string.alarm_alert_off_text, null /* infoText */,
                 getString(R.string.alarm_alert_off_text) /* accessibilityText */,
@@ -669,24 +607,12 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
         }
     }
 
-    override fun onSnoozeRequested() {
-        // Snooze is never gated by challenges.
-        mHandler.post {
-            if (isFinishing || isDestroyed) return@post
-            hideChallenges()
-            snooze()
-        }
-    }
-
     override fun onChallengeUnavailable(reason: String) {
         LOGGER.w("Skipping challenge that cannot be completed: %s", reason)
         Toast.makeText(this, getString(R.string.challenge_skipped, reason),
                 Toast.LENGTH_LONG).show()
         onChallengePassed()
     }
-
-    /** A real alarm is ringing, and snoozing it is never gated by challenges. */
-    override val canSnooze: Boolean get() = true
 
     override val progressText: String?
         get() {
@@ -716,10 +642,8 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
         }
     }
 
-    private fun setAnimatedFractions(snoozeFraction: Float, dismissFraction: Float) {
-        val alarmFraction = Math.max(snoozeFraction, dismissFraction)
-        AnimatorUtils.setAnimatedFraction(mAlarmAnimator, alarmFraction)
-        AnimatorUtils.setAnimatedFraction(mSnoozeAnimator, snoozeFraction)
+    private fun setAnimatedFractions(dismissFraction: Float) {
+        AnimatorUtils.setAnimatedFraction(mAlarmAnimator, dismissFraction)
         AnimatorUtils.setAnimatedFraction(mDismissAnimator, dismissFraction)
     }
 
@@ -738,9 +662,9 @@ class AlarmActivity : BaseActivity(), View.OnClickListener, View.OnTouchListener
                         AnimatorUtils.ARGB_EVALUATOR, mOnSurfaceColor, tintColor))
     }
 
-    private fun getAlarmBounceAnimator(translationX: Float, hintResId: Int): ValueAnimator {
+    private fun getAlarmBounceAnimator(translationY: Float, hintResId: Int): ValueAnimator {
         val bounceAnimator: ValueAnimator = ObjectAnimator.ofFloat(mAlarmButton,
-                View.TRANSLATION_X, mAlarmButton.getTranslationX(), translationX, 0.0f)
+                View.TRANSLATION_Y, mAlarmButton.getTranslationY(), translationY, 0.0f)
         bounceAnimator.setInterpolator(AnimatorUtils.DECELERATE_ACCELERATE_INTERPOLATOR)
         bounceAnimator.setDuration(ALARM_BOUNCE_DURATION_MILLIS.toLong())
         bounceAnimator.addListener(object : AnimatorListenerAdapter() {

@@ -74,7 +74,6 @@ class HandleApiCalls : Activity() {
                 AlarmClock.ACTION_SET_TIMER -> handleSetTimer(intent)
                 AlarmClock.ACTION_SHOW_TIMERS -> handleShowTimers(intent)
                 AlarmClock.ACTION_DISMISS_ALARM -> handleDismissAlarm(intent)
-                AlarmClock.ACTION_SNOOZE_ALARM -> handleSnoozeAlarm(intent)
                 AlarmClock.ACTION_DISMISS_TIMER -> handleDismissTimer(intent)
             }
         } catch (e: Exception) {
@@ -172,34 +171,6 @@ class HandleApiCalls : Activity() {
         }
     }
 
-    private fun handleSnoozeAlarm(intent: Intent) {
-        SnoozeAlarmAsync(intent, this).execute()
-    }
-
-    private class SnoozeAlarmAsync(
-        private val mIntent: Intent,
-        private val mActivity: Activity
-    ) : AsyncTask<Void?, Void?, Void?>() {
-        private val mContext: Context = mActivity.applicationContext
-
-        override fun doInBackground(vararg parameters: Void?): Void? {
-            val cr = mContext.contentResolver
-            val alarmInstances = AlarmInstance.getInstancesByState(
-                    cr, ClockContract.InstancesColumns.FIRED_STATE)
-            if (alarmInstances.isEmpty()) {
-                val reason = mContext.getString(R.string.no_firing_alarms)
-                Controller.getController().notifyVoiceFailure(mActivity, reason)
-                LOGGER.i("No firing alarms")
-                return null
-            }
-
-            for (firingAlarmInstance in alarmInstances) {
-                snoozeAlarm(firingAlarmInstance, mContext, mActivity)
-            }
-            return null
-        }
-    }
-
     /**
      * Processes the SET_ALARM intent
      * @param intent Intent passed to the app
@@ -259,6 +230,17 @@ class HandleApiCalls : Activity() {
 
         val alarm: Alarm
         if (alarms.isNotEmpty()) {
+            // Setting the alarm again replaces its instance, which would stop it if it is
+            // ringing, so an unfinished challenge has to come first.
+            val firing = ChallengeGate.firingInstanceOf(cr, alarms[0].id)
+            if (firing != null) {
+                startActivity(ChallengeGate.createChallengeIntent(this, firing))
+                val reason = getString(R.string.alarm_cant_be_dismissed_challenge)
+                Controller.getController().notifyVoiceFailure(this, reason)
+                LOGGER.i("Alarm has challenges; showing them instead of replacing it")
+                return
+            }
+
             // Enable the first matching alarm.
             alarm = alarms[0]
             alarm.enabled = true
@@ -525,9 +507,8 @@ class HandleApiCalls : Activity() {
                 return
             }
 
-            if (instance.mAlarmState == ClockContract.InstancesColumns.FIRED_STATE ||
-                    instance.mAlarmState == ClockContract.InstancesColumns.SNOOZE_STATE) {
-                // Always dismiss alarms that are fired or snoozed.
+            if (instance.mAlarmState == ClockContract.InstancesColumns.FIRED_STATE) {
+                // Always dismiss alarms that are firing.
                 AlarmStateManager.deleteInstanceAndUpdateParent(context, instance)
             } else if (Utils.isAlarmWithin24Hours(instance)) {
                 // Upcoming alarms are always predismissed.
@@ -545,19 +526,6 @@ class HandleApiCalls : Activity() {
             Controller.getController().notifyVoiceSuccess(activity, reason)
             LOGGER.i("Alarm dismissed: $instance")
             Events.sendAlarmEvent(R.string.action_dismiss, R.string.label_intent)
-        }
-
-        fun snoozeAlarm(alarmInstance: AlarmInstance, context: Context, activity: Activity) {
-            Utils.enforceNotMainLooper()
-
-            val time = DateFormat.getTimeFormat(context).format(
-                    alarmInstance.alarmTime.time)
-            val reason = context.getString(R.string.alarm_is_snoozed, time)
-            AlarmStateManager.setSnoozeState(context, alarmInstance, true)
-
-            Controller.getController().notifyVoiceSuccess(activity, reason)
-            LOGGER.i("Alarm snoozed: $alarmInstance")
-            Events.sendAlarmEvent(R.string.action_snooze, R.string.label_intent)
         }
 
         /**

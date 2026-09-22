@@ -20,7 +20,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.TextClock
 import android.widget.TextView
@@ -93,13 +92,6 @@ abstract class ChallengeFragment : Fragment() {
         promptView = shell.findViewById(R.id.challenge_prompt)
         promptView.text = promptText
         messageView = shell.findViewById(R.id.challenge_message)
-
-        val snooze = shell.findViewById<Button>(R.id.challenge_snooze)
-        if (host.canSnooze) {
-            snooze.setOnClickListener { host.onSnoozeRequested() }
-        } else {
-            snooze.visibility = View.GONE
-        }
 
         val content = shell.findViewById<FrameLayout>(R.id.challenge_content)
         val contentView = inflater.inflate(contentLayoutRes, content, true)

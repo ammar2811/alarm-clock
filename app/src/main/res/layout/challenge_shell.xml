@@ -16,8 +16,7 @@
   -->
 
 <!-- Common chrome for every challenge: the clock and progress at the top, the challenge's
-     own content in the middle, and snooze at the bottom. Snooze stays reachable because
-     challenges gate dismiss only. The background is transparent so the ring screen's window
+     own content filling the rest. The background is transparent so the ring screen's window
      colour shows through and the challenge reads as part of the same screen. -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -74,14 +73,5 @@
         android:layout_height="0dp"
         android:layout_marginTop="12dp"
         android:layout_weight="1" />
-
-    <Button
-        android:id="@+id/challenge_snooze"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/alarm_alert_snooze_text"
-        android:textColor="?attr/colorOnSurfaceVariant" />
 
 </LinearLayout>

@@ -38,18 +38,7 @@
     <string name="alarm_alert_dismiss_text" msgid="4942914605480888820">"বাতিল কৰক"</string>
     <string name="alarm_missed_title" msgid="3828345099754063392">"আপুনি সজাগ হ\'ব নোৱাৰা এলাৰ্ম"</string>
     <string name="alarm_missed_text" msgid="6585658367289194023">"<xliff:g id="ALARM_TIME">%1$s</xliff:g> - <xliff:g id="ALARM_LABEL">%2$s</xliff:g>"</string>
-    <string name="alarm_alert_snoozed_text" msgid="7064642998528766113">"স্নুজ কৰা হ’ল"</string>
-    <plurals name="alarm_alert_snooze_duration" formatted="false" msgid="7844300009062867865">
-      <item quantity="one"><xliff:g id="NUMBER">%d</xliff:g> মিনিট</item>
-      <item quantity="other"><xliff:g id="NUMBER">%d</xliff:g> মিনিট</item>
-    </plurals>
     <string name="alarm_alert_off_text" msgid="4472073417593915002">"এলাৰ্ম অফ আছে"</string>
-    <string name="alarm_alert_snooze_text" msgid="1774416052207651584">"স্নুজ কৰক"</string>
-    <plurals name="alarm_alert_snooze_set" formatted="false" msgid="3212729193036041768">
-      <item quantity="one"><xliff:g id="MINUTES">%d</xliff:g> মিনিটৰ বাবে স্নুজ কৰি থকা হৈছে।</item>
-      <item quantity="other"><xliff:g id="MINUTES">%d</xliff:g> মিনিটৰ বাবে স্নুজ কৰি থকা হৈছে।</item>
-    </plurals>
-    <string name="alarm_alert_snooze_until" msgid="6958013659168344550">"<xliff:g id="TIME">%s</xliff:g> বজালৈকে স্নুজ কৰি থকা হৈছে"</string>
     <string name="alarm_alert_predismiss_title" msgid="5723945586913705445">"পৰবৰ্তী এলাৰ্ম"</string>
     <string name="missed_alarm_has_been_deleted" msgid="5295473204045979335">"আপুনি সজাগ হ\'ব নোৱাৰা এলাৰ্ম মচা হৈছে"</string>
     <string name="timer_notifications_less_min" msgid="5481375048976427255">"এক মিনিটতকৈ কম সময় বাকী আছে"</string>
@@ -105,7 +94,6 @@
     <string name="analog_gadget" msgid="1670505720837152766">"এনাল\'গ ঘড়ী"</string>
     <string name="digital_gadget" msgid="2326954556720571358">"ডিজিটল ঘড়ী"</string>
     <string name="settings" msgid="5849739030579520686">"ছেটিংসমূহ"</string>
-    <string name="snooze_duration_title" msgid="1097309861110780483">"স্নুজৰ দৈৰ্ঘ্য়"</string>
     <string name="crescendo_duration_title" msgid="8606408542726189528">"লাহে লাহে ভলিউম বঢ়াওক"</string>
     <string name="auto_silence_title" msgid="2012754009554434544">"এই সময়ৰ পিছত নীৰৱ কৰক"</string>
     <plurals name="auto_silence_summary" formatted="false" msgid="6579258788774360396">
@@ -137,38 +125,6 @@
     <item msgid="6390209981529164605">"৫৫ ছেকেণ্ড"</item>
     <item msgid="5261571706794132923">"৬০ ছেকেণ্ড"</item>
   </string-array>
-  <string-array name="snooze_duration_entries">
-    <item msgid="7668553664977446797">"১ মিনিট"</item>
-    <item msgid="4482596794620161030">"২ মিনিট"</item>
-    <item msgid="8478276201849960314">"৩ মিনিট"</item>
-    <item msgid="4038456474851212478">"৪ মিনিট"</item>
-    <item msgid="6298175579152122770">"৫ মিনিট"</item>
-    <item msgid="9021860177999278496">"৬ মিনিট"</item>
-    <item msgid="7224689200902680256">"৭ মিনিট"</item>
-    <item msgid="4610012663985162123">"৮ মিনিট"</item>
-    <item msgid="1717028898015659426">"৯ মিনিট"</item>
-    <item msgid="8058492636464337699">"১০ মিনিট"</item>
-    <item msgid="577767219993868603">"১১ মিনিট"</item>
-    <item msgid="3710047869487864775">"১২ মিনিট"</item>
-    <item msgid="3794200935630619331">"১৩ মিনিট"</item>
-    <item msgid="5462266433522229437">"১৪ মিনিট"</item>
-    <item msgid="2192100038569306041">"১৫ মিনিট"</item>
-    <item msgid="6636326047858437620">"১৬ মিনিট"</item>
-    <item msgid="2481054808772108352">"১৭ মিনিট"</item>
-    <item msgid="4080984064428458050">"১৮ মিনিট"</item>
-    <item msgid="5844319398703041730">"১৯ মিনিট"</item>
-    <item msgid="2334964289857921073">"২০ মিনিট"</item>
-    <item msgid="4755209855817904977">"২১ মিনিট"</item>
-    <item msgid="8414394445389367355">"২২ মিনিট"</item>
-    <item msgid="2604612428763230265">"২৩ মিনিট"</item>
-    <item msgid="6871696471373403806">"২৪ মিনিট"</item>
-    <item msgid="1573685398431466364">"২৫ মিনিট"</item>
-    <item msgid="6999090368236684971">"২৬ মিনিট"</item>
-    <item msgid="7125056720603734703">"২৭ মিনিট"</item>
-    <item msgid="1695830988496463030">"২৮ মিনিট"</item>
-    <item msgid="6706610539793025916">"২৯ মিনিট"</item>
-    <item msgid="2898212818965905529">"৩০ মিনিট"</item>
-  </string-array>
     <string name="week_start_title" msgid="4268917518596832096">"সপ্তাহ আৰম্ভ হোৱা দিন"</string>
   <string-array name="week_start_entries">
     <item msgid="9010198173394482639">"শনিবাৰ"</item>
@@ -186,7 +142,6 @@
     <string name="alarms_blocked_by_dnd" msgid="6089433757505898969">"ডিভাইচক সম্পূৰ্ণ নীৰৱ ম\'ডত ছেট কৰা হৈছে"</string>
     <string name="volume_button_setting_title" msgid="6937131248843413357">"ভলিউমৰ বুটাম"</string>
   <string-array name="volume_button_setting_entries">
-    <item msgid="7972756698723318690">"স্নুজ কৰক"</item>
     <item msgid="3450979320164769576">"বাতিল কৰক"</item>
     <item msgid="7085774139907653538">"ভলিউম নিয়ন্ত্ৰণ কৰক"</item>
   </string-array>
@@ -372,9 +327,6 @@
     <string name="timer_service_desc" msgid="2256002649882602433">"স্টপৱাচ্চ জাননীৰ পৰা কাৰ্যবিলাকত প্ৰক্ৰিয়া চলায়"</string>
     <string name="stopwatch_service_desc" msgid="9220132827343760767">"স্টপৱাচ্চ জাননীৰ পৰা কাৰ্যবিলাকত প্ৰক্ৰিয়া চলায়"</string>
     <string name="swn_paused" msgid="6364358842808263589">"পজ কৰা হ’ল"</string>
-    <string name="description_direction_right" msgid="5709209043267548985">"বাতিল কৰিবলৈ সোঁফালে ছুৱাইপ কৰক"</string>
-    <string name="description_direction_left" msgid="7448141043674998679">"স্নুজ কৰিবলৈ বাওঁফাললৈ ছোৱাইপ কৰক"</string>
-    <string name="description_direction_both" msgid="1841309486023845685">"স্নুজ কৰিবলৈ বাওঁফালে বা বাতিল কৰিবলৈ সোঁফালে ছুৱাইপ কৰক"</string>
     <string name="timer_settings" msgid="7955522143086154795">"টাইমাৰবোৰ"</string>
     <string name="timer_vibrate_title" msgid="7788920024785587518">"টাইমাৰ কম্পন"</string>
     <string name="timer_paused" msgid="5941160896040771462">"টাইমাৰ প\'জ কৰা হ’ল"</string>
@@ -420,6 +372,4 @@
     <string name="alarm_cant_be_dismissed_still_more_than_24_hours_away" msgid="8810520940995307437">"<xliff:g id="ALARM_TIME">%s</xliff:g> এলাৰ্ম এতিয়াই বাতিল কৰিব নোৱাৰি, এলাৰ্ম বাজিবলৈ আৰু ২৪ ঘণ্টা সময় বাকী আছে"</string>
     <string name="dismiss_alarm" msgid="7204593078688533541">"এলাৰ্ম বাতিল কৰক"</string>
     <string name="pick_alarm_to_dismiss" msgid="5408769235866082896">"বাতিল কৰিবলগীয়া এলাৰ্ম বাছক"</string>
-    <string name="no_firing_alarms" msgid="4986161963178722289">"কোনো সক্ৰিয় এলাৰ্ম নাই"</string>
-    <string name="alarm_is_snoozed" msgid="7044644119744928846">"<xliff:g id="ALARM_TIME">%s</xliff:g> ১০ মিনিটৰ বাবে এলাৰ্ম স্নুজ কৰা হ’ল"</string>
 </resources>

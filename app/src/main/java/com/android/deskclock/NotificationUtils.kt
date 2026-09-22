@@ -40,11 +40,6 @@ object NotificationUtils {
     const val ALARM_UPCOMING_NOTIFICATION_CHANNEL_ID = "alarmUpcomingNotification"
 
     /**
-     * Notification channel containing all snooze notifications.
-     */
-    const val ALARM_SNOOZE_NOTIFICATION_CHANNEL_ID = "alarmSnoozingNotification"
-
-    /**
      * Notification channel containing all firing alarm and timer notifications.
      */
     const val FIRING_NOTIFICATION_CHANNEL_ID = "firingAlarmsAndTimersNotification"
@@ -72,10 +67,6 @@ object NotificationUtils {
         CHANNEL_PROPS[ALARM_MISSED_NOTIFICATION_CHANNEL_ID] = intArrayOf(
                 R.string.alarm_missed_channel,
                 IMPORTANCE_HIGH
-        )
-        CHANNEL_PROPS[ALARM_SNOOZE_NOTIFICATION_CHANNEL_ID] = intArrayOf(
-                R.string.alarm_snooze_channel,
-                IMPORTANCE_LOW
         )
         CHANNEL_PROPS[ALARM_UPCOMING_NOTIFICATION_CHANNEL_ID] = intArrayOf(
                 R.string.alarm_upcoming_channel,
@@ -167,7 +158,9 @@ object NotificationUtils {
         deleteChannel(nm, "StopwatchNotification")
         deleteChannel(nm, "alarmNotification")
         deleteChannel(nm, "TimerModelNotification")
+        // Snoozing was removed; drop the channel entirely rather than leaving it orphaned.
         deleteChannel(nm, "alarmSnoozeNotification")
+        deleteChannel(nm, "alarmSnoozingNotification")
 
         // We recreate all existing channels so any language change or our name changes propagate
         // to the actual channels

@@ -38,22 +38,7 @@
     <string name="alarm_alert_dismiss_text" msgid="4942914605480888820">"שמענו אותך"</string>
     <string name="alarm_missed_title" msgid="3828345099754063392">"החמצת התראה"</string>
     <string name="alarm_missed_text" msgid="6585658367289194023">"<xliff:g id="ALARM_TIME">%1$s</xliff:g> ‏- <xliff:g id="ALARM_LABEL">%2$s</xliff:g>"</string>
-    <string name="alarm_alert_snoozed_text" msgid="7064642998528766113">"מצב נודניק"</string>
-    <plurals name="alarm_alert_snooze_duration" formatted="false" msgid="7844300009062867865">
-      <item quantity="two"><xliff:g id="NUMBER">%d</xliff:g> דקות</item>
-      <item quantity="many"><xliff:g id="NUMBER">%d</xliff:g> דקות</item>
-      <item quantity="other"><xliff:g id="NUMBER">%d</xliff:g> דקות</item>
-      <item quantity="one">דקה אחת</item>
-    </plurals>
     <string name="alarm_alert_off_text" msgid="4472073417593915002">"ההתראה כבויה"</string>
-    <string name="alarm_alert_snooze_text" msgid="1774416052207651584">"נודניק"</string>
-    <plurals name="alarm_alert_snooze_set" formatted="false" msgid="3212729193036041768">
-      <item quantity="two">עובר למצב נודניק למשך <xliff:g id="MINUTES">%d</xliff:g> דקות.</item>
-      <item quantity="many">עובר למצב נודניק למשך <xliff:g id="MINUTES">%d</xliff:g> דקות.</item>
-      <item quantity="other">עובר למצב נודניק למשך <xliff:g id="MINUTES">%d</xliff:g> דקות.</item>
-      <item quantity="one">עובר למצב נודניק למשך דקה אחת.</item>
-    </plurals>
-    <string name="alarm_alert_snooze_until" msgid="6958013659168344550">"מצב נמנום עד <xliff:g id="TIME">%s</xliff:g>"</string>
     <string name="alarm_alert_predismiss_title" msgid="5723945586913705445">"התראה קרובה"</string>
     <string name="missed_alarm_has_been_deleted" msgid="5295473204045979335">"ההתראה שהחמצת נמחקה"</string>
     <string name="timer_notifications_less_min" msgid="5481375048976427255">"נותרה פחות מדקה"</string>
@@ -121,7 +106,6 @@
     <string name="analog_gadget" msgid="1670505720837152766">"שעון אנלוגי"</string>
     <string name="digital_gadget" msgid="2326954556720571358">"שעון דיגיטלי"</string>
     <string name="settings" msgid="5849739030579520686">"הגדרות"</string>
-    <string name="snooze_duration_title" msgid="1097309861110780483">"משך הנדנוד"</string>
     <string name="crescendo_duration_title" msgid="8606408542726189528">"הגבר בהדרגה את עוצמת הקול"</string>
     <string name="auto_silence_title" msgid="2012754009554434544">"השתק לאחר"</string>
     <plurals name="auto_silence_summary" formatted="false" msgid="6579258788774360396">
@@ -155,38 +139,6 @@
     <item msgid="6390209981529164605">"55 שניות"</item>
     <item msgid="5261571706794132923">"60 שניות"</item>
   </string-array>
-  <string-array name="snooze_duration_entries">
-    <item msgid="7668553664977446797">"דקה אחת"</item>
-    <item msgid="4482596794620161030">"2 דקות"</item>
-    <item msgid="8478276201849960314">"3 דקות"</item>
-    <item msgid="4038456474851212478">"4 דקות"</item>
-    <item msgid="6298175579152122770">"חמש דקות"</item>
-    <item msgid="9021860177999278496">"6 דקות"</item>
-    <item msgid="7224689200902680256">"7 דקות"</item>
-    <item msgid="4610012663985162123">"8 דקות"</item>
-    <item msgid="1717028898015659426">"9 דקות"</item>
-    <item msgid="8058492636464337699">"עשר דקות"</item>
-    <item msgid="577767219993868603">"11 דקות"</item>
-    <item msgid="3710047869487864775">"12 דקות"</item>
-    <item msgid="3794200935630619331">"13 דקות"</item>
-    <item msgid="5462266433522229437">"14 דקות"</item>
-    <item msgid="2192100038569306041">"15 דקות"</item>
-    <item msgid="6636326047858437620">"16 דקות"</item>
-    <item msgid="2481054808772108352">"17 דקות"</item>
-    <item msgid="4080984064428458050">"18 דקות"</item>
-    <item msgid="5844319398703041730">"19 דקות"</item>
-    <item msgid="2334964289857921073">"20 דקות"</item>
-    <item msgid="4755209855817904977">"21 דקות"</item>
-    <item msgid="8414394445389367355">"22 דקות"</item>
-    <item msgid="2604612428763230265">"23 דקות"</item>
-    <item msgid="6871696471373403806">"24 דקות"</item>
-    <item msgid="1573685398431466364">"25 דקות"</item>
-    <item msgid="6999090368236684971">"26 דקות"</item>
-    <item msgid="7125056720603734703">"27 דקות"</item>
-    <item msgid="1695830988496463030">"28 דקות"</item>
-    <item msgid="6706610539793025916">"29 דקות"</item>
-    <item msgid="2898212818965905529">"30 דקות"</item>
-  </string-array>
     <string name="week_start_title" msgid="4268917518596832096">"השבוע מתחיל ב-"</string>
   <string-array name="week_start_entries">
     <item msgid="9010198173394482639">"שבת"</item>
@@ -204,7 +156,6 @@
     <string name="alarms_blocked_by_dnd" msgid="6089433757505898969">"המכשיר מוגדר למצב השתקה כוללת"</string>
     <string name="volume_button_setting_title" msgid="6937131248843413357">"לחצני עוצמת קול"</string>
   <string-array name="volume_button_setting_entries">
-    <item msgid="7972756698723318690">"נודניק"</item>
     <item msgid="3450979320164769576">"שמענו אותך"</item>
     <item msgid="7085774139907653538">"שליטה בעוצמת הקול"</item>
   </string-array>
@@ -390,9 +341,6 @@
     <string name="timer_service_desc" msgid="2256002649882602433">"מעבד פעולות מההודעות של הטיימר."</string>
     <string name="stopwatch_service_desc" msgid="9220132827343760767">"מעבד פעולות מההודעות של שעון העצר."</string>
     <string name="swn_paused" msgid="6364358842808263589">"מושהה"</string>
-    <string name="description_direction_right" msgid="5709209043267548985">"החלקה ימינה מפסיקה את הצלצול"</string>
-    <string name="description_direction_left" msgid="7448141043674998679">"החלק שמאלה כדי להפעיל נודניק"</string>
-    <string name="description_direction_both" msgid="1841309486023845685">"החלקה שמאלה מעבירה למצב נודניק וימינה מפסיקה את הצלצול"</string>
     <string name="timer_settings" msgid="7955522143086154795">"טיימרים"</string>
     <string name="timer_vibrate_title" msgid="7788920024785587518">"רטט טיימר"</string>
     <string name="timer_paused" msgid="5941160896040771462">"הטיימר מושהה"</string>
@@ -440,6 +388,4 @@
     <string name="alarm_cant_be_dismissed_still_more_than_24_hours_away" msgid="8810520940995307437">"לא ניתן לסגור עדיין את ההתראה של <xliff:g id="ALARM_TIME">%s</xliff:g>, נותרו יותר מ-24 שעות"</string>
     <string name="dismiss_alarm" msgid="7204593078688533541">"דחה את ההתראה"</string>
     <string name="pick_alarm_to_dismiss" msgid="5408769235866082896">"בחר איזו התראה לדחות"</string>
-    <string name="no_firing_alarms" msgid="4986161963178722289">"אין התראות הפועלות כעת"</string>
-    <string name="alarm_is_snoozed" msgid="7044644119744928846">"ההתראה של <xliff:g id="ALARM_TIME">%s</xliff:g> הועברה למצב נודניק למשך עשר דקות"</string>
 </resources>

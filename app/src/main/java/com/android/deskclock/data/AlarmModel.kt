@@ -71,9 +71,6 @@ internal class AlarmModel(
     val alarmTimeout: Int
         get() = mSettingsModel.alarmTimeout
 
-    val snoozeLength: Int
-        get() = mSettingsModel.snoozeLength
-
     /**
      * This receiver is notified when system settings change. Cached information built on
      * those system settings must be cleared.

@@ -83,44 +83,8 @@
     <string name="alarm_missed_title">Missed alarm</string>
     <string name="alarm_missed_text"><xliff:g id="alarm_time">%1$s</xliff:g> - <xliff:g id="alarm_label">%2$s</xliff:g></string>
 
-    <!-- The text shown after user snoozed an alerting alarm. The text will be shown
-         together with the number of minutes in two separate lines. For example:
-             Snoozed
-             10 min
-         [CHAR LIMIT=10]
-    -->
-    <string name="alarm_alert_snoozed_text">Snoozed</string>
-
-    <!-- The text shown after user snoozed an alerting alarm. The text will be shown
-         together with the word 'Snoozed' in two separate lines or example:
-             Snoozed
-             10 min
-         [CHAR LIMIT=10]
-    -->
-    <plurals name="alarm_alert_snooze_duration">
-        <!-- Duration for one minute -->
-        <item quantity="one">1 min</item>
-        <!-- Duration for more than one minute -->
-        <item quantity="other"><xliff:g id="number" example="7">%d</xliff:g> min</item>
-    </plurals>
-
     <!-- The text shown after user dismissed an alerting alarm [CHAR LIMIT=15] -->
     <string name="alarm_alert_off_text">Alarm off</string>
-
-    <!-- Button labels on the alarm dialog: Snooze -->
-    <string name="alarm_alert_snooze_text">Snooze</string>
-
-    <!-- Toast that appears after Alarm is snoozed from the Alarm
-         dialog. Says the alarm will snooze for xxx minutes.  -->
-    <plurals name="alarm_alert_snooze_set">
-        <!-- Duration for one minute -->
-        <item quantity="one">Snoozing for 1 minute.</item>
-        <!-- Duration for more than one minute -->
-        <item quantity="other">Snoozing for <xliff:g id="minutes">%d</xliff:g> minutes.</item>
-    </plurals>
-
-    <!-- Text to appear inside a notification while an alarm is snoozing. -->
-    <string name="alarm_alert_snooze_until">Snoozing until <xliff:g id="time">%s</xliff:g></string>
 
     <!-- Text to appear in the notification title while an alarm is about to go off. -->
     <string name="alarm_alert_predismiss_title">Upcoming alarm</string>
@@ -247,9 +211,6 @@
     <!-- Label for the Settings activity displayed on-screen when that activity must be represented to the user. -->
     <string name="settings">Settings</string>
 
-    <!-- Setting title for changing the snooze duration. -->
-    <string name="snooze_duration_title">Snooze length</string>
-
     <!-- Setting title for changing the crescendo duration. -->
     <string name="crescendo_duration_title">Gradually increase volume</string>
 
@@ -328,75 +289,6 @@
         <item>60</item>
     </string-array>
 
-    <!-- Entries listed in the ListPreference when invoking the snooze duration preference -->
-    <string-array name="snooze_duration_entries">
-        <item>1 minute</item>
-        <item>2 minutes</item>
-        <item>3 minutes</item>
-        <item>4 minutes</item>
-        <item>5 minutes</item>
-        <item>6 minutes</item>
-        <item>7 minutes</item>
-        <item>8 minutes</item>
-        <item>9 minutes</item>
-        <item>10 minutes</item>
-        <item>11 minutes</item>
-        <item>12 minutes</item>
-        <item>13 minutes</item>
-        <item>14 minutes</item>
-        <item>15 minutes</item>
-        <item>16 minutes</item>
-        <item>17 minutes</item>
-        <item>18 minutes</item>
-        <item>19 minutes</item>
-        <item>20 minutes</item>
-        <item>21 minutes</item>
-        <item>22 minutes</item>
-        <item>23 minutes</item>
-        <item>24 minutes</item>
-        <item>25 minutes</item>
-        <item>26 minutes</item>
-        <item>27 minutes</item>
-        <item>28 minutes</item>
-        <item>29 minutes</item>
-        <item>30 minutes</item>
-    </string-array>
-
-    <!-- Values that are retrieved from the ListPreference. These must match
-         the snooze_duration_entries above. -->
-    <string-array name="snooze_duration_values" translatable="false">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
-        <item>5</item>
-        <item>6</item>
-        <item>7</item>
-        <item>8</item>
-        <item>9</item>
-        <item>10</item>
-        <item>11</item>
-        <item>12</item>
-        <item>13</item>
-        <item>14</item>
-        <item>15</item>
-        <item>16</item>
-        <item>17</item>
-        <item>18</item>
-        <item>19</item>
-        <item>20</item>
-        <item>21</item>
-        <item>22</item>
-        <item>23</item>
-        <item>24</item>
-        <item>25</item>
-        <item>26</item>
-        <item>27</item>
-        <item>28</item>
-        <item>29</item>
-        <item>30</item>
-    </string-array>
-
     <!-- Week start day preference title. -->
     <string name="week_start_title">Start week on</string>
 
@@ -447,14 +339,12 @@
 
     <!-- Entries listed in the setting for the side-button action. -->
     <string-array name="volume_button_setting_entries">
-        <item>Snooze</item>
         <item>Dismiss</item>
         <item>Control volume</item>
     </string-array>
 
     <!-- Values for the side-button setting. -->
     <string-array name="volume_button_setting_values" translatable="false">
-        <item>1</item>
         <item>2</item>
         <item>0</item>
     </string-array>
@@ -895,18 +785,8 @@
     <!-- Description for the paused stop watch -->
     <string name="swn_paused">Paused</string>
 
-    <!-- Text instruction for dismiss alarm on alarm lock screen. The dismiss button will still
-         be on the right even on RTL languages so please do not reverse this during
-         translation. -->
-    <string name="description_direction_right">Swipe right to dismiss</string>
-    <!-- Text instruction for snooze alarm on alarm lock screen. The snooze button will still
-         be on the left even on RTL languages so please do not reverse this during
-         translation. -->
-    <string name="description_direction_left">Swipe left to snooze</string>
-    <!-- Text instruction for alarm icon on alarm lock screen. The snooze button will still
-         be on the left even on RTL languages so please do not reverse this during
-         translation. -->
-    <string name="description_direction_both">Swipe left to snooze or right to dismiss</string>
+    <!-- Text instruction for dismiss alarm on alarm lock screen. -->
+    <string name="description_direction_down">Swipe down to dismiss</string>
 
     <!-- Header in the preferences settings for the section pertaining to timers. -->
     <string name="timer_settings">Timers</string>
@@ -1077,22 +957,9 @@
    -->
     <string name="pick_alarm_to_dismiss">Pick which alarm to dismiss</string>
 
-    <!-- String that represents that the user doesn't have any alarms firing at the moment.
-    [CHAR LIMIT=NONE]
-    -->
-    <string name="no_firing_alarms">No firing alarms</string>
-
-    <!-- String that represents that the user has snoozed an alarm through a voice action for 10
-    minutes.
-    %s represents alarm time, e.g. 14:20
-    [CHAR LIMIT=NONE]
-    -->
-    <string name="alarm_is_snoozed"><xliff:g id="alarm_time" example="14:20">%s</xliff:g> alarm snoozed for 10 minutes</string>
-
     <!-- Strings for notification channel. -->
     <string name="firing_alarms_timers_channel">Firing alarms &amp; timers</string>
     <string name="alarm_missed_channel">Missed alarms</string>
-    <string name="alarm_snooze_channel">Snoozed alarms</string>
     <string name="alarm_upcoming_channel">Upcoming alarms</string>
     <string name="stopwatch_channel">Stopwatch</string>
     <string name="timer_channel">Timer</string>

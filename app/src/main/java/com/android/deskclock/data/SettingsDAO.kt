@@ -288,7 +288,6 @@ internal object SettingsDAO {
         val value: String = prefs.getString(SettingsActivity.KEY_VOLUME_BUTTONS, defaultValue)!!
         return when (value) {
             SettingsActivity.DEFAULT_VOLUME_BEHAVIOR -> AlarmVolumeButtonBehavior.NOTHING
-            SettingsActivity.VOLUME_BEHAVIOR_SNOOZE -> AlarmVolumeButtonBehavior.SNOOZE
             SettingsActivity.VOLUME_BEHAVIOR_DISMISS -> AlarmVolumeButtonBehavior.DISMISS
             else -> throw IllegalArgumentException("Unknown volume button behavior: $value")
         }
@@ -300,15 +299,6 @@ internal object SettingsDAO {
     fun getAlarmTimeout(prefs: SharedPreferences): Int {
         // Default value must match the one in res/xml/settings.xml
         val string: String = prefs.getString(SettingsActivity.KEY_AUTO_SILENCE, "10")!!
-        return string.toInt()
-    }
-
-    /**
-     * @return the number of minutes an alarm will remain snoozed before it rings again
-     */
-    fun getSnoozeLength(prefs: SharedPreferences): Int {
-        // Default value must match the one in res/xml/settings.xml
-        val string: String = prefs.getString(SettingsActivity.KEY_ALARM_SNOOZE, "10")!!
         return string.toInt()
     }
 

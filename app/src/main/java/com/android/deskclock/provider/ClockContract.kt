@@ -200,20 +200,10 @@ object ClockContract {
             const val HIGH_NOTIFICATION_STATE = 3
 
             /**
-             * Alarm state when alarm is in snooze.
-             *
-             * Can transitions to:
-             * DISMISSED_STATE
-             * FIRED_STATE
-             */
-            const val SNOOZE_STATE = 4
-
-            /**
              * Alarm state when alarm is being fired.
              *
              * Can transitions to:
              * DISMISSED_STATE
-             * SNOOZED_STATE
              * MISSED_STATE
              */
             const val FIRED_STATE = 5

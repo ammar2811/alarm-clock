@@ -59,11 +59,6 @@ internal object AlarmNotifications {
     private const val ALARM_HIGH_PRIORITY_NOTIFICATION_CHANNEL_ID = "alarmHighPriorityNotification"
 
     /**
-     * Notification channel containing all snooze notifications.
-     */
-    private const val ALARM_SNOOZE_NOTIFICATION_CHANNEL_ID = "alarmSnoozeNotification"
-
-    /**
      * Notification channel containing all missed notifications.
      */
     private const val ALARM_MISSED_NOTIFICATION_CHANNEL_ID = "alarmMissedNotification"
@@ -363,58 +358,6 @@ internal object AlarmNotifications {
 
     @JvmStatic
     @Synchronized
-    fun showSnoozeNotification(
-        context: Context,
-        instance: AlarmInstance
-    ) {
-        LogUtils.v("Displaying snoozed notification for alarm instance: " + instance.mId)
-
-        val builder: NotificationCompat.Builder = NotificationCompat.Builder(
-                context, ALARM_SNOOZE_NOTIFICATION_CHANNEL_ID)
-                .setShowWhen(false)
-                .setContentTitle(instance.getLabelOrDefault(context))
-                .setContentText(context.getString(R.string.alarm_alert_snooze_until,
-                        AlarmUtils.getFormattedTime(context, instance.alarmTime)))
-                .setColor(ContextCompat.getColor(context, R.color.notification_accent))
-                .setSmallIcon(R.drawable.stat_notify_alarm)
-                .setAutoCancel(false)
-                .setSortKey(createSortKey(instance))
-                .setPriority(NotificationCompat.PRIORITY_MAX)
-                .setCategory(NotificationCompat.CATEGORY_EVENT)
-                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                .setLocalOnly(true)
-
-        builder.setGroup(UPCOMING_GROUP_KEY)
-
-        // Setup up dismiss action
-        val dismissIntent: Intent = AlarmStateManager.createStateChangeIntent(context,
-                AlarmStateManager.ALARM_DISMISS_TAG, instance, InstancesColumns.DISMISSED_STATE)
-        val id = instance.hashCode()
-        builder.addAction(R.drawable.ic_alarm_off_24dp,
-                context.getString(R.string.alarm_alert_dismiss_text),
-                PendingIntent.getService(context, id,
-                        dismissIntent, PendingIntent.FLAG_UPDATE_CURRENT))
-
-        // Setup content action if instance is owned by alarm
-        val viewAlarmIntent: Intent = createViewAlarmIntent(context, instance)
-        builder.setContentIntent(PendingIntent.getActivity(context, id,
-                viewAlarmIntent, PendingIntent.FLAG_UPDATE_CURRENT))
-
-        val nm: NotificationManagerCompat = NotificationManagerCompat.from(context)
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                    ALARM_SNOOZE_NOTIFICATION_CHANNEL_ID,
-                    context.getString(R.string.default_label),
-                    NotificationManager.IMPORTANCE_DEFAULT)
-            nm.createNotificationChannel(channel)
-        }
-        val notification: Notification = builder.build()
-        NotificationUtils.post(nm, id, notification)
-        updateUpcomingAlarmGroupNotification(context, -1, notification)
-    }
-
-    @JvmStatic
-    @Synchronized
     fun showMissedNotification(
         context: Context,
         instance: AlarmInstance
@@ -491,15 +434,6 @@ internal object AlarmNotifications {
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setLocalOnly(true)
 
-        // Setup Snooze Action
-        val snoozeIntent: Intent = AlarmStateManager.createStateChangeIntent(service,
-                AlarmStateManager.ALARM_SNOOZE_TAG, instance, InstancesColumns.SNOOZE_STATE)
-        snoozeIntent.putExtra(AlarmStateManager.FROM_NOTIFICATION_EXTRA, true)
-        val snoozePendingIntent: PendingIntent = PendingIntent.getService(service,
-                ALARM_FIRING_NOTIFICATION_ID, snoozeIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-        notification.addAction(R.drawable.ic_snooze_24dp,
-                resources.getString(R.string.alarm_alert_snooze_text), snoozePendingIntent)
-
         // Setup Dismiss Action. When the alarm has challenges this opens the ring screen
         // into the challenge flow instead of dismissing, otherwise the notification would
         // be a way straight past the gate. Alarms without challenges keep the original
@@ -565,7 +499,6 @@ internal object AlarmNotifications {
             InstancesColumns.HIGH_NOTIFICATION_STATE -> {
                 showHighPriorityNotification(context, instance)
             }
-            InstancesColumns.SNOOZE_STATE -> showSnoozeNotification(context, instance)
             InstancesColumns.MISSED_STATE -> showMissedNotification(context, instance)
             else -> LogUtils.d("No notification to update")
         }
@@ -581,7 +514,7 @@ internal object AlarmNotifications {
 
     /**
      * Alarm notifications are sorted chronologically. Missed alarms are sorted chronologically
-     * **after** all upcoming/snoozed alarms by including the "MISSED" prefix on the
+     * **after** all upcoming alarms by including the "MISSED" prefix on the
      * sort key.
      *
      * @param instance the alarm instance for which the notification is generated

@@ -131,7 +131,7 @@ class SettingsActivity : BaseActivity() {
 
         override fun onPreferenceChange(pref: Preference, newValue: Any): Boolean {
             when (pref.getKey()) {
-                KEY_ALARM_CRESCENDO, KEY_HOME_TZ, KEY_ALARM_SNOOZE, KEY_TIMER_CRESCENDO -> {
+                KEY_ALARM_CRESCENDO, KEY_HOME_TZ, KEY_TIMER_CRESCENDO -> {
                     val preference: ListPreference = pref as ListPreference
                     val index: Int = preference.findIndexOfValue(newValue as String)
                     preference.setSummary(preference.getEntries().get(index))
@@ -156,7 +156,7 @@ class SettingsActivity : BaseActivity() {
                 }
                 KEY_AUTO_SILENCE -> {
                     val delay = newValue as String
-                    updateAutoSnoozeSummary(pref as ListPreference, delay)
+                    updateAutoSilenceSummary(pref as ListPreference, delay)
                 }
                 KEY_AUTO_HOME_CLOCK -> {
                     val autoHomeClockEnabled: Boolean = (pref as TwoStatePreference).isChecked()
@@ -235,7 +235,7 @@ class SettingsActivity : BaseActivity() {
             val autoSilencePref: ListPreference? = findPreference(KEY_AUTO_SILENCE)
             autoSilencePref?.let {
                 val delay: String = it.getValue()
-                updateAutoSnoozeSummary(it, delay)
+                updateAutoSilenceSummary(it, delay)
                 it.setOnPreferenceChangeListener(this)
             }
 
@@ -271,7 +271,6 @@ class SettingsActivity : BaseActivity() {
 
             refreshListPreference(findPreference(KEY_ALARM_CRESCENDO)!!)
             refreshListPreference(findPreference(KEY_TIMER_CRESCENDO)!!)
-            refreshListPreference(findPreference(KEY_ALARM_SNOOZE)!!)
 
             val dateAndTimeSetting: Preference? = findPreference(KEY_DATE_TIME)
             dateAndTimeSetting?.setOnPreferenceClickListener(this)
@@ -300,7 +299,7 @@ class SettingsActivity : BaseActivity() {
             preference.setOnPreferenceChangeListener(this)
         }
 
-        private fun updateAutoSnoozeSummary(listPref: ListPreference, delay: String) {
+        private fun updateAutoSilenceSummary(listPref: ListPreference, delay: String) {
             val i = delay.toInt()
             if (i == -1) {
                 listPref.setSummary(R.string.auto_silence_never)
@@ -312,7 +311,6 @@ class SettingsActivity : BaseActivity() {
     }
 
     companion object {
-        const val KEY_ALARM_SNOOZE = "snooze_duration"
         const val KEY_ALARM_CRESCENDO = "alarm_crescendo_duration"
         const val KEY_TIMER_CRESCENDO = "timer_crescendo_duration"
         const val KEY_TIMER_RINGTONE = "timer_ringtone"
@@ -327,7 +325,6 @@ class SettingsActivity : BaseActivity() {
         const val KEY_VOLUME_BUTTONS = "volume_button_setting"
         const val KEY_WEEK_START = "week_start"
         const val DEFAULT_VOLUME_BEHAVIOR = "0"
-        const val VOLUME_BEHAVIOR_SNOOZE = "1"
         const val VOLUME_BEHAVIOR_DISMISS = "2"
         const val PREFS_FRAGMENT_TAG = "prefs_fragment"
         const val PREFERENCE_DIALOG_FRAGMENT_TAG = "preference_dialog"

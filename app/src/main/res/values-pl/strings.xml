@@ -38,22 +38,7 @@
     <string name="alarm_alert_dismiss_text" msgid="4942914605480888820">"Wyłącz"</string>
     <string name="alarm_missed_title" msgid="3828345099754063392">"Przegapiony alarm"</string>
     <string name="alarm_missed_text" msgid="6585658367289194023">"<xliff:g id="ALARM_TIME">%1$s</xliff:g> – <xliff:g id="ALARM_LABEL">%2$s</xliff:g>"</string>
-    <string name="alarm_alert_snoozed_text" msgid="7064642998528766113">"Uśpiony"</string>
-    <plurals name="alarm_alert_snooze_duration" formatted="false" msgid="7844300009062867865">
-      <item quantity="few"><xliff:g id="NUMBER">%d</xliff:g> min</item>
-      <item quantity="many"><xliff:g id="NUMBER">%d</xliff:g> min</item>
-      <item quantity="other"><xliff:g id="NUMBER">%d</xliff:g> min</item>
-      <item quantity="one">1 min</item>
-    </plurals>
     <string name="alarm_alert_off_text" msgid="4472073417593915002">"Alarm wyłączony"</string>
-    <string name="alarm_alert_snooze_text" msgid="1774416052207651584">"Drzemka"</string>
-    <plurals name="alarm_alert_snooze_set" formatted="false" msgid="3212729193036041768">
-      <item quantity="few">Drzemka przez <xliff:g id="MINUTES">%d</xliff:g> minuty.</item>
-      <item quantity="many">Drzemka przez <xliff:g id="MINUTES">%d</xliff:g> minut.</item>
-      <item quantity="other">Drzemka przez <xliff:g id="MINUTES">%d</xliff:g> minuty.</item>
-      <item quantity="one">Drzemka przez minutę.</item>
-    </plurals>
-    <string name="alarm_alert_snooze_until" msgid="6958013659168344550">"Drzemka do <xliff:g id="TIME">%s</xliff:g>"</string>
     <string name="alarm_alert_predismiss_title" msgid="5723945586913705445">"Nadchodzący alarm"</string>
     <string name="missed_alarm_has_been_deleted" msgid="5295473204045979335">"Zignorowany przez Ciebie alarm został usunięty"</string>
     <string name="timer_notifications_less_min" msgid="5481375048976427255">"Jeszcze niecała minuta"</string>
@@ -121,7 +106,6 @@
     <string name="analog_gadget" msgid="1670505720837152766">"Zegar analogowy"</string>
     <string name="digital_gadget" msgid="2326954556720571358">"Zegar cyfrowy"</string>
     <string name="settings" msgid="5849739030579520686">"Ustawienia"</string>
-    <string name="snooze_duration_title" msgid="1097309861110780483">"Długość drzemki"</string>
     <string name="crescendo_duration_title" msgid="8606408542726189528">"Stopniowo zwiększaj głośność"</string>
     <string name="auto_silence_title" msgid="2012754009554434544">"Wycisz za"</string>
     <plurals name="auto_silence_summary" formatted="false" msgid="6579258788774360396">
@@ -155,38 +139,6 @@
     <item msgid="6390209981529164605">"55 sekund"</item>
     <item msgid="5261571706794132923">"60 sekund"</item>
   </string-array>
-  <string-array name="snooze_duration_entries">
-    <item msgid="7668553664977446797">"1 minuta"</item>
-    <item msgid="4482596794620161030">"2 minuty"</item>
-    <item msgid="8478276201849960314">"3 minuty"</item>
-    <item msgid="4038456474851212478">"4 minuty"</item>
-    <item msgid="6298175579152122770">"5 minut"</item>
-    <item msgid="9021860177999278496">"6 minut"</item>
-    <item msgid="7224689200902680256">"7 minut"</item>
-    <item msgid="4610012663985162123">"8 minut"</item>
-    <item msgid="1717028898015659426">"9 minut"</item>
-    <item msgid="8058492636464337699">"10 minut"</item>
-    <item msgid="577767219993868603">"11 minut"</item>
-    <item msgid="3710047869487864775">"12 minut"</item>
-    <item msgid="3794200935630619331">"13 minut"</item>
-    <item msgid="5462266433522229437">"14 minut"</item>
-    <item msgid="2192100038569306041">"15 minut"</item>
-    <item msgid="6636326047858437620">"16 minut"</item>
-    <item msgid="2481054808772108352">"17 minut"</item>
-    <item msgid="4080984064428458050">"18 minut"</item>
-    <item msgid="5844319398703041730">"19 minut"</item>
-    <item msgid="2334964289857921073">"20 minut"</item>
-    <item msgid="4755209855817904977">"21 minut"</item>
-    <item msgid="8414394445389367355">"22 minuty"</item>
-    <item msgid="2604612428763230265">"23 minuty"</item>
-    <item msgid="6871696471373403806">"24 minuty"</item>
-    <item msgid="1573685398431466364">"25 minut"</item>
-    <item msgid="6999090368236684971">"26 minut"</item>
-    <item msgid="7125056720603734703">"27 minut"</item>
-    <item msgid="1695830988496463030">"28 minut"</item>
-    <item msgid="6706610539793025916">"29 minut"</item>
-    <item msgid="2898212818965905529">"30 minut"</item>
-  </string-array>
     <string name="week_start_title" msgid="4268917518596832096">"Początek tygodnia"</string>
   <string-array name="week_start_entries">
     <item msgid="9010198173394482639">"Sobota"</item>
@@ -204,7 +156,6 @@
     <string name="alarms_blocked_by_dnd" msgid="6089433757505898969">"Urządzenie jest całkowicie wyciszone"</string>
     <string name="volume_button_setting_title" msgid="6937131248843413357">"Przyciski głośności"</string>
   <string-array name="volume_button_setting_entries">
-    <item msgid="7972756698723318690">"Drzemka"</item>
     <item msgid="3450979320164769576">"Wyłącz"</item>
     <item msgid="7085774139907653538">"Sterowanie głośnością"</item>
   </string-array>
@@ -390,9 +341,6 @@
     <string name="timer_service_desc" msgid="2256002649882602433">"Przetwarza działania z powiadomień minutnika."</string>
     <string name="stopwatch_service_desc" msgid="9220132827343760767">"Przetwarza działania z powiadomień stopera."</string>
     <string name="swn_paused" msgid="6364358842808263589">"Wstrzymano"</string>
-    <string name="description_direction_right" msgid="5709209043267548985">"Przesuń w prawo, by wyłączyć"</string>
-    <string name="description_direction_left" msgid="7448141043674998679">"Przesuń w lewo, by uśpić"</string>
-    <string name="description_direction_both" msgid="1841309486023845685">"Przesuń w lewo, by odłożyć, lub w prawo, by zamknąć"</string>
     <string name="timer_settings" msgid="7955522143086154795">"Minutniki"</string>
     <string name="timer_vibrate_title" msgid="7788920024785587518">"Wibracje minutnika"</string>
     <string name="timer_paused" msgid="5941160896040771462">"Minutnik wstrzymany"</string>
@@ -440,6 +388,4 @@
     <string name="alarm_cant_be_dismissed_still_more_than_24_hours_away" msgid="8810520940995307437">"Alarmu na <xliff:g id="ALARM_TIME">%s</xliff:g> nie można jeszcze zamknąć, bo włączy się dopiero za ponad 24 godziny"</string>
     <string name="dismiss_alarm" msgid="7204593078688533541">"Anuluj alarm"</string>
     <string name="pick_alarm_to_dismiss" msgid="5408769235866082896">"Wybierz, który alarm wyłączyć"</string>
-    <string name="no_firing_alarms" msgid="4986161963178722289">"Brak aktualnych alarmów"</string>
-    <string name="alarm_is_snoozed" msgid="7044644119744928846">"Alarm z <xliff:g id="ALARM_TIME">%s</xliff:g> został uśpiony na 10 minut"</string>
 </resources>

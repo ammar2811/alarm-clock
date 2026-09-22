@@ -31,12 +31,6 @@ interface ChallengeHost {
     fun onChallengeAbandoned()
 
     /**
-     * The user asked to snooze instead. Snoozing is never gated by challenges, so this is
-     * always available while a challenge is on screen.
-     */
-    fun onSnoozeRequested()
-
-    /**
      * Skips the current challenge, for the one case where it cannot be completed at all:
      * the photo challenge without camera permission. Never offered for anything the user
      * could actually finish, and never as a way out of a challenge they simply find hard.
@@ -45,10 +39,4 @@ interface ChallengeHost {
 
     /** Text for the progress line, for example "Challenge 2 of 3". Null hides it. */
     val progressText: String?
-
-    /**
-     * Whether a snooze control makes sense. True while a real alarm is ringing, false in a
-     * preview, where there is nothing to snooze.
-     */
-    val canSnooze: Boolean
 }

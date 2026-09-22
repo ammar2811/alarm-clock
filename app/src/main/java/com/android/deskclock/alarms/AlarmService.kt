@@ -40,8 +40,8 @@ import com.android.deskclock.provider.ClockContract.InstancesColumns
  * This service is in charge of starting/stopping the alarm. It will bring up and manage the
  * [AlarmActivity] as well as [AlarmKlaxon].
  *
- * Registers a broadcast receiver to listen for snooze/dismiss intents. The broadcast receiver
- * exits early if AlarmActivity is bound to prevent double-processing of the snooze/dismiss intents.
+ * Registers a broadcast receiver to listen for dismiss intents. The broadcast receiver
+ * exits early if AlarmActivity is bound to prevent double-processing of the dismiss intent.
  */
 class AlarmService : Service() {
     /** Binder given to AlarmActivity.  */
@@ -120,13 +120,6 @@ class AlarmService : Service() {
             }
 
             when (action) {
-                ALARM_SNOOZE_ACTION -> {
-                    // Set the alarm state to snoozed.
-                    // If this broadcast receiver is handling the snooze intent then AlarmActivity
-                    // must not be showing, so always show snooze toast.
-                    AlarmStateManager.setSnoozeState(context, mCurrentAlarm!!, true /* showToast */)
-                    Events.sendAlarmEvent(R.string.action_snooze, R.string.label_intent)
-                }
                 ALARM_DISMISS_ACTION -> {
                     if (ChallengeGate.requiresChallenge(mCurrentAlarm)) {
                         // This broadcast is public, so without the gate any app could
@@ -150,8 +143,7 @@ class AlarmService : Service() {
         mTelephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
         // Register the broadcast receiver
-        val filter = IntentFilter(ALARM_SNOOZE_ACTION)
-        filter.addAction(ALARM_DISMISS_ACTION)
+        val filter = IntentFilter(ALARM_DISMISS_ACTION)
         ContextCompat.registerReceiver(this, mActionsReceiver, filter,
                 ContextCompat.RECEIVER_EXPORTED)
         mIsRegistered = true
@@ -234,13 +226,6 @@ class AlarmService : Service() {
     }
 
     companion object {
-        /**
-         * AlarmActivity and AlarmService (when unbound) listen for this broadcast intent
-         * so that other applications can snooze the alarm (after ALARM_ALERT_ACTION and before
-         * ALARM_DONE_ACTION).
-         */
-        const val ALARM_SNOOZE_ACTION = "com.android.deskclock.ALARM_SNOOZE"
-
         /**
          * AlarmActivity and AlarmService listen for this broadcast intent so that other
          * applications can dismiss the alarm (after ALARM_ALERT_ACTION and before ALARM_DONE_ACTION).

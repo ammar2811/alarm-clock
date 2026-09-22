@@ -66,7 +66,7 @@ class ClockProvider : ContentProvider() {
                 InstancesColumns.DAY + " LIMIT 1)"
 
         /**
-         * Projection map used by query for snoozed alarms.
+         * Projection map used by query for alarms joined with their instances.
          */
         private val sAlarmsWithInstancesProjection: MutableMap<String, String> = ArrayMap()
 

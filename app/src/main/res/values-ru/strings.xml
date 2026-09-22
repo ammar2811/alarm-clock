@@ -38,22 +38,7 @@
     <string name="alarm_alert_dismiss_text" msgid="4942914605480888820">"Выключить"</string>
     <string name="alarm_missed_title" msgid="3828345099754063392">"Пропущенный будильник"</string>
     <string name="alarm_missed_text" msgid="6585658367289194023">"<xliff:g id="ALARM_TIME">%1$s</xliff:g> – <xliff:g id="ALARM_LABEL">%2$s</xliff:g>"</string>
-    <string name="alarm_alert_snoozed_text" msgid="7064642998528766113">"Отложено"</string>
-    <plurals name="alarm_alert_snooze_duration" formatted="false" msgid="7844300009062867865">
-      <item quantity="one">на <xliff:g id="NUMBER">%d</xliff:g> минуту</item>
-      <item quantity="few">на <xliff:g id="NUMBER">%d</xliff:g> минуты</item>
-      <item quantity="many">на <xliff:g id="NUMBER">%d</xliff:g> минут</item>
-      <item quantity="other">на <xliff:g id="NUMBER">%d</xliff:g> минуты</item>
-    </plurals>
     <string name="alarm_alert_off_text" msgid="4472073417593915002">"Выключено"</string>
-    <string name="alarm_alert_snooze_text" msgid="1774416052207651584">"Отложить"</string>
-    <plurals name="alarm_alert_snooze_set" formatted="false" msgid="3212729193036041768">
-      <item quantity="one">Повтор через <xliff:g id="MINUTES">%d</xliff:g> минуту</item>
-      <item quantity="few">Повтор через <xliff:g id="MINUTES">%d</xliff:g> минуты</item>
-      <item quantity="many">Повтор через <xliff:g id="MINUTES">%d</xliff:g> минут</item>
-      <item quantity="other">Повтор через <xliff:g id="MINUTES">%d</xliff:g> минуты</item>
-    </plurals>
-    <string name="alarm_alert_snooze_until" msgid="6958013659168344550">"Повтор в <xliff:g id="TIME">%s</xliff:g>"</string>
     <string name="alarm_alert_predismiss_title" msgid="5723945586913705445">"Следующий будильник"</string>
     <string name="missed_alarm_has_been_deleted" msgid="5295473204045979335">"Пропущенный будильник был удален"</string>
     <string name="timer_notifications_less_min" msgid="5481375048976427255">"Осталось: меньше минуты"</string>
@@ -121,7 +106,6 @@
     <string name="analog_gadget" msgid="1670505720837152766">"Часы"</string>
     <string name="digital_gadget" msgid="2326954556720571358">"Часы"</string>
     <string name="settings" msgid="5849739030579520686">"Настройки"</string>
-    <string name="snooze_duration_title" msgid="1097309861110780483">"Интервал повтора сигнала"</string>
     <string name="crescendo_duration_title" msgid="8606408542726189528">"Постепенно увеличивать громкость"</string>
     <string name="auto_silence_title" msgid="2012754009554434544">"Автовыключение"</string>
     <plurals name="auto_silence_summary" formatted="false" msgid="6579258788774360396">
@@ -155,38 +139,6 @@
     <item msgid="6390209981529164605">"55 секунд"</item>
     <item msgid="5261571706794132923">"60 секунд"</item>
   </string-array>
-  <string-array name="snooze_duration_entries">
-    <item msgid="7668553664977446797">"1 минута"</item>
-    <item msgid="4482596794620161030">"2 минуты"</item>
-    <item msgid="8478276201849960314">"3 минуты"</item>
-    <item msgid="4038456474851212478">"4 минуты"</item>
-    <item msgid="6298175579152122770">"5 минут"</item>
-    <item msgid="9021860177999278496">"6 минут"</item>
-    <item msgid="7224689200902680256">"7 минут"</item>
-    <item msgid="4610012663985162123">"8 минут"</item>
-    <item msgid="1717028898015659426">"9 минут"</item>
-    <item msgid="8058492636464337699">"10 минут"</item>
-    <item msgid="577767219993868603">"11 минут"</item>
-    <item msgid="3710047869487864775">"12  минут"</item>
-    <item msgid="3794200935630619331">"13 минут"</item>
-    <item msgid="5462266433522229437">"14 минут"</item>
-    <item msgid="2192100038569306041">"15 минут"</item>
-    <item msgid="6636326047858437620">"16 минут"</item>
-    <item msgid="2481054808772108352">"17 минут"</item>
-    <item msgid="4080984064428458050">"18 минут"</item>
-    <item msgid="5844319398703041730">"19 минут"</item>
-    <item msgid="2334964289857921073">"20 минут"</item>
-    <item msgid="4755209855817904977">"21 минута"</item>
-    <item msgid="8414394445389367355">"22 минуты"</item>
-    <item msgid="2604612428763230265">"23 минуты"</item>
-    <item msgid="6871696471373403806">"24 минуты"</item>
-    <item msgid="1573685398431466364">"25 минут"</item>
-    <item msgid="6999090368236684971">"26 минут"</item>
-    <item msgid="7125056720603734703">"27 минут"</item>
-    <item msgid="1695830988496463030">"28 минут"</item>
-    <item msgid="6706610539793025916">"29 минут"</item>
-    <item msgid="2898212818965905529">"30 минут"</item>
-  </string-array>
     <string name="week_start_title" msgid="4268917518596832096">"Начало недели"</string>
   <string-array name="week_start_entries">
     <item msgid="9010198173394482639">"суббота"</item>
@@ -204,7 +156,6 @@
     <string name="alarms_blocked_by_dnd" msgid="6089433757505898969">"Включен режим \"Полная тишина\""</string>
     <string name="volume_button_setting_title" msgid="6937131248843413357">"Кнопки громкости"</string>
   <string-array name="volume_button_setting_entries">
-    <item msgid="7972756698723318690">"Отложить"</item>
     <item msgid="3450979320164769576">"Выключить"</item>
     <item msgid="7085774139907653538">"Изменить громкость"</item>
   </string-array>
@@ -390,9 +341,6 @@
     <string name="timer_service_desc" msgid="2256002649882602433">"Обрабатывает действия из уведомлений таймера."</string>
     <string name="stopwatch_service_desc" msgid="9220132827343760767">"Обрабатывает действия из уведомлений секундомера."</string>
     <string name="swn_paused" msgid="6364358842808263589">"Приостановлено"</string>
-    <string name="description_direction_right" msgid="5709209043267548985">"Пролистните вправо, чтобы отключить сигнал"</string>
-    <string name="description_direction_left" msgid="7448141043674998679">"Пролистните влево, чтобы отложить сигнал"</string>
-    <string name="description_direction_both" msgid="1841309486023845685">"Проведите влево, чтобы отложить сигнал, или вправо, чтобы отменить его"</string>
     <string name="timer_settings" msgid="7955522143086154795">"Таймеры"</string>
     <string name="timer_vibrate_title" msgid="7788920024785587518">"Вибросигнал таймера"</string>
     <string name="timer_paused" msgid="5941160896040771462">"Таймер приостановлен"</string>
@@ -440,6 +388,4 @@
     <string name="alarm_cant_be_dismissed_still_more_than_24_hours_away" msgid="8810520940995307437">"Будильник на <xliff:g id="ALARM_TIME">%s</xliff:g> нельзя отключить. Он зазвонит более чем через 24 часа."</string>
     <string name="dismiss_alarm" msgid="7204593078688533541">"Выключить будильник"</string>
     <string name="pick_alarm_to_dismiss" msgid="5408769235866082896">"Выберите будильник, который нужно отключить"</string>
-    <string name="no_firing_alarms" msgid="4986161963178722289">"Нет активных будильников"</string>
-    <string name="alarm_is_snoozed" msgid="7044644119744928846">"Будильник на <xliff:g id="ALARM_TIME">%s</xliff:g> отложен на 10 минут"</string>
 </resources>

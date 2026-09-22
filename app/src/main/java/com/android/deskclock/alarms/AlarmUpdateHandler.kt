@@ -23,10 +23,14 @@ import android.text.format.DateFormat
 import android.view.ViewGroup
 
 import com.android.deskclock.AlarmUtils
+import com.android.deskclock.LogUtils
 import com.android.deskclock.R
+import com.android.deskclock.challenges.ChallengeGate
 import com.android.deskclock.events.Events
 import com.android.deskclock.provider.Alarm
 import com.android.deskclock.provider.AlarmInstance
+import com.android.deskclock.provider.ClockContract.AlarmsColumns
+import com.android.deskclock.provider.ClockContract.InstancesColumns
 import com.android.deskclock.widget.toast.SnackbarManager
 
 import com.google.android.material.snackbar.Snackbar
@@ -90,7 +94,11 @@ class AlarmUpdateHandler(
      *
      * @param alarm The alarm to be modified.
      * @param popToast whether or not a toast should be displayed when done.
-     * @param minorUpdate if true, don't affect any currently snoozed instances.
+     * @param minorUpdate if true, just copy the changed fields into existing instances instead
+     * of recreating them.
+     *
+     * A major update recreates the alarm's instances, which would stop one that is ringing, so
+     * it is refused while the alarm is firing with challenges left; see [ChallengeGate].
      */
     fun asyncUpdateAlarm(
         alarm: Alarm,
@@ -99,8 +107,17 @@ class AlarmUpdateHandler(
     ) {
         val updateTask: AsyncTask<Void, Void, AlarmInstance> =
                 object : AsyncTask<Void, Void, AlarmInstance>() {
+            private var mRefusedFor: AlarmInstance? = null
+
             override fun doInBackground(vararg parameters: Void): AlarmInstance? {
                 val cr: ContentResolver = mAppContext.getContentResolver()
+
+                if (!minorUpdate) {
+                    mRefusedFor = refuseWhileChallengePending(alarm)
+                    if (mRefusedFor != null) {
+                        return null
+                    }
+                }
 
                 // Update alarm
                 Alarm.updateAlarm(cr, alarm)
@@ -115,7 +132,11 @@ class AlarmUpdateHandler(
                         newInstance.mVibrate = alarm.vibrate
                         newInstance.mRingtone = alarm.alert
                         newInstance.mLabel = alarm.label
-                        newInstance.mChallenges = alarm.challenges
+                        // A firing instance must be dismissed with the challenges it fired
+                        // with, or clearing them from the alarm would dismiss it for free.
+                        if (instance.mAlarmState != InstancesColumns.FIRED_STATE) {
+                            newInstance.mChallenges = alarm.challenges
+                        }
                         // Since we copied the mId of the old instance and the mId is used
                         // as the primary key in the AlarmInstance table, this will replace
                         // the existing instance.
@@ -132,6 +153,7 @@ class AlarmUpdateHandler(
             }
 
             override fun onPostExecute(instance: AlarmInstance?) {
+                mRefusedFor?.let(::showChallenge)
                 if (popToast && instance != null) {
                     AlarmUtils.popAlarmSetSnackbar(
                             mSnackbarAnchor!!, instance.alarmTime.timeInMillis)
@@ -148,10 +170,16 @@ class AlarmUpdateHandler(
      */
     fun asyncDeleteAlarm(alarm: Alarm?) {
         val deleteTask: AsyncTask<Void, Void, Boolean> = object : AsyncTask<Void, Void, Boolean>() {
+            private var mRefusedFor: AlarmInstance? = null
+
             override fun doInBackground(vararg parameters: Void): Boolean {
                 // Activity may be closed at this point , make sure data is still valid
                 if (alarm == null) {
                     // Nothing to do here, just return.
+                    return false
+                }
+                mRefusedFor = refuseWhileChallengePending(alarm)
+                if (mRefusedFor != null) {
                     return false
                 }
                 AlarmStateManager.deleteAllInstances(mAppContext, alarm.id)
@@ -159,6 +187,7 @@ class AlarmUpdateHandler(
             }
 
             override fun onPostExecute(deleted: Boolean) {
+                mRefusedFor?.let(::showChallenge)
                 if (deleted) {
                     mDeletedAlarm = alarm
                     showUndoBar()
@@ -196,6 +225,24 @@ class AlarmUpdateHandler(
                     asyncAddAlarm(deletedAlarm)
                 })
         SnackbarManager.show(snackbar)
+    }
+
+    /**
+     * Returns the instance of [alarm] that must be completed first, if any, having already
+     * reloaded the alarm list. The list applies an edit to its own copy of the alarm before it
+     * reaches here, and removes a deleted row up front, so without the reload it would keep
+     * showing a change that never happened.
+     */
+    private fun refuseWhileChallengePending(alarm: Alarm): AlarmInstance? {
+        val cr: ContentResolver = mAppContext.getContentResolver()
+        val instance = ChallengeGate.firingInstanceOf(cr, alarm.id) ?: return null
+        LogUtils.i("Alarm %d is firing with challenges left; refusing to change it", alarm.id)
+        cr.notifyChange(AlarmsColumns.ALARMS_WITH_INSTANCES_URI, null)
+        return instance
+    }
+
+    private fun showChallenge(instance: AlarmInstance) {
+        mAppContext.startActivity(ChallengeGate.createChallengeIntent(mAppContext, instance))
     }
 
     private fun setupAlarmInstance(alarm: Alarm): AlarmInstance {

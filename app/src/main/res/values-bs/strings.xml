@@ -38,20 +38,7 @@
     <string name="alarm_alert_dismiss_text" msgid="4942914605480888820">"Odbaci"</string>
     <string name="alarm_missed_title" msgid="3828345099754063392">"Propušteni alarm"</string>
     <string name="alarm_missed_text" msgid="6585658367289194023">"<xliff:g id="ALARM_TIME">%1$s</xliff:g> - <xliff:g id="ALARM_LABEL">%2$s</xliff:g>"</string>
-    <string name="alarm_alert_snoozed_text" msgid="7064642998528766113">"Odloženo"</string>
-    <plurals name="alarm_alert_snooze_duration" formatted="false" msgid="7844300009062867865">
-      <item quantity="one"><xliff:g id="NUMBER">%d</xliff:g> min.</item>
-      <item quantity="few"><xliff:g id="NUMBER">%d</xliff:g> min.</item>
-      <item quantity="other"><xliff:g id="NUMBER">%d</xliff:g> min.</item>
-    </plurals>
     <string name="alarm_alert_off_text" msgid="4472073417593915002">"Alarm isključen"</string>
-    <string name="alarm_alert_snooze_text" msgid="1774416052207651584">"Odloži"</string>
-    <plurals name="alarm_alert_snooze_set" formatted="false" msgid="3212729193036041768">
-      <item quantity="one">Odlaganje na <xliff:g id="MINUTES">%d</xliff:g> minutu.</item>
-      <item quantity="few">Odlaganje na <xliff:g id="MINUTES">%d</xliff:g> minute.</item>
-      <item quantity="other">Odlaganje na <xliff:g id="MINUTES">%d</xliff:g> minuta.</item>
-    </plurals>
-    <string name="alarm_alert_snooze_until" msgid="6958013659168344550">"Odlaganje do <xliff:g id="TIME">%s</xliff:g>"</string>
     <string name="alarm_alert_predismiss_title" msgid="5723945586913705445">"Predstojeći alarm"</string>
     <string name="missed_alarm_has_been_deleted" msgid="5295473204045979335">"Propušteni alarm je izbrisan"</string>
     <string name="timer_notifications_less_min" msgid="5481375048976427255">"Preostalo je manje od minute"</string>
@@ -113,7 +100,6 @@
     <string name="analog_gadget" msgid="1670505720837152766">"Analogni sat"</string>
     <string name="digital_gadget" msgid="2326954556720571358">"Digitalni sat"</string>
     <string name="settings" msgid="5849739030579520686">"Postavke"</string>
-    <string name="snooze_duration_title" msgid="1097309861110780483">"Dužina odlaganja"</string>
     <string name="crescendo_duration_title" msgid="8606408542726189528">"Postepeno povećavaj jačinu zvuka"</string>
     <string name="auto_silence_title" msgid="2012754009554434544">"Utišaj nakon"</string>
     <plurals name="auto_silence_summary" formatted="false" msgid="6579258788774360396">
@@ -146,38 +132,6 @@
     <item msgid="6390209981529164605">"55 sekundi"</item>
     <item msgid="5261571706794132923">"60 sekundi"</item>
   </string-array>
-  <string-array name="snooze_duration_entries">
-    <item msgid="7668553664977446797">"1 minuta"</item>
-    <item msgid="4482596794620161030">"2 minute"</item>
-    <item msgid="8478276201849960314">"3 minute"</item>
-    <item msgid="4038456474851212478">"4 minute"</item>
-    <item msgid="6298175579152122770">"5 minuta"</item>
-    <item msgid="9021860177999278496">"6 minuta"</item>
-    <item msgid="7224689200902680256">"7 minuta"</item>
-    <item msgid="4610012663985162123">"8 minuta"</item>
-    <item msgid="1717028898015659426">"9 minuta"</item>
-    <item msgid="8058492636464337699">"10 minuta"</item>
-    <item msgid="577767219993868603">"11 minuta"</item>
-    <item msgid="3710047869487864775">"12 minuta"</item>
-    <item msgid="3794200935630619331">"13 minuta"</item>
-    <item msgid="5462266433522229437">"14 minuta"</item>
-    <item msgid="2192100038569306041">"15 minuta"</item>
-    <item msgid="6636326047858437620">"16 minuta"</item>
-    <item msgid="2481054808772108352">"17 minuta"</item>
-    <item msgid="4080984064428458050">"18 minuta"</item>
-    <item msgid="5844319398703041730">"19 minuta"</item>
-    <item msgid="2334964289857921073">"20 minuta"</item>
-    <item msgid="4755209855817904977">"21 minuta"</item>
-    <item msgid="8414394445389367355">"22 minute"</item>
-    <item msgid="2604612428763230265">"23 minute"</item>
-    <item msgid="6871696471373403806">"24 minute"</item>
-    <item msgid="1573685398431466364">"25 minuta"</item>
-    <item msgid="6999090368236684971">"26 minuta"</item>
-    <item msgid="7125056720603734703">"27 minuta"</item>
-    <item msgid="1695830988496463030">"28 minuta"</item>
-    <item msgid="6706610539793025916">"29 minuta"</item>
-    <item msgid="2898212818965905529">"30 minuta"</item>
-  </string-array>
     <string name="week_start_title" msgid="4268917518596832096">"Prvi dan sedmice"</string>
   <string-array name="week_start_entries">
     <item msgid="9010198173394482639">"subota"</item>
@@ -195,7 +149,6 @@
     <string name="alarms_blocked_by_dnd" msgid="6089433757505898969">"Uređaj je u potpunosti utišan"</string>
     <string name="volume_button_setting_title" msgid="6937131248843413357">"Dugmad za jačinu zvuka"</string>
   <string-array name="volume_button_setting_entries">
-    <item msgid="7972756698723318690">"Odloži"</item>
     <item msgid="3450979320164769576">"Odbaci"</item>
     <item msgid="7085774139907653538">"Kontrola jačine zvuka"</item>
   </string-array>
@@ -381,9 +334,6 @@
     <string name="timer_service_desc" msgid="2256002649882602433">"Obrađuje radnje iz obavijesti tajmera."</string>
     <string name="stopwatch_service_desc" msgid="9220132827343760767">"Obrađuje radnje iz obavijesti štoperice."</string>
     <string name="swn_paused" msgid="6364358842808263589">"Pauzirana"</string>
-    <string name="description_direction_right" msgid="5709209043267548985">"Prevucite desno da odbacite"</string>
-    <string name="description_direction_left" msgid="7448141043674998679">"Prevucite lijevo da odložite"</string>
-    <string name="description_direction_both" msgid="1841309486023845685">"Prevucite lijevo da odložite ili desno da odbacite"</string>
     <string name="timer_settings" msgid="7955522143086154795">"Tajmeri"</string>
     <string name="timer_vibrate_title" msgid="7788920024785587518">"Vibracija za mjerač vremena"</string>
     <string name="timer_paused" msgid="5941160896040771462">"Tajmer pauziran"</string>
@@ -430,6 +380,4 @@
     <string name="alarm_cant_be_dismissed_still_more_than_24_hours_away" msgid="8810520940995307437">"<xliff:g id="ALARM_TIME">%s</xliff:g> alarm se još ne može odbaciti; do njega ima više od 24 sata"</string>
     <string name="dismiss_alarm" msgid="7204593078688533541">"Odbaci alarm"</string>
     <string name="pick_alarm_to_dismiss" msgid="5408769235866082896">"Odaberite koji će se alarm odbaciti"</string>
-    <string name="no_firing_alarms" msgid="4986161963178722289">"Nema aktivnih alarma"</string>
-    <string name="alarm_is_snoozed" msgid="7044644119744928846">"Alarm za <xliff:g id="ALARM_TIME">%s</xliff:g> odložen na 10 minuta"</string>
 </resources>
