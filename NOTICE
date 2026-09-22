@@ -1,0 +1,15 @@
+Alarm Clock
+Copyright (C) 2026 Ammar Siddiqui
+
+This product is a modified version of DeskClock from the Android Open Source Project:
+https://android.googlesource.com/platform/packages/apps/DeskClock
+Copyright (C) The Android Open Source Project, licensed under the Apache License 2.0.
+
+Files carrying an Android Open Source Project copyright header originate from DeskClock,
+and many of them have been modified. The full list of changes, including every modified
+file, is the git history after upstream commit 04e481f37. Files carrying an Ammar Siddiqui
+copyright header were written for this project.
+
+This product bundles the EfficientDet-Lite0 object detection model
+(app/src/main/assets/efficientdet_lite0.tflite) distributed by Google's MediaPipe project,
+licensed under the Apache License 2.0.

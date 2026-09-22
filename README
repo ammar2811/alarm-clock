@@ -1,4 +1,15 @@
-This app is not actively supported and the source is only available as a
-reference. This project will be removed from the source manifest sometime in the
-future.
+Alarm Clock
 
+An Android alarm clock that makes you complete challenges before an alarm can be
+dismissed: math problems, photographing an object (recognised on device), a memory game,
+retyping a string, or repeating a sequence. An alarm can require several, in order, each
+with its own difficulty. There is no snooze, and a ringing alarm cannot be switched off,
+deleted or edited from the alarm list, or silenced by restarting the phone, until its
+challenges are done. Auto-silence still applies.
+
+It is a fork of DeskClock from the Android Open Source Project, ported from Soong to
+Gradle. Upstream is no longer maintained. See NOTICE for attribution and LICENSE for the
+Apache License 2.0 that covers both the original code and the changes.
+
+Build with ./gradlew assembleDebug (JDK 21, Android SDK). The application ID is
+com.ammar.deskclock, so it installs alongside Google's Clock.
