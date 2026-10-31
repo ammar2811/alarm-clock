@@ -1,0 +1,46 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Test, lint and build the APK
+        run: ./gradlew check assembleDebug
+
+      - name: Name the APK
+        run: |
+          version="${GITHUB_REF_NAME//\//-}"
+          cp app/build/outputs/apk/debug/app-debug.apk "alarm-clock-${version}.apk"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: alarm-clock-apk
+          path: alarm-clock-*.apk
+
+      - name: Publish the release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" alarm-clock-*.apk \
+            --title "Alarm Clock $GITHUB_REF_NAME" \
+            --notes "Install the APK on Android 7.0 or later. See the README for details."
